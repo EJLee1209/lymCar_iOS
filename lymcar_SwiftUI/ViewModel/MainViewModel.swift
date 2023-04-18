@@ -23,7 +23,7 @@ class MainViewModel: ObservableObject {
     }
     
     func moniteringLogged() {
-        moniteringRegistration = db.collection("SignedIn").document(auth.currentUser!.uid)
+        moniteringRegistration = db.collection(FireStoreTable.SIGNEDIN).document(auth.currentUser!.uid)
             .addSnapshotListener { snapshot, error in
                 if let error = error {
                     print(error)
@@ -33,7 +33,7 @@ class MainViewModel: ObservableObject {
                 guard let snapshot = snapshot else {
                     return
                 }
-                let deviceId = snapshot.get("deviceId") as! String
+                let deviceId = snapshot.get(FireStoreTable.FIELD_DEVICEID) as! String
                 
                 if deviceId != Utils.getDeviceUUID() {
                     self.detectAnonymous = true

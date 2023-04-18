@@ -88,10 +88,10 @@ class WelcomeViewModel: ObservableObject {
 
             copyUser.uid = user.uid
 
-            self.db.collection("User").document(user.uid)
+            self.db.collection(FireStoreTable.USER).document(user.uid)
                 .setData(copyUser.dictionary)
 
-            self.db.collection("FcmTokens").document(user.uid)
+            self.db.collection(FireStoreTable.FCMTOKENS).document(user.uid)
                 .setData(TokenInfo().dictionary)
             
             self.authResult = .success(Constants.SUCCESS_REGISTER)
@@ -103,7 +103,7 @@ class WelcomeViewModel: ObservableObject {
         let splitEmail = email.split(separator: "@")
         
         print(String(splitEmail[0]))
-        db.collection("SignedIn").whereField("email", isEqualTo: String(splitEmail[0]))
+        db.collection(FireStoreTable.SIGNEDIN).whereField(FireStoreTable.FIELD_EMAIL, isEqualTo: String(splitEmail[0]))
             .getDocuments { snapshot, error in
                 if let error = error {
                     self.authResult = .failure(Constants.GET_USER_INFO_FAILED)
@@ -116,7 +116,7 @@ class WelcomeViewModel: ObservableObject {
                     return
                 }
                 
-                let deviceId = document.get("deviceId") as! String
+                let deviceId = document.get(FireStoreTable.FIELD_DEVICEID) as! String
                 
                 if deviceId == Utils.getDeviceUUID() {
                     self.authResult = .success(Constants.LOGIN_POSSIBLE)
@@ -141,7 +141,7 @@ class WelcomeViewModel: ObservableObject {
                 return
             }
             
-            self.db.collection("SignedIn").document(user.uid)
+            self.db.collection(FireStoreTable.SIGNEDIN).document(user.uid)
                 .setData(
                     SignedIn(
                         uid: user.uid,

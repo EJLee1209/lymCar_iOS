@@ -13,9 +13,10 @@ enum LoginField {
 
 struct LoginView: View {
     @Binding var loginStatus: Bool
+    // @State 속성을 포함한 데이터 저장을 위한 @AppStorage
+    @AppStorage("email") private var email = ""
+    @AppStorage("password") private var password = ""
     
-    @State var email: String = ""
-    @State var password: String = ""
     @State var isLoginSuccess: Bool = false
     @State var showAlert: Bool = false
     @State var alertMsg: String = ""

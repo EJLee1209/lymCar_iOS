@@ -19,7 +19,7 @@ struct MainView: View {
                 loginStatus = false
             }
         } message: {
-            Text("다른 기기에서 로그인했습니다.\n잠시 후 자동으로 로그아웃 됩니다.")
+            Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
         }
         
         
