@@ -9,10 +9,15 @@ import Foundation
 
 class CodeTimer: ObservableObject {
     @Published var time: Int = 300
+    @Published var timeOver: Bool = false
     
     init() {
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            self.time -= 1
+            if self.time > 0 {
+                self.time -= 1
+            } else {
+                self.timeOver = true
+            }
         }
     }
 }

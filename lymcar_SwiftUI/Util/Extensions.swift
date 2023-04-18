@@ -17,12 +17,26 @@ extension String {
     }
 }
 
-
 extension View {
     func disableWithOpacity(_ condition: Bool) -> some View {
         self
             .disabled(condition)
             .opacity(condition ? 0.6 : 1)
+    }
+
+    func KeyboardAwarePadding() -> some View {
+        ModifiedContent(content: self, modifier: KeyboardAwareModifier())
+    }
+    
+    func placeholder<Content: View>(
+        when shouldShow: Bool,
+        alignment: Alignment = .leading,
+        @ViewBuilder placeholder: () -> Content) -> some View {
+
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
+        }
     }
 }
 
@@ -59,11 +73,6 @@ struct KeyboardAwareModifier: ViewModifier {
     }
 }
 
-extension View {
-    func KeyboardAwarePadding() -> some View {
-        ModifiedContent(content: self, modifier: KeyboardAwareModifier())
-    }
-}
 
 extension UIApplication {
     func addTapGestureRecognizer() {

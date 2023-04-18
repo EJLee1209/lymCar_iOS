@@ -33,7 +33,7 @@ struct LoginView: View {
                 
                 VStack(alignment: .leading, spacing: 0) {
                     Text("로그인")
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("white"))
                         .font(.system(size: 40))
                         .fontWeight(.heavy)
                         .padding(.top, keyboard.isShowing ? 100 : 157)
@@ -47,6 +47,7 @@ struct LoginView: View {
                                 Text("로그인")
                                     .font(.system(size: 24))
                                     .fontWeight(.bold)
+                                    .foregroundColor(Color("black"))
                                     .padding(.top, 27)
                                     .padding(.leading, 21)
                                 

@@ -13,6 +13,7 @@
 		CF45C3A429EC36B800719703 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A329EC36B800719703 /* LoadingView.swift */; };
 		CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A529EC36DB00719703 /* ActivityIndicator.swift */; };
 		CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF644ED729EAE26A00AD988D /* Extensions.swift */; };
+		CF6C043D29EED8C6004D3123 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */; };
 		CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */; };
 		CF774D6429EE82F900877D60 /* AuthResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6329EE82F900877D60 /* AuthResult.swift */; };
 		CF8D054329EEA1E300B90AD4 /* SignedIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8D054229EEA1E300B90AD4 /* SignedIn.swift */; };
@@ -35,7 +36,6 @@
 		CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A429EA83FB00F0138D /* RegisterView.swift */; };
 		CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A629EA856100F0138D /* CustomRadioButton.swift */; };
 		CFE8645B29ECDB1200C4373C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8645A29ECDB1200C4373C /* Alamofire */; };
-		CFF4A50D29ED5F980037FAF2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CFF4A50C29ED5F980037FAF2 /* GoogleService-Info.plist */; };
 		CFF4A52629ED64150037FAF2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF4A52529ED64150037FAF2 /* User.swift */; };
 		CFF4A52929ED671A0037FAF2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CFF4A52829ED671A0037FAF2 /* FirebaseAnalytics */; };
 		CFF4A52B29ED671A0037FAF2 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = CFF4A52A29ED671A0037FAF2 /* FirebaseAnalyticsOnDeviceConversion */; };
@@ -66,6 +66,7 @@
 		CF45C3A529EC36DB00719703 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		CF45C3A729EC434A00719703 /* lymcar-SwiftUI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "lymcar-SwiftUI-Info.plist"; sourceTree = SOURCE_ROOT; };
 		CF644ED729EAE26A00AD988D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
 		CF774D6329EE82F900877D60 /* AuthResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResult.swift; sourceTree = "<group>"; };
 		CF8D054229EEA1E300B90AD4 /* SignedIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedIn.swift; sourceTree = "<group>"; };
@@ -88,7 +89,6 @@
 		CFBC8B2A29E9A28B00257059 /* KeyboardObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardObserver.swift; sourceTree = "<group>"; };
 		CFD385A429EA83FB00F0138D /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		CFD385A629EA856100F0138D /* CustomRadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRadioButton.swift; sourceTree = "<group>"; };
-		CFF4A50C29ED5F980037FAF2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CFF4A52529ED64150037FAF2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		CFF4A54C29ED69A00037FAF2 /* TokenInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -126,6 +126,7 @@
 		CFBC8AFB29E96A3700257059 = {
 			isa = PBXGroup;
 			children = (
+				CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */,
 				CFBC8B0629E96A3700257059 /* lymcar_SwiftUI */,
 				CFBC8B0529E96A3700257059 /* Products */,
 			);
@@ -142,7 +143,6 @@
 		CFBC8B0629E96A3700257059 /* lymcar_SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				CFF4A50C29ED5F980037FAF2 /* GoogleService-Info.plist */,
 				CFEB077629ECD134002D7872 /* ViewModel */,
 				CF45C3A729EC434A00719703 /* lymcar-SwiftUI-Info.plist */,
 				CFBC8B2629E999C600257059 /* Model */,
@@ -317,7 +317,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFBC8B0F29E96A3700257059 /* Preview Assets.xcassets in Resources */,
-				CFF4A50D29ED5F980037FAF2 /* GoogleService-Info.plist in Resources */,
+				CF6C043D29EED8C6004D3123 /* GoogleService-Info.plist in Resources */,
 				CFBC8B0C29E96A3700257059 /* Assets.xcassets in Resources */,
 				CF9C73FC29ECF4F500E5E953 /* serverInfo.plist in Resources */,
 			);

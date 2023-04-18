@@ -25,11 +25,17 @@ struct RoundedTextField: View {
     
     var body: some View {
         if type == .normal {
-            TextField(placeHolder, text: $text)
+            TextField("", text: $text)
                 .font(.system(size: 16))
-                .foregroundColor(.black)
+                .foregroundColor(Color("black"))
                 .padding(.vertical, verticalPadding)
                 .padding(.horizontal, horizontalPadding)
+                .placeholder(when: text.isEmpty, placeholder: {
+                    Text(placeHolder)
+                        .foregroundColor(Color("d9d9d9"))
+                        .font(.system(size: 16))
+                        .padding(.horizontal, horizontalPadding)
+                })
                 .background(Color("f5f5f5"))
                 .cornerRadius(10)
                 .submitLabel(submitLabel)
@@ -42,14 +48,26 @@ struct RoundedTextField: View {
             ZStack(alignment: .trailing) {
                 Group {
                     if isSecured {
-                        SecureField(placeHolder, text: $text)
+                        SecureField("", text: $text)
                             .submitLabel(submitLabel)
+                            .placeholder(when: text.isEmpty, placeholder: {
+                                Text(placeHolder)
+                                    .foregroundColor(Color("d9d9d9"))
+                                    .font(.system(size: 16))
+                                    .padding(.horizontal, horizontalPadding)
+                            })
                             .onSubmit {
                                 submitAction()
                             }
                     } else {
-                        TextField(placeHolder, text: $text)
+                        TextField("", text: $text)
                             .submitLabel(submitLabel)
+                            .placeholder(when: text.isEmpty, placeholder: {
+                                Text(placeHolder)
+                                    .foregroundColor(Color("d9d9d9"))
+                                    .font(.system(size: 16))
+                                    .padding(.horizontal, horizontalPadding)
+                            })
                             .onSubmit {
                                 submitAction()
                             }
@@ -64,7 +82,7 @@ struct RoundedTextField: View {
                 }
             }
             .font(.system(size: 16))
-            .foregroundColor(.black)
+            .foregroundColor(Color("black"))
             .padding(.vertical, verticalPadding)
             .padding(.horizontal, horizontalPadding)
             .background(Color("f5f5f5"))

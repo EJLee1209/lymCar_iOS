@@ -15,8 +15,8 @@ struct VerifyCodeView: View {
     @State var isValidCode: Bool = false
     @State var isAlertPresent: Bool = false
     @State var alertText: String = ""
-    @ObservedObject var codeTimer = CodeTimer()
-    @ObservedObject var keyboard: KeyboardObserver = KeyboardObserver()
+    @StateObject var codeTimer = CodeTimer()
+    @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
     @StateObject var viewModel = WelcomeViewModel()
     
     var body: some View {
@@ -26,7 +26,7 @@ struct VerifyCodeView: View {
                 
                 VStack(alignment: .leading, spacing: 0) {
                     Text("회원가입")
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("white"))
                         .font(.system(size: 40))
                         .fontWeight(.heavy)
                         .padding(.top, keyboard.isShowing ? 100 : 157)
@@ -39,10 +39,12 @@ struct VerifyCodeView: View {
                                 Text("재학생 인증")
                                     .font(.system(size: 24))
                                     .fontWeight(.bold)
+                                    .foregroundColor(Color("black"))
                                     .padding(.top, 27)
                                     .padding(.leading, 21)
                                 Text("웹메일로 전송되었습니다!\n인증번호를 입력하세요")
                                     .font(.system(size: 15))
+                                    .foregroundColor(Color("black"))
                                     .padding(.leading, 21)
                                     .padding(.top, 5)
                                 
@@ -60,10 +62,26 @@ struct VerifyCodeView: View {
                                         .blendMode(.screen)
                                 }
                                 
-                                Text("\(codeTimer.time / 60):\(codeTimer.time % 60) 안에 코드를 인증하세요")
-                                    .font(.system(size: 12))
+                                if !codeTimer.timeOver{
+                                    Text("\(codeTimer.time / 60):\(codeTimer.time % 60) 안에 코드를 인증하세요")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(Color("black"))
+                                        .frame(maxWidth: .infinity)
+                                        .padding([.top], 13)
+                                }
+
+                                if codeTimer.timeOver {
+                                    Button {
+                                        viewModel.sendVerifyCode(email)
+                                    } label: {
+                                        Text("다시 보내기")
+                                            .font(.system(size: 15))
+                                            .foregroundColor(Color("main_blue"))
+                                            .padding(.all, 15)
+                                    }
+                                    .padding(.top, 24)
                                     .frame(maxWidth: .infinity)
-                                    .padding([.top], 13)
+                                }
                             }
                         }
                         NavigationLink(isActive: $isValidCode) {
@@ -77,7 +95,7 @@ struct VerifyCodeView: View {
                                 print("email : \(email) code: \(codes)")
                                 viewModel.requestVerifyCode(email, codes)
                             }
-                            .alert("인증 오류", isPresented: $isAlertPresent) {
+                            .alert("학교 인증", isPresented: $isAlertPresent) {
                                 Button("확인", role: .cancel) {}
                             } message: {
                                 Text(alertText)
@@ -102,11 +120,11 @@ struct VerifyCodeView: View {
                         alertText = msg
                     case .success(let response) :
                         switch response.message {
-                        case "인증이 완료되었습니다.":
+                        case Constants.SUCCESS_VERIFY_CODE:
                             isValidCode = true
                         default:
                             isAlertPresent = true
-                            alertText = "인증번호가 다릅니다"
+                            alertText = response.message
                         }
                     default :
                         break

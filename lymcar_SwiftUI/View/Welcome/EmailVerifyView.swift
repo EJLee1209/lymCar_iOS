@@ -17,11 +17,10 @@ struct EmailVerifyView: View {
     @State var sendState: Bool = false
     @FocusState private var focusField: Int?
     
-    @ObservedObject var keyboard: KeyboardObserver = KeyboardObserver()
+    @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
     @StateObject var viewModel = WelcomeViewModel()
     
     
-
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.verifyState == .loading)) {
             ZStack(alignment: .center){
@@ -42,10 +41,12 @@ struct EmailVerifyView: View {
                                 Text("재학생 인증")
                                     .font(.system(size: 24))
                                     .fontWeight(.bold)
+                                    .foregroundColor(Color("black"))
                                     .padding(.top, 27)
                                     .padding(.leading, 21)
                                 Text(guideText)
                                     .font(.system(size: 15))
+                                    .foregroundColor(Color("black"))
                                     .padding(.leading, 21)
                                     .padding(.top, 5)
                                 

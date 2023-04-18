@@ -19,7 +19,6 @@ class WelcomeViewModel: ObservableObject {
     func sendVerifyCode(_ email: String) {
         verifyState = .loading
         let url = "\(baseUrl)api/email/create?email=\(email)"
-        print("post request url : \(url)\n email : \(email)")
         
         AF.request(url, method: .post, parameters: nil, encoding: JSONEncoding.default)
             .responseDecodable(of: VerifyInfo.self) { response in
@@ -29,15 +28,15 @@ class WelcomeViewModel: ObservableObject {
                 case .failure(let error):
                     if error.isSessionTaskError {
                         // 네트워크 에러
-                        self.verifyState = .failure("네트워크 연결을 확인해주세요")
+                        self.verifyState = .failure(Constants.NETWORK_ERROR)
                     }
                     else if error.isInvalidURLError {
                         // 입력 에러
-                        self.verifyState = .failure("유효한 이메일을 입력해주세요")
+                        self.verifyState = .failure(Constants.INVALID_EMAIL)
                     }
                     else {
                         // 알 수 없는 오류
-                        self.verifyState = .failure("서버 점검 중 입니다.\n이용에 불편을 드려 죄송합니다.")
+                        self.verifyState = .failure(Constants.SERVER_ERROR)
                     }
                 }
             }
@@ -56,15 +55,15 @@ class WelcomeViewModel: ObservableObject {
                 case .failure(let error):
                     if error.isSessionTaskError {
                         // 네트워크 에러
-                        self.verifyState = .failure("네트워크 연결을 확인해주세요")
+                        self.verifyState = .failure(Constants.NETWORK_ERROR)
                     }
                     else if error.isInvalidURLError {
                         // 입력 에러
-                        self.verifyState = .failure("인증코드를 다시 확인해주세요")
+                        self.verifyState = .failure(Constants.INVALID_VERIFY_CODE)
                     }
                     else {
                         // 알 수 없는 오류
-                        self.verifyState = .failure("서버 점검 중 입니다.\n이용에 불편을 드려 죄송합니다.")
+                        self.verifyState = .failure(Constants.SERVER_ERROR)
                     }
                     
                 }
@@ -95,7 +94,7 @@ class WelcomeViewModel: ObservableObject {
             self.db.collection("FcmTokens").document(user.uid)
                 .setData(TokenInfo().dictionary)
             
-            self.authResult = .success("회원가입이 완료되었습니다")
+            self.authResult = .success(Constants.SUCCESS_REGISTER)
         }
     }
     
@@ -155,4 +154,7 @@ class WelcomeViewModel: ObservableObject {
         }
     }
     
+    func updateFcmToken() {
+        
+    }
 }
