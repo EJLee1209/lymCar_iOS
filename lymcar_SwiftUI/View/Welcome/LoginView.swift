@@ -12,7 +12,7 @@ enum LoginField {
 }
 
 struct LoginView: View {
-    @Binding var comeBackToRootView: Bool
+    @Binding var loginStatus: Bool
     
     @State var email: String = ""
     @State var password: String = ""
@@ -86,7 +86,7 @@ struct LoginView: View {
                             }
                         }
                         NavigationLink(isActive: $isLoginSuccess) {
-                            MainView(comeBackToRootView: $comeBackToRootView).navigationBarBackButtonHidden()
+                            MainView(loginStatus: $loginStatus).navigationBarBackButtonHidden()
                         } label: {}
                         
                         RoundedButton(label: "로그인", buttonColor: "main_blue", labelColor: "white")
@@ -149,6 +149,6 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView(comeBackToRootView: .constant(true))
+        LoginView(loginStatus: .constant(true))
     }
 }

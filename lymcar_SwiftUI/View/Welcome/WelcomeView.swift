@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @State var comeBackToRootView = false
+    @State var registrationInProgress = false
+    @State var loginStatus = false
     
     var body: some View {
         NavigationView {
@@ -28,8 +29,8 @@ struct WelcomeView: View {
                         .padding(.leading, 21)
                     Spacer()
                     
-                    NavigationLink(isActive: $comeBackToRootView) {
-                        LoginView(comeBackToRootView: $comeBackToRootView)
+                    NavigationLink(isActive: $loginStatus) {
+                        LoginView(loginStatus: $loginStatus)
                     } label: {
                         RoundedButton(
                             label: "로그인",
@@ -39,8 +40,8 @@ struct WelcomeView: View {
                             .padding(.horizontal, 78)
                     }
 
-                    NavigationLink(isActive: $comeBackToRootView) {
-                        EmailVerifyView(comeBackToRootView: $comeBackToRootView)
+                    NavigationLink(isActive: $registrationInProgress) {
+                        EmailVerifyView(comeBackToRootView: $registrationInProgress)
                     } label: {
                         RoundedButton(
                             label: "회원가입",
