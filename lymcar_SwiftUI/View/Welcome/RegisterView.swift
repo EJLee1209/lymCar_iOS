@@ -19,6 +19,7 @@ enum RegisterField: Hashable {
 
 struct RegisterView: View {
     var email: String
+    // Navigation RootView 로 돌아가기 위한 Binding
     @Binding var comeBackToRootView: Bool
     
     // 단순 값 저장을 위한 State
@@ -36,13 +37,14 @@ struct RegisterView: View {
     @State var genderOk: Bool = false
     @State var nextCount: Int = 0
     
+    // 회원가입 수행 관련 State
     @State var isSuccessJoin: Bool = false
     @State var isFailedJoin: Bool = false
     @State var alertMsg: String = ""
     
     // 키보드 입력 FocusState
     @FocusState private var focusField: RegisterField?
-    @StateObject var viewModel = AuthViewModel()
+    @StateObject var viewModel = WelcomeViewModel()
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.authResult == .loading)) {

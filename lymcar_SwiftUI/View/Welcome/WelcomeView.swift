@@ -28,8 +28,8 @@ struct WelcomeView: View {
                         .padding(.leading, 21)
                     Spacer()
                     
-                    NavigationLink {
-                        LoginView()
+                    NavigationLink(isActive: $comeBackToRootView) {
+                        LoginView(comeBackToRootView: $comeBackToRootView)
                     } label: {
                         RoundedButton(
                             label: "로그인",

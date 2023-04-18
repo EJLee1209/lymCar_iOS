@@ -17,7 +17,7 @@ struct VerifyCodeView: View {
     @State var alertText: String = ""
     @ObservedObject var codeTimer = CodeTimer()
     @ObservedObject var keyboard: KeyboardObserver = KeyboardObserver()
-    @StateObject var viewModel = VerifyViewModel()
+    @StateObject var viewModel = WelcomeViewModel()
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.verifyState == .loading)) {

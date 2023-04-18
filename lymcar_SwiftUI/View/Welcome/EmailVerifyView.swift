@@ -18,7 +18,7 @@ struct EmailVerifyView: View {
     @FocusState private var focusField: Int?
     
     @ObservedObject var keyboard: KeyboardObserver = KeyboardObserver()
-    @StateObject var viewModel = VerifyViewModel()
+    @StateObject var viewModel = WelcomeViewModel()
     
     
 

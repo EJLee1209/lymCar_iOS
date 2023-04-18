@@ -12,13 +12,16 @@ enum LoginField {
 }
 
 struct LoginView: View {
+    @Binding var comeBackToRootView: Bool
+    
     @State var email: String = ""
     @State var password: String = ""
     @State var isLoginSuccess: Bool = false
     @State var showAlert: Bool = false
+    @State var alertMsg: String = ""
     
     @ObservedObject var keyboard: KeyboardObserver = KeyboardObserver()
-    @StateObject var viewModel = AuthViewModel()
+    @StateObject var viewModel = WelcomeViewModel()
     // 키보드 입력 FocusState
     @FocusState private var focusField: LoginField?
     
@@ -83,19 +86,27 @@ struct LoginView: View {
                             }
                         }
                         NavigationLink(isActive: $isLoginSuccess) {
-                            Text("로그인 성공")
+                            MainView(comeBackToRootView: $comeBackToRootView).navigationBarBackButtonHidden()
                         } label: {}
                         
                         RoundedButton(label: "로그인", buttonColor: "main_blue", labelColor: "white")
                             .padding(.horizontal, 20)
                             .padding(.bottom, keyboard.isShowing ? keyboard.height : 47)
                             .onTapGesture {
-                                viewModel.login(email: email, password: password)
+                                viewModel.checkLogged(email: email)
                             }
                             .alert("로그인 실패", isPresented: $showAlert) {
-                                Button("확인", role: .cancel) {}
+                                HStack {
+                                    if alertMsg == Constants.LOGIN_ALREADY_LOGGED{
+                                        Button("확인", role: .destructive) {
+                                            viewModel.login(email: email, password: password)
+                                        }
+                                    }
+                                    Button("취소", role: .cancel) {}
+                                }
+                                
                             } message: {
-                                Text("웹메일 또는 비밀번호를 확인해주세요")
+                                Text(alertMsg)
                             }
                         
                     }.cornerRadius(40)
@@ -113,10 +124,19 @@ struct LoginView: View {
             }
             .onChange(of: viewModel.authResult) { newValue in
                 switch newValue {
-                case .failure:
+                case .failure(let msg):
+                    // 이미 로그인한 기기가 있거나 로그인 실패
+                    alertMsg = msg
                     showAlert = true
-                case .success:
-                    isLoginSuccess = true
+                case .success(let msg):
+                    if msg == Constants.LOGIN_POSSIBLE {
+                        // 로그인 가능
+                        viewModel.login(email: email, password: password)
+                    }
+                    if msg == Constants.LOGIN_SUCCESS {
+                        // 로그인 성공
+                        isLoginSuccess = true
+                    }
                 default:
                     break
                 }
@@ -129,6 +149,6 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView(comeBackToRootView: .constant(true))
     }
 }
