@@ -18,6 +18,7 @@ struct MainView: View {
     @State var tabIndex : TabIndex = .map
     @State var barPosition: CGFloat = 0
     @State var barWidth: CGFloat = 0
+    @State var showBottomSheet: Bool = false
     
     var body: some View {
         GeometryReader { proxy in
@@ -25,47 +26,51 @@ struct MainView: View {
                 ZStack(alignment: .bottom) {
                     self.changeFragment()
                     
-                    HStack(spacing: 0) {
-                        Button {
-                            tabIndex = .history
-                            changeBarPosition(proxy: proxy)
-                        } label: {
-                            Image("message-circle")
-                                .renderingMode(.template)
-                                .foregroundColor(tabIndex == .history ? Color("main_blue") : Color("667080"))
-                                .frame(width: proxy.size.width/3, height: 90)
-                                
-                        }
-                        
-                        Button {
-                            tabIndex = .map
-                            changeBarPosition(proxy: proxy)
-                        } label: {
-                            Image("map")
-                                .renderingMode(.template)
-                                .foregroundColor(tabIndex == .map ? Color("main_blue") : Color("667080"))
-                                .frame(width: proxy.size.width/3, height: 90)
-                        }
-                        
-                        Button {
-                            tabIndex = .menu
-                            changeBarPosition(proxy: proxy)
-                        } label: {
-                            Image("menu")
-                                .renderingMode(.template)
-                                .foregroundColor(tabIndex == .menu ? Color("main_blue") : Color("667080"))
-                                .frame(width: proxy.size.width/3, height: 90)
-                                
-                        }
+                    if !showBottomSheet {
+                        HStack(spacing: 0) {
+                            Button {
+                                tabIndex = .history
+                                changeBarPosition(proxy: proxy)
+                            } label: {
+                                Image("message-circle")
+                                    .renderingMode(.template)
+                                    .foregroundColor(tabIndex == .history ? Color("main_blue") : Color("667080"))
+                                    .frame(width: proxy.size.width/3, height: 90)
+                                    
+                            }
+                            
+                            Button {
+                                tabIndex = .map
+                                changeBarPosition(proxy: proxy)
+                            } label: {
+                                Image("map")
+                                    .renderingMode(.template)
+                                    .foregroundColor(tabIndex == .map ? Color("main_blue") : Color("667080"))
+                                    .frame(width: proxy.size.width/3, height: 90)
+                            }
+                            
+                            Button {
+                                tabIndex = .menu
+                                changeBarPosition(proxy: proxy)
+                            } label: {
+                                Image("menu")
+                                    .renderingMode(.template)
+                                    .foregroundColor(tabIndex == .menu ? Color("main_blue") : Color("667080"))
+                                    .frame(width: proxy.size.width/3, height: 90)
+                                    
+                            }
 
+                        }
+                        .background(Color("white"))
+                        .roundedCorner(30, corners: [.topLeft, .topRight])
+                        
+                        Rectangle()
+                            .frame(width: barWidth, height: 4)
+                            .foregroundColor(Color("main_blue"))
+                            .offset(x: barPosition , y: -86)
                     }
-                    .background(Color("white"))
-                    .roundedCorner(30, corners: [.topLeft, .topRight])
+
                     
-                    Rectangle()
-                        .frame(width: barWidth, height: 4)
-                        .foregroundColor(Color("main_blue"))
-                        .offset(x: barPosition , y: -86)
                 }.edgesIgnoringSafeArea(.all)
                     .onAppear {
                         barWidth = proxy.size.width/3
@@ -89,7 +94,7 @@ struct MainView: View {
         case .history:
             Fragment(backgroundColor: .blue, title: "히스토리")
         case .map:
-            MapView()
+            MapView(showBottomSheet: $showBottomSheet)
         case .menu:
             Fragment(backgroundColor: .cyan, title: "메뉴")
         }

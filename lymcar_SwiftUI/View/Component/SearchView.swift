@@ -36,12 +36,20 @@ struct SearchView: View {
                 }
             }
             else {
-                TextField("목적지", text: $endPlaceName)
+                TextField("", text: $endPlaceName)
                     .submitLabel(.search)
                     .onSubmit {
                         submitAction(.end)
+                        if !isExpanded {
+                            isExpanded.toggle()
+                        }
                     }
                     .focused($focus, equals: .end)
+                    .placeholder(when: endPlaceName.isEmpty) {
+                        Text("목적지")
+                            .font(.system(size: 15))
+                            .foregroundColor(Color("d9d9d9"))
+                    }
             }
             
             Button {
@@ -61,7 +69,7 @@ struct SearchView: View {
         }
         .padding(10)
         .background(Color("white"))
-        .cornerRadius(15)
+        .cornerRadius(20)
     }
 }
 
