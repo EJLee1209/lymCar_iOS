@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */; };
 		CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */; };
 		CF45C3A029EC2FE000719703 /* VerifyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C39F29EC2FE000719703 /* VerifyInfo.swift */; };
 		CF45C3A229EC312300719703 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A129EC312300719703 /* Constants.swift */; };
@@ -24,6 +25,7 @@
 		CF9C73FC29ECF4F500E5E953 /* serverInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF9C73FB29ECF4F500E5E953 /* serverInfo.plist */; };
 		CF9C73FE29ECF57C00E5E953 /* lymcar++Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */; };
 		CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */; };
+		CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86DC29EFBD5C009A5552 /* MapView.swift */; };
 		CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */; };
 		CFBC8B0C29E96A3700257059 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0B29E96A3700257059 /* Assets.xcassets */; };
 		CFBC8B0F29E96A3700257059 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0E29E96A3700257059 /* Preview Assets.xcassets */; };
@@ -61,6 +63,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchKeywordResult.swift; sourceTree = "<group>"; };
 		CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryGetter.swift; sourceTree = "<group>"; };
 		CF45C39F29EC2FE000719703 /* VerifyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyInfo.swift; sourceTree = "<group>"; };
 		CF45C3A129EC312300719703 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -79,6 +82,7 @@
 		CF9C73FB29ECF4F500E5E953 /* serverInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = serverInfo.plist; sourceTree = "<group>"; };
 		CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "lymcar++Bundle.swift"; sourceTree = "<group>"; };
 		CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerShape.swift; sourceTree = "<group>"; };
+		CFAA86DC29EFBD5C009A5552 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		CFBC8B0429E96A3700257059 /* lymcar_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lymcar_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lymcar_SwiftUIApp.swift; sourceTree = "<group>"; };
 		CFBC8B0B29E96A3700257059 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -188,6 +192,7 @@
 				CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */,
 				CF45C3A329EC36B800719703 /* LoadingView.swift */,
 				CF66735C29EF7BD400F3EDDC /* SearchView.swift */,
+				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -214,6 +219,7 @@
 				CFF4A54C29ED69A00037FAF2 /* TokenInfo.swift */,
 				CF774D6329EE82F900877D60 /* AuthResult.swift */,
 				CF8D054229EEA1E300B90AD4 /* SignedIn.swift */,
+				CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -340,6 +346,7 @@
 				CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */,
 				CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */,
 				CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */,
+				CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */,
 				CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */,
 				CF8D054B29EEB25800B90AD4 /* MainViewModel.swift in Sources */,
 				CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */,
@@ -350,6 +357,7 @@
 				CFBC8B1C29E9707D00257059 /* LoginView.swift in Sources */,
 				CFBC8B1E29E9749300257059 /* RoundedTextField.swift in Sources */,
 				CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */,
+				CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */,
 				CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */,
 				CF8D054929EEAFE300B90AD4 /* MainView.swift in Sources */,
 				CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */,
@@ -489,6 +497,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_LINK_OBJC_RUNTIME = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"lymcar_SwiftUI/Preview Content\"";
@@ -510,6 +520,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dldmswo1209.lymcar-SwiftUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -520,6 +531,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_LINK_OBJC_RUNTIME = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"lymcar_SwiftUI/Preview Content\"";
@@ -541,6 +554,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dldmswo1209.lymcar-SwiftUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -83,15 +83,15 @@ struct MainView: View {
         
     }
     
-    func changeFragment() -> Fragment {
+    @ViewBuilder
+    func changeFragment() -> some View {
         switch self.tabIndex {
         case .history:
-            return Fragment(backgroundColor: .blue, title: "히스토리")
+            Fragment(backgroundColor: .blue, title: "히스토리")
         case .map:
-            return Fragment(backgroundColor: .pink, title: "맵")
+            MapView()
         case .menu:
-            return Fragment(backgroundColor: .cyan, title: "메뉴")
-        
+            Fragment(backgroundColor: .cyan, title: "메뉴")
         }
     }
     
