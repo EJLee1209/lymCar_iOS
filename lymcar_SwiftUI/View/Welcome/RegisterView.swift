@@ -279,7 +279,7 @@ struct RegisterView: View {
                             }
                         }
                     }
-                    .cornerRadius(40)
+                    .roundedCorner(40, corners: [.topLeft, .topRight])
                     .padding(.top, 18)
                 }
             }

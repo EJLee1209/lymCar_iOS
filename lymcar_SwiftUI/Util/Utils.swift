@@ -13,3 +13,4 @@ class Utils {
         return UIDevice.current.identifierForVendor!.uuidString
     }
 }
+

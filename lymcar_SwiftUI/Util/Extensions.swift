@@ -38,6 +38,10 @@ extension View {
             self
         }
     }
+    
+    func roundedCorner(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCornerShape(radius: radius, corners: corners) )
+    }
 }
 
 extension Binding where Value == String {

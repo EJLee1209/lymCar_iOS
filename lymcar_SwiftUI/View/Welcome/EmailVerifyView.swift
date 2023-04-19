@@ -77,8 +77,9 @@ struct EmailVerifyView: View {
                                 Text(alertText)
                             }
                         
-                    }.cornerRadius(40)
-                        .padding(.top, 18)
+                    }
+                    .roundedCorner(40, corners: [.topLeft, .topRight])
+                    .padding(.top, 18)
                 }
             }.edgesIgnoringSafeArea(.all)
                 .ignoresSafeArea(.keyboard)
