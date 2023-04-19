@@ -9,8 +9,30 @@ import Foundation
 import Firebase
 import Alamofire
 
+enum SearchResult {
+    case idle
+    case loading
+    case success(SearchKeywordResult)
+    case failure(String)
+}
+
+extension SearchResult : Equatable {
+    static func == (lhs: SearchResult, rhs: SearchResult) -> Bool {
+        switch (lhs, rhs) {
+        case (.idle, .idle): return true
+        case (.loading, .loading): return true
+        case (.success(let lhsValue), .success(let rhsValue)):
+            return lhsValue.documents == rhsValue.documents
+        case (.failure(let lhsMsg), .failure(let rhsMsg)):
+            return lhsMsg == rhsMsg
+        default: return false
+        }
+    }
+}
+
 class MainViewModel: ObservableObject {
     @Published var detectAnonymous: Bool = false
+    @Published var searchResult: SearchResult = .idle
     private let kakaoApiUrl = Bundle.main.kakaoApiUrl
     private let kakaoApiKey = Bundle.main.kakaoApiKey
     private let auth = Firebase.Auth.auth()
@@ -51,7 +73,6 @@ class MainViewModel: ObservableObject {
         let headers: HTTPHeaders = [
             "Authorization": kakaoApiKey
         ]
-        print(requestUrl)
         AF.request(
             requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
             method: .get,
@@ -60,11 +81,12 @@ class MainViewModel: ObservableObject {
             headers: headers
         )
             .responseDecodable(of: SearchKeywordResult.self) { response in
+                print(response)
                 switch response.result {
                 case .success(let searchResult):
-                    print(searchResult.documents)
+                    self.searchResult = .success(searchResult)
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    self.searchResult = .failure(error.localizedDescription)
                 
                 }
             }

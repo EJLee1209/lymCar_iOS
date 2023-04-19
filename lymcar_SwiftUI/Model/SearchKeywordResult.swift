@@ -28,10 +28,16 @@ struct SearchKeywordResult: Codable {
     var documents: [Place]
 }
 
-struct Place: Codable {
+struct Place: Codable, Hashable {
     var place_name: String = ""
     var address_name: String = ""
     var road_address_name: String = ""
     var x: String = ""
     var y: String = ""
+}
+
+extension Place: Equatable {
+    static func == (lhs: Place, rhs: Place) -> Bool {
+        return lhs.place_name == rhs.place_name
+    }
 }

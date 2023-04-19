@@ -15,33 +15,68 @@ struct MapView: View {
     )
     @State var startPlaceName: String = ""
     @State var endPlaceName: String = ""
+    @State var showModal: Bool = false
+    @State var placeList = [Place]()
+    @State var startPlace: Place?
+    @State var endPlace: Place?
+    @State var searchField: SearchField?
     @StateObject var viewModel = MainViewModel()
     
+    
     var body: some View {
-        ZStack(alignment: .top) {
-            Map(coordinateRegion: $region, showsUserLocation: true)
-                .onAppear {
-                    let manager = CLLocationManager()
-                    manager.requestWhenInUseAuthorization()
-                    manager.startUpdatingLocation()
-            }
-            
-            VStack(spacing: 9) {
-                SearchView(startPlaceName: $startPlaceName, endPlaceName: $endPlaceName){ searchField in
-                    // submit action
-                    switch searchField {
-                    case .start:
-                        viewModel.searchPlace(keyword: startPlaceName)
-                    case .end:
-                        viewModel.searchPlace(keyword: endPlaceName)
+        LoadingView(isShowing: .constant(viewModel.searchResult == .loading)) {
+            ZStack(alignment: .top) {
+                Map(coordinateRegion: $region, showsUserLocation: true)
+                    .onAppear {
+                        let manager = CLLocationManager()
+                        manager.requestWhenInUseAuthorization()
+                        manager.startUpdatingLocation()
+                }
+                
+                VStack(spacing: 9) {
+                    SearchView(startPlaceName: $startPlaceName, endPlaceName: $endPlaceName){ searchField in
+                        // submit action
+                        showModal = true
+                        self.searchField = searchField
+                        switch searchField {
+                        case .start:
+                            viewModel.searchPlace(keyword: startPlaceName)
+                        case .end:
+                            viewModel.searchPlace(keyword: endPlaceName)
+                        }
                     }
                 }
-            }
-            .padding(.top, 60)
-            .padding(.horizontal, 12)
-            
-            
-        }.edgesIgnoringSafeArea(.all)
+                .padding(.top, 60)
+                .padding(.horizontal, 12)
+                
+                
+            }.edgesIgnoringSafeArea(.all)
+                .sheet(isPresented: $showModal) {
+                    SearchResultModal(documents: $placeList) { place in
+                        if searchField == .start {
+                            startPlace = place
+                            startPlaceName = place.road_address_name
+                        }
+                        if searchField == .end {
+                            endPlace = place
+                            endPlaceName = place.road_address_name
+                        }
+                        showModal = false
+                    }
+                }
+                .onChange(of: viewModel.searchResult) { newValue in
+                    switch newValue {
+                    case .success(let result):
+                        placeList = result.documents
+                        print("\(placeList)")
+                    case .failure(let msg):
+                        print(msg)
+                    default:
+                        break
+                    }
+                }
+        }
+        
     }
 }
 

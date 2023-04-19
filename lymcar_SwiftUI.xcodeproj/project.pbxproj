@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */; };
+		CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E229EFE65200FE550F /* searchResultItem.swift */; };
+		CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */; };
 		CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */; };
 		CF45C3A029EC2FE000719703 /* VerifyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C39F29EC2FE000719703 /* VerifyInfo.swift */; };
 		CF45C3A229EC312300719703 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A129EC312300719703 /* Constants.swift */; };
@@ -64,6 +66,8 @@
 
 /* Begin PBXFileReference section */
 		CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchKeywordResult.swift; sourceTree = "<group>"; };
+		CF2751E229EFE65200FE550F /* searchResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = searchResultItem.swift; sourceTree = "<group>"; };
+		CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultModal.swift; sourceTree = "<group>"; };
 		CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryGetter.swift; sourceTree = "<group>"; };
 		CF45C39F29EC2FE000719703 /* VerifyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyInfo.swift; sourceTree = "<group>"; };
 		CF45C3A129EC312300719703 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -179,6 +183,7 @@
 				CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */,
 				CF8D054829EEAFE300B90AD4 /* MainView.swift */,
 				CFC39D6729EE750B0096E580 /* Welcome */,
+				CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -193,6 +198,7 @@
 				CF45C3A329EC36B800719703 /* LoadingView.swift */,
 				CF66735C29EF7BD400F3EDDC /* SearchView.swift */,
 				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
+				CF2751E229EFE65200FE550F /* searchResultItem.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -358,7 +364,9 @@
 				CFBC8B1E29E9749300257059 /* RoundedTextField.swift in Sources */,
 				CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */,
 				CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */,
+				CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */,
 				CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */,
+				CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */,
 				CF8D054929EEAFE300B90AD4 /* MainView.swift in Sources */,
 				CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */,
 				CF45C3A029EC2FE000719703 /* VerifyInfo.swift in Sources */,
