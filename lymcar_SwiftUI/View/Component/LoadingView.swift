@@ -22,6 +22,7 @@ struct LoadingView<Content>: View where Content: View {
 
                 VStack {
                     Text("로딩 중...")
+                        .foregroundColor((Color("main_blue")))
                         .bold()
                     ActivityIndicator(isAnimating: .constant(true), style: .large)
                 }

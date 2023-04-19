@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 import Firebase
+import FirebaseMessaging
 
 class WelcomeViewModel: ObservableObject {
     private let baseUrl = Bundle.main.baseUrl

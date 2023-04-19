@@ -15,9 +15,11 @@ struct VerifyCodeView: View {
     @State var isValidCode: Bool = false
     @State var isAlertPresent: Bool = false
     @State var alertText: String = ""
+    @FocusState var isKeyboardShowing: Bool
     @StateObject var codeTimer = CodeTimer()
     @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
     @StateObject var viewModel = WelcomeViewModel()
+    
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.verifyState == .loading)) {
@@ -55,11 +57,19 @@ struct VerifyCodeView: View {
                                         }
                                     }
                                     .padding(EdgeInsets(top: 28, leading: 21, bottom: 0, trailing: 21))
-                                    TextField("", text: $codes.limit(8))
-                                        .font(Font.system(size: 50))
-                                        .padding([.horizontal], 20)
-                                        .padding([.top], 28)
-                                        .blendMode(.screen)
+                                    .background {
+                                        TextField("", text: $codes.limit(8))
+                                            .keyboardType(.numberPad)
+                                            .textContentType(.oneTimeCode)
+                                            .frame(width: 1, height: 1)
+                                            .opacity(0.001)
+                                            .blendMode(.screen)
+                                            .focused($isKeyboardShowing)
+                                    }
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        isKeyboardShowing.toggle()
+                                    }
                                 }
                                 
                                 if !codeTimer.timeOver{
@@ -151,6 +161,11 @@ struct VerifyCodeView: View {
         .frame(height: 60)
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .overlay {
+            if codes.count == index {
+                RoundedRectangle(cornerRadius: 10).stroke(lineWidth: 2).foregroundColor(Color("main_blue"))
+            }
+        }
     }
 }
 

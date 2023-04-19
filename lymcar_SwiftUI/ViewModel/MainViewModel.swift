@@ -22,6 +22,7 @@ class MainViewModel: ObservableObject {
         moniteringRegistration?.remove()
     }
     
+    
     func moniteringLogged() {
         moniteringRegistration = db.collection(FireStoreTable.SIGNEDIN).document(auth.currentUser!.uid)
             .addSnapshotListener { snapshot, error in
