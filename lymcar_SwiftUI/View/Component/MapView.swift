@@ -8,12 +8,20 @@
 import SwiftUI
 import MapKit
 
+struct Point: Identifiable {
+    var id: UUID = UUID()
+    var name: String
+    var coordinate: CLLocationCoordinate2D
+    var image: String
+    var isDummy: Bool = false
+}
+
 struct MapView: View {
     @Binding var showBottomSheet: Bool // bottomSheet visibility
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.88371, longitude: 127.73947),
-        span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002)
+        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
     @State var startPlaceName: String = ""
     @State var endPlaceName: String = ""
@@ -22,25 +30,31 @@ struct MapView: View {
     @State var endPlace: Place?
     @State var searchField: SearchField?
     @State var showModal: Bool = false // 장소 검색 결과 모달 visibility
-    
+    @State var points : [Point] = [
+        Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true),
+        Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true)
+    ]
     
     @StateObject var viewModel = MainViewModel()
-    
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.searchResult == .loading)) {
             ZStack(alignment: .top) {
                 // 애플 지도
-                Map(coordinateRegion: $region, showsUserLocation: true)
-                    .onAppear {
-                        let manager = CLLocationManager()
-                        manager.requestWhenInUseAuthorization()
-                        manager.startUpdatingLocation()
+                Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: points) { point in
+                    MapAnnotation(coordinate: point.coordinate) {
+                        Image(point.image)
+                    }
                 }.onTapGesture {
                     if showBottomSheet {
                         showBottomSheet.toggle()
                     }
+                }.onAppear {
+                    let manager = CLLocationManager()
+                    manager.requestWhenInUseAuthorization()
+                    manager.startUpdatingLocation()
                 }
+                
                 // SearchView(검색뷰) , 카풀 목록 보기 버튼
                 VStack(spacing: 9) {
                     SearchView(startPlaceName: $startPlaceName, endPlaceName: $endPlaceName){ searchField in
@@ -138,7 +152,7 @@ struct MapView: View {
                         alignment: .center
                     )
                     .offset(y: bottomSheetOffSet(proxy: proxy))
-                    .animation(.easeOut(duration: 0.5), value: self.showBottomSheet)
+                    .animation(.easeOut(duration: 0.3), value: self.showBottomSheet)
                 }
                 
             }.edgesIgnoringSafeArea(.all)
@@ -147,13 +161,16 @@ struct MapView: View {
                         if searchField == .start {
                             startPlace = place
                             startPlaceName = place.road_address_name
+                            addPoint(place, true)
                         }
                         if searchField == .end {
                             endPlace = place
                             endPlaceName = place.road_address_name
+                            addPoint(place, false)
                         }
                         showModal = false
                         
+                        print(points)
                     }
                 }
                 .onChange(of: viewModel.searchResult) { newValue in
@@ -170,6 +187,57 @@ struct MapView: View {
                 
         }
         
+    }
+    
+    fileprivate func moveCamera() {
+        let latDistance = abs(points[0].coordinate.latitude.distance(to: points[1].coordinate.latitude))
+        let lonDistance = abs(points[0].coordinate.longitude.distance(to: points[1].coordinate.longitude))
+        
+        self.region.span = .init(latitudeDelta: latDistance * 1.5 , longitudeDelta: lonDistance * 1.5)
+    }
+    
+    private func addPoint(_ place: Place, _ isStartPlace: Bool) {
+        let location = CLLocationCoordinate2D.init(
+            latitude: Double(place.y) ?? 0 ,
+            longitude: Double(place.x) ?? 0
+        )
+        let newPoint: Point
+        if isStartPlace {
+            newPoint = Point(
+                name: place.place_name,
+                coordinate: location,
+                image: "marker_start"
+            )
+            self.points[0] = newPoint
+            if points[1].isDummy {
+                self.region.center = newPoint.coordinate
+            } else {
+                let centerLat = (points[0].coordinate.latitude + points[1].coordinate.latitude) / 2
+                let centerLon = (points[0].coordinate.longitude + points[1].coordinate.longitude) / 2
+                let centerCoord = CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon)
+                self.region.center = centerCoord
+                
+                moveCamera()
+            }
+            
+        } else {
+            newPoint = Point(
+                name: place.place_name,
+                coordinate: location,
+                image: "marker_end"
+            )
+            self.points[1] = newPoint
+            if points[0].isDummy {
+                self.region.center = newPoint.coordinate
+            } else {
+                let centerLat = (points[0].coordinate.latitude + points[1].coordinate.latitude) / 2
+                let centerLon = (points[0].coordinate.longitude + points[1].coordinate.longitude) / 2
+                let centerCoord = CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon)
+                self.region.center = centerCoord
+                
+                moveCamera()
+            }
+        }
     }
     
     private func bottomSheetOffSet(proxy: GeometryProxy) -> CGFloat {

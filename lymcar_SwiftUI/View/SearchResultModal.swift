@@ -28,10 +28,7 @@ struct SearchResultModal: View {
             else{
                 List(documents, id: \.self) { place in
                     searchResultItem(
-                        place: Place(
-                            place_name : place.place_name,
-                            road_address_name : place.road_address_name
-                        )
+                        place: place
                     ) { place in
                         clickAction(place)
                     }

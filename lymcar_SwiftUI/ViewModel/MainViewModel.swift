@@ -73,6 +73,7 @@ class MainViewModel: ObservableObject {
         let headers: HTTPHeaders = [
             "Authorization": kakaoApiKey
         ]
+        
         AF.request(
             requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
             method: .get,
@@ -81,7 +82,6 @@ class MainViewModel: ObservableObject {
             headers: headers
         )
             .responseDecodable(of: SearchKeywordResult.self) { response in
-                print(response)
                 switch response.result {
                 case .success(let searchResult):
                     self.searchResult = .success(searchResult)
