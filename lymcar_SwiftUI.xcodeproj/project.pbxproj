@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF07B6C429F1839800C482F1 /* CarPoolRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */; };
+		CF07B6C629F18D2300C482F1 /* MyRoomBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */; };
 		CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */; };
 		CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E229EFE65200FE550F /* searchResultItem.swift */; };
 		CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */; };
@@ -65,6 +67,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPoolRoom.swift; sourceTree = "<group>"; };
+		CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRoomBox.swift; sourceTree = "<group>"; };
 		CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchKeywordResult.swift; sourceTree = "<group>"; };
 		CF2751E229EFE65200FE550F /* searchResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = searchResultItem.swift; sourceTree = "<group>"; };
 		CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultModal.swift; sourceTree = "<group>"; };
@@ -199,6 +203,7 @@
 				CF66735C29EF7BD400F3EDDC /* SearchView.swift */,
 				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
 				CF2751E229EFE65200FE550F /* searchResultItem.swift */,
+				CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -226,6 +231,7 @@
 				CF774D6329EE82F900877D60 /* AuthResult.swift */,
 				CF8D054229EEA1E300B90AD4 /* SignedIn.swift */,
 				CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */,
+				CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -360,10 +366,12 @@
 				CFBC8B1729E96A7E00257059 /* WelcomeView.swift in Sources */,
 				CFF4A54D29ED69A00037FAF2 /* TokenInfo.swift in Sources */,
 				CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */,
+				CF07B6C429F1839800C482F1 /* CarPoolRoom.swift in Sources */,
 				CFBC8B1C29E9707D00257059 /* LoginView.swift in Sources */,
 				CFBC8B1E29E9749300257059 /* RoundedTextField.swift in Sources */,
 				CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */,
 				CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */,
+				CF07B6C629F18D2300C482F1 /* MyRoomBox.swift in Sources */,
 				CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */,
 				CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */,
 				CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */,

@@ -36,6 +36,14 @@ struct Place: Codable, Hashable {
     var y: String = ""
 }
 
+struct PlaceForDB: Codable {
+    var place_name: String = ""
+    var address_name: String = ""
+    var road_address_name: String = ""
+    var x: Double = 0.0
+    var y: Double = 0.0
+}
+
 extension Place: Equatable {
     static func == (lhs: Place, rhs: Place) -> Bool {
         return lhs.place_name == rhs.place_name

@@ -36,7 +36,6 @@ struct MainView: View {
                                     .renderingMode(.template)
                                     .foregroundColor(tabIndex == .history ? Color("main_blue") : Color("667080"))
                                     .frame(width: proxy.size.width/3, height: 90)
-                                    
                             }
                             
                             Button {

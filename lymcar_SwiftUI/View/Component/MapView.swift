@@ -30,6 +30,8 @@ struct MapView: View {
     @State var endPlace: Place?
     @State var searchField: SearchField?
     @State var showModal: Bool = false // 장소 검색 결과 모달 visibility
+    @State var showMyRoomBox: Bool = false
+    @State var myRoom: CarPoolRoom? = nil
     @State var points : [Point] = [
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true),
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true)
@@ -78,14 +80,19 @@ struct MapView: View {
                             .foregroundColor(Color("main_blue"))
                             .padding(.horizontal, 14)
                             .padding(.vertical, 6)
+                            .background(Color("white"))
+                            .cornerRadius(35)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 35)
+                                    .stroke().foregroundColor(Color("main_blue"))
+                            }
                     }
-                    .background(Color("white"))
-                    .cornerRadius(35)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 35)
-                            .stroke().foregroundColor(Color("main_blue"))
+                    .padding(.bottom, showMyRoomBox ? 9 : 104)
+                    
+                    if showMyRoomBox {
+                        MyRoomBox(room: myRoom!)
+                            .padding(.bottom, 102)
                     }
-                    .padding(.bottom, 104)
                 }
                 .padding(.top, 60)
                 .padding(.horizontal, 12)
@@ -169,22 +176,38 @@ struct MapView: View {
                             addPoint(place, false)
                         }
                         showModal = false
-                        
-                        print(points)
                     }
                 }
                 .onChange(of: viewModel.searchResult) { newValue in
                     switch newValue {
                     case .success(let result):
                         placeList = result.documents
-                        print("\(placeList)")
                     case .failure(let msg):
                         print(msg)
                     default:
                         break
                     }
                 }
-                
+                .onAppear{
+                    viewModel.subscribeMyRoom { result in
+                        switch result {
+                        case .success(let room):
+                            if let safeRoom = room {
+                                self.showMyRoomBox = true
+                                self.myRoom = safeRoom
+                            } else {
+                                self.showMyRoomBox = false
+                                self.myRoom = nil
+                            }
+                            
+                        default:
+                            break
+                        }
+                    }
+                }
+                .onDisappear {
+                    viewModel.removeRegistration()
+                }
         }
         
     }
@@ -194,6 +217,8 @@ struct MapView: View {
         let lonDistance = abs(points[0].coordinate.longitude.distance(to: points[1].coordinate.longitude))
         
         self.region.span = .init(latitudeDelta: latDistance * 1.5 , longitudeDelta: lonDistance * 1.5)
+        
+        showBottomSheet.toggle()
     }
     
     private func addPoint(_ place: Place, _ isStartPlace: Bool) {

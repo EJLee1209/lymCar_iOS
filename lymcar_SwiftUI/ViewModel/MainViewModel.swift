@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestoreSwift
 import Alamofire
 
 enum SearchResult {
@@ -33,19 +34,24 @@ extension SearchResult : Equatable {
 class MainViewModel: ObservableObject {
     @Published var detectAnonymous: Bool = false
     @Published var searchResult: SearchResult = .idle
+    @Published var myRoom: CarPoolRoom?
     private let kakaoApiUrl = Bundle.main.kakaoApiUrl
     private let kakaoApiKey = Bundle.main.kakaoApiKey
     private let auth = Firebase.Auth.auth()
     private let db = Firestore.firestore()
     private var moniteringRegistration: ListenerRegistration? = nil
-    
+    private var myRoomRegistration: ListenerRegistration? = nil
     init() {
         moniteringLogged()
     }
     deinit {
         moniteringRegistration?.remove()
+        myRoomRegistration?.remove()
     }
     
+    func removeRegistration() {
+        myRoomRegistration?.remove()
+    }
     
     func moniteringLogged() {
         moniteringRegistration = db.collection(FireStoreTable.SIGNEDIN).document(auth.currentUser!.uid)
@@ -91,5 +97,30 @@ class MainViewModel: ObservableObject {
                 }
             }
     }
+    
+    func subscribeMyRoom(completion: @escaping (Result<CarPoolRoom?, FirestoreErrorCode>) -> Void) {
+        if let currentUser = auth.currentUser {
+            myRoomRegistration = db.collection(FireStoreTable.ROOM)
+                .whereField(FireStoreTable.FIELD_PARTICIPANTS, arrayContains: currentUser.uid)
+                .addSnapshotListener({ snapshot, error in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    guard let data = snapshot?.documents.first else {
+                        completion(.success(nil))
+                        return
+                    }
+                    do {
+                        let room = try data.data(as: CarPoolRoom.self)
+                        completion(.success(room))
+                    }
+                    catch {
+                        print(error)
+                    }
+                })
+        }
+    }
+    
     
 }
