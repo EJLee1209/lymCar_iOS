@@ -19,6 +19,7 @@ struct MainView: View {
     @State var barPosition: CGFloat = 0
     @State var barWidth: CGFloat = 0
     @State var showBottomSheet: Bool = false
+    @State var showCreateRoomView: Bool = false
     
     var body: some View {
         GeometryReader { proxy in
@@ -93,7 +94,7 @@ struct MainView: View {
         case .history:
             Fragment(backgroundColor: .blue, title: "히스토리")
         case .map:
-            MapView(showBottomSheet: $showBottomSheet)
+            MapView(showBottomSheet: $showBottomSheet, showCreateRoomView: $showCreateRoomView)
         case .menu:
             Fragment(backgroundColor: .cyan, title: "메뉴")
         }

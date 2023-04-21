@@ -18,10 +18,11 @@ struct Point: Identifiable {
 
 struct MapView: View {
     @Binding var showBottomSheet: Bool // bottomSheet visibility
+    @Binding var showCreateRoomView: Bool
     
     @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.88371, longitude: 127.73947),
-        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        center: CLLocationCoordinate2D(latitude: 37.8856353, longitude: 127.7383948),
+        span: MKCoordinateSpan(latitudeDelta: 0.006, longitudeDelta: 0.006)
     )
     @State var startPlaceName: String = ""
     @State var endPlaceName: String = ""
@@ -36,6 +37,7 @@ struct MapView: View {
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true),
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true)
     ]
+    @State var isExpanded: Bool = false
     
     @StateObject var viewModel = MainViewModel()
     
@@ -59,7 +61,11 @@ struct MapView: View {
                 
                 // SearchView(검색뷰) , 카풀 목록 보기 버튼
                 VStack(spacing: 9) {
-                    SearchView(startPlaceName: $startPlaceName, endPlaceName: $endPlaceName){ searchField in
+                    SearchView(
+                        startPlaceName: $startPlaceName,
+                        endPlaceName: $endPlaceName,
+                        isExpanded: $isExpanded
+                    ){ searchField in
                         // submit action
                         showModal = true
                         self.searchField = searchField
@@ -114,12 +120,13 @@ struct MapView: View {
                         } label: {
                             Image("refresh")
                                 .padding(.all, 13)
+                                .background(Color("white"))
+                                .clipShape(Circle())
+                                .shadow(radius: 3, y: 5)
+                                .padding(.trailing, 15)
+                                .padding(.bottom, 11)
                         }
-                        .background(Color("white"))
-                        .clipShape(Circle())
-                        .shadow(radius: 3, y: 5)
-                        .padding(.trailing, 15)
-                        .padding(.bottom, 11)
+                        
 
                         ZStack(alignment: .topLeading) {
                             Color("white")
@@ -130,9 +137,15 @@ struct MapView: View {
                                         .foregroundColor(Color("black"))
                                         .fontWeight(.heavy)
                                     Spacer()
+                                    
+                                    NavigationLink(isActive: $showCreateRoomView) {
+                                        CreateRoomView(showCreateRoomView: $showCreateRoomView)
+                                            .navigationBarBackButtonHidden()
+                                    } label: {}
+                                    
                                     Button {
-                                        // 방 생성 Action
-                                        
+                                        // 방 생성 버튼 Action
+                                        showCreateRoomView = true
                                     } label: {
                                         Image("plus")
                                             .padding(.all, 18)
@@ -167,12 +180,12 @@ struct MapView: View {
                     SearchResultModal(documents: $placeList) { place in
                         if searchField == .start {
                             startPlace = place
-                            startPlaceName = place.road_address_name
+                            startPlaceName = place.place_name
                             addPoint(place, true)
                         }
                         if searchField == .end {
                             endPlace = place
-                            endPlaceName = place.road_address_name
+                            endPlaceName = place.place_name
                             addPoint(place, false)
                         }
                         showModal = false
@@ -272,6 +285,6 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(showBottomSheet: .constant(false))
+        MapView(showBottomSheet: .constant(false), showCreateRoomView: .constant(false))
     }
 }

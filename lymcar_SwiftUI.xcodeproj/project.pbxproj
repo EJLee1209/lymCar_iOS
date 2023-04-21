@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF0435BC29F2403700F8A3D6 /* CreateRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */; };
 		CF07B6C429F1839800C482F1 /* CarPoolRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */; };
 		CF07B6C629F18D2300C482F1 /* MyRoomBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */; };
 		CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */; };
@@ -30,6 +31,7 @@
 		CF9C73FE29ECF57C00E5E953 /* lymcar++Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */; };
 		CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */; };
 		CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86DC29EFBD5C009A5552 /* MapView.swift */; };
+		CFB47B3329F24AD800113E73 /* MultiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB47B3229F24AD800113E73 /* MultiPicker.swift */; };
 		CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */; };
 		CFBC8B0C29E96A3700257059 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0B29E96A3700257059 /* Assets.xcassets */; };
 		CFBC8B0F29E96A3700257059 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0E29E96A3700257059 /* Preview Assets.xcassets */; };
@@ -67,6 +69,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRoomView.swift; sourceTree = "<group>"; };
 		CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPoolRoom.swift; sourceTree = "<group>"; };
 		CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRoomBox.swift; sourceTree = "<group>"; };
 		CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchKeywordResult.swift; sourceTree = "<group>"; };
@@ -91,6 +94,7 @@
 		CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "lymcar++Bundle.swift"; sourceTree = "<group>"; };
 		CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerShape.swift; sourceTree = "<group>"; };
 		CFAA86DC29EFBD5C009A5552 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		CFB47B3229F24AD800113E73 /* MultiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPicker.swift; sourceTree = "<group>"; };
 		CFBC8B0429E96A3700257059 /* lymcar_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lymcar_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lymcar_SwiftUIApp.swift; sourceTree = "<group>"; };
 		CFBC8B0B29E96A3700257059 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -188,6 +192,7 @@
 				CF8D054829EEAFE300B90AD4 /* MainView.swift */,
 				CFC39D6729EE750B0096E580 /* Welcome */,
 				CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */,
+				CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -195,6 +200,7 @@
 		CFBC8B1829E96A8800257059 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				CFB47B3229F24AD800113E73 /* MultiPicker.swift */,
 				CFBC8B1929E96AAA00257059 /* RoundedButton.swift */,
 				CFBC8B1D29E9749300257059 /* RoundedTextField.swift */,
 				CFD385A629EA856100F0138D /* CustomRadioButton.swift */,
@@ -368,7 +374,9 @@
 				CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */,
 				CF07B6C429F1839800C482F1 /* CarPoolRoom.swift in Sources */,
 				CFBC8B1C29E9707D00257059 /* LoginView.swift in Sources */,
+				CF0435BC29F2403700F8A3D6 /* CreateRoomView.swift in Sources */,
 				CFBC8B1E29E9749300257059 /* RoundedTextField.swift in Sources */,
+				CFB47B3329F24AD800113E73 /* MultiPicker.swift in Sources */,
 				CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */,
 				CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */,
 				CF07B6C629F18D2300C482F1 /* MyRoomBox.swift in Sources */,
@@ -529,7 +537,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -565,7 +573,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

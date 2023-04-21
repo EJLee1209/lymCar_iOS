@@ -14,9 +14,15 @@ enum SearchField {
 struct SearchView: View {
     @Binding var startPlaceName: String
     @Binding var endPlaceName: String
+    @Binding var isExpanded: Bool
+    
+    var buttonImage: String = "search"
     var submitAction: (SearchField) -> Void
-    @State private var isExpanded: Bool = false
+    var buttonClickAction: () -> Void = {}
+    
     @FocusState var focus: SearchField?
+    
+    
     
     var body: some View {
         HStack(spacing: 0) {
@@ -60,8 +66,10 @@ struct SearchView: View {
                     }
                     focus = nil
                 }
+                
+                buttonClickAction()
             } label: {
-                Image("search")
+                Image(buttonImage)
                     .padding(.all, 11)
             }
             .padding(.leading, 10)
@@ -75,7 +83,7 @@ struct SearchView: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView(startPlaceName: .constant(""), endPlaceName: .constant("")) { searchField in
+        SearchView(startPlaceName: .constant("한림대학교"), endPlaceName: .constant("한림대학교"), isExpanded: .constant(true)) { _ in
             
         }
     }
