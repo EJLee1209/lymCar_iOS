@@ -139,12 +139,19 @@ struct MapView: View {
                                     Spacer()
                                     
                                     NavigationLink(isActive: $showCreateRoomView) {
-                                        CreateRoomView(showCreateRoomView: $showCreateRoomView)
+                                        CreateRoomView(
+                                            showCreateRoomView: $showCreateRoomView,
+                                            startPlace: startPlace,
+                                            endPlace: endPlace
+                                        )
                                             .navigationBarBackButtonHidden()
                                     } label: {}
                                     
                                     Button {
                                         // 방 생성 버튼 Action
+                                        if myRoom != nil {
+                                            return
+                                        }
                                         showCreateRoomView = true
                                     } label: {
                                         Image("plus")

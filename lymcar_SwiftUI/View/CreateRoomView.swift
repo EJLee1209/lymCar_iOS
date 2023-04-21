@@ -9,6 +9,9 @@ import SwiftUI
 
 struct CreateRoomView: View {
     @Binding var showCreateRoomView: Bool
+    var startPlace: Place?
+    var endPlace: Place?
+    
     @State var startPlaceName: String = ""
     @State var endPlaceName: String = ""
     @State var userCount: Int = 2
@@ -24,7 +27,7 @@ struct CreateRoomView: View {
     
     var body: some View {
         
-        ZStack(alignment: .top) {
+        ZStack(alignment: .bottom) {
             Color("main_blue")
             Color("white")
                 .roundedCorner(30, corners: [.topLeft, .topRight])
@@ -138,8 +141,25 @@ struct CreateRoomView: View {
                 }
             }.padding(.top, 50)
             
+            Button {
+                // 방 만들기 action
+                
+            } label: {
+                RoundedButton(
+                    label: "방 만들기",
+                    buttonColor: "main_blue",
+                    labelColor: "white"
+                )
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 47)
+
         }
         .edgesIgnoringSafeArea(.all)
+        .onAppear {
+            startPlaceName = startPlace?.place_name ?? ""
+            endPlaceName = endPlace?.place_name ?? ""
+        }
     }
 }
 
