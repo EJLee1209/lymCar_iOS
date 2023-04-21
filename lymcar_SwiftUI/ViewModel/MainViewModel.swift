@@ -17,6 +17,11 @@ enum SearchResult {
     case failure(String)
 }
 
+enum Progress {
+    case idle
+    case loading
+}
+
 extension SearchResult : Equatable {
     static func == (lhs: SearchResult, rhs: SearchResult) -> Bool {
         switch (lhs, rhs) {
@@ -35,6 +40,7 @@ class MainViewModel: ObservableObject {
     @Published var detectAnonymous: Bool = false
     @Published var searchResult: SearchResult = .idle
     @Published var myRoom: CarPoolRoom?
+    @Published var progress: Progress = .idle
     private let kakaoApiUrl = Bundle.main.kakaoApiUrl
     private let kakaoApiKey = Bundle.main.kakaoApiKey
     private let auth = Firebase.Auth.auth()
@@ -52,6 +58,7 @@ class MainViewModel: ObservableObject {
     func removeRegistration() {
         myRoomRegistration?.remove()
     }
+    
     
     func moniteringLogged() {
         moniteringRegistration = db.collection(FireStoreTable.SIGNEDIN).document(auth.currentUser!.uid)
@@ -122,5 +129,53 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    func createRoom(room: CarPoolRoom, completion: @escaping (Result<CarPoolRoom, FirestoreErrorCode>) -> Void) {
+        progress = .loading
+        let ref = db.collection(FireStoreTable.ROOM).document()
+        var copyRoom = room
+        copyRoom.roomId = ref.documentID
+        copyRoom.participants = [auth.currentUser!.uid]
+        ref.setData(copyRoom.dictionary) { error in
+            if let safeError = error {
+                print(safeError.localizedDescription)
+                completion(.failure(FirestoreErrorCode(.cancelled)))
+                self.progress = .idle
+                return
+            }
+            
+            completion(.success(copyRoom))
+            self.progress = .idle
+        }
+    }
     
+    func getAllRoom(genderOption: String, completion: @escaping (Result<[CarPoolRoom], FirestoreErrorCode>) -> Void) {
+        progress = .loading
+        db.collection(FireStoreTable.ROOM)
+            .whereField(FireStoreTable.FIELD_CLOSED, isEqualTo: false)
+            .whereField(FireStoreTable.FIELD_GENDER_OPTION, in: [genderOption, Constants.GENDER_OPTION_NONE])
+            .whereField(FireStoreTable.FIELD_DEPARTURE_TIME, isGreaterThanOrEqualTo: Utils.getCurrentDateTime())
+            .getDocuments { querySnapshot, error in
+                if let safeError = error {
+                    print(safeError.localizedDescription)
+                    completion(.failure(FirestoreErrorCode(.cancelled)))
+                    self.progress = .idle
+                    return
+                }
+                guard let safeQuery = querySnapshot else {
+                    self.progress = .idle
+                    completion(.success([]))
+                    return
+                }
+                var rooms = [CarPoolRoom]()
+                safeQuery.documents.forEach { queryDocumentSnapshot in
+                    do {
+                        let room = try queryDocumentSnapshot.data(as: CarPoolRoom.self)
+                        rooms.append(room)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                completion(.success(rooms))
+            }
+    }
 }

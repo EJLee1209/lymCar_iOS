@@ -9,11 +9,54 @@ import Foundation
 import SwiftUI
 import Combine
 
+extension Date {
+
+    /**
+     - Parameters:
+        - fromDate: 비교 대상 Date
+     - Note: 두 날짜간 비교해서 fromDate보다 과거면 false 미래면 true
+    */
+    public func isFuture(fromDate: Date) -> Bool {
+        let result:ComparisonResult = self.compare(fromDate)
+        switch result {
+        case .orderedAscending:
+            return true
+        case .orderedDescending:
+            return false
+        case .orderedSame:
+            return true
+        default:
+            return false
+        }
+        
+    }
+}
+
 extension String {
     func validatePassword() -> Bool {
         let passwordRegEx = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,16}$"
         let predicate = NSPredicate(format: "SELF MATCHES %@", passwordRegEx)
         return predicate.evaluate(with: self)
+    }
+    func getDateFromTodayOrTommorow() -> String.SubSequence {
+        let now = Date()
+        if self == "오늘" {
+            let today = "\(now)".split(separator: " ")[0]
+            return today
+        } else {
+            let tommorow = now.addingTimeInterval(60*60*24)
+            return "\(tommorow)".split(separator: " ")[0]
+        }
+    }
+    func toDate() -> Date? { //"yyyy-MM-dd HH:mm:ss"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+        if let date = dateFormatter.date(from: self) {
+            return date
+        } else {
+            return nil
+        }
     }
 }
 

@@ -42,6 +42,16 @@ struct PlaceForDB: Codable {
     var road_address_name: String = ""
     var x: Double = 0.0
     var y: Double = 0.0
+    
+    var dictionary: [String: Any] {
+        return [
+            "place_name" : place_name,
+            "address_name" : address_name,
+            "road_address_name" : road_address_name,
+            "x" : x,
+            "y" : y,
+        ]
+    }
 }
 
 extension Place: Equatable {
