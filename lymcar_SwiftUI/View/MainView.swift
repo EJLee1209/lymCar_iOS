@@ -76,13 +76,13 @@ struct MainView: View {
                     }
             }
         }
-        .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
-            Button("확인", role: .cancel) {
-                loginStatus = false
-            }
-        } message: {
-            Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
-        }
+//        .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
+//            Button("확인", role: .cancel) {
+//                loginStatus = false
+//            }
+//        } message: {
+//            Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
+//        }
         
         
     }

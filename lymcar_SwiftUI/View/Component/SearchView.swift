@@ -70,7 +70,7 @@ struct SearchView: View {
                 buttonClickAction()
             } label: {
                 Image(buttonImage)
-                    .padding(.all, 11)
+                    .padding(.all, 8)
             }
             .padding(.leading, 10)
             

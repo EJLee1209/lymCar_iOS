@@ -14,7 +14,7 @@ struct CreateRoomView: View {
     
     @State var startPlaceName: String = ""
     @State var endPlaceName: String = ""
-    @State var userCount: Int = 2
+    @State var userCount: Int = 4
     
     @State var data: [(String, [String])] = [
         ("todayOrTomorrow", Array(arrayLiteral: "오늘", "내일").map { $0 }),
@@ -160,10 +160,11 @@ struct CreateRoomView: View {
                     guard let departureTimeForValidDate = "\(selection[0].getDateFromTodayOrTommorow()) \(Utils.get24Hour(hour: Int(selection[2])!, pmOrAm: selection[1])):\(selection[3])".toDate() else {
                         return
                     }
-                    let isFuture = Date().isFuture(fromDate: departureTimeForValidDate)
+                    let isFuture = Utils.getLocalizedDate().isFuture(fromDate: departureTimeForValidDate)
                     if !isFuture {
                         showAlert = true
-                        alertMsg = "설정하신 출발시간이 이미 지났습니다\n현재 시간 : \(Date())"
+                        alertMsg = "설정하신 출발시간이 이미 지났습니다\n현재 시간 : \(Utils.getNowDateTime24())"
+                        return
                     }
                     let departureTime = "\(selection[0].getDateFromTodayOrTommorow())T\(Utils.get24Hour(hour: Int(selection[2])!, pmOrAm: selection[1])):\(selection[3])"
                     
@@ -190,7 +191,6 @@ struct CreateRoomView: View {
                         created: Utils.getCurrentDateTime(),
                         genderOption: Constants.GENDER_OPTION_MALE
                     )
-                    print("생성할 방 : \(room)")
                     
                     viewModel.createRoom(
                         room: room
@@ -215,9 +215,7 @@ struct CreateRoomView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 47)
                 .alert("방 생성 실패", isPresented: $showAlert) {
-                    HStack {
-                        Button("확인", role: .cancel) {}
-                    }
+                    Button("확인", role: .cancel) {}
                 } message: {
                     Text(alertMsg)
                 }

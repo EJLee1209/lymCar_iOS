@@ -39,6 +39,8 @@ struct MapView: View {
     ]
     @State var isExpanded: Bool = false
     @State var poolList: [CarPoolRoom] = []
+    @State var showAlert: Bool = false
+    @State var alertMsg: String = ""
     
     @StateObject var viewModel = MainViewModel()
     
@@ -77,16 +79,17 @@ struct MapView: View {
                             viewModel.searchPlace(keyword: endPlaceName)
                         }
                     }
+                    .shadow(radius: 3, y:2)
                     Spacer()
                     Button {
                         // 카풀 목록 보기
                         self.showBottomSheet.toggle()
                     } label: {
                         Text("카풀 목록 보기")
-                            .font(.system(size: 11))
+                            .font(.system(size: 13))
                             .foregroundColor(Color("main_blue"))
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 6)
+                            .padding(.horizontal, 15)
+                            .padding(.vertical, 10)
                             .background(Color("white"))
                             .cornerRadius(35)
                             .overlay {
@@ -117,7 +120,15 @@ struct MapView: View {
                         // 새로고침 버튼
                         Button {
                             // action
-                            
+                            viewModel.getAllRoom(
+                                genderOption: Constants.GENDER_OPTION_MALE) { result in
+                                    switch result {
+                                    case .success(let rooms):
+                                        self.poolList = rooms
+                                    case .failure(let errorCode):
+                                        print(errorCode.localizedDescription)
+                                    }
+                                }
                         } label: {
                             Image("refresh")
                                 .padding(.all, 13)
@@ -131,7 +142,7 @@ struct MapView: View {
 
                         ZStack(alignment: .topLeading) {
                             Color("white")
-                            VStack(spacing: 14) {
+                            VStack(spacing: 0) {
                                 HStack {
                                     Text("카풀 목록")
                                         .font(.system(size: 20))
@@ -151,6 +162,8 @@ struct MapView: View {
                                     Button {
                                         // 방 생성 버튼 Action
                                         if myRoom != nil {
+                                            showAlert = true
+                                            alertMsg = "이미 참가 중인 카풀이 있습니다"
                                             return
                                         }
                                         showCreateRoomView = true
@@ -159,6 +172,13 @@ struct MapView: View {
                                             .padding(.all, 18)
                                     }
                                     .padding(.trailing, 4)
+                                    .alert("시스템 메세지", isPresented: $showAlert) {
+                                        HStack {
+                                            Button("확인", role: .cancel) {}
+                                        }
+                                    } message: {
+                                        Text(alertMsg)
+                                    }
                                 }
                                 
                                 if poolList.isEmpty {
@@ -257,7 +277,7 @@ struct MapView: View {
         let latDistance = abs(points[0].coordinate.latitude.distance(to: points[1].coordinate.latitude))
         let lonDistance = abs(points[0].coordinate.longitude.distance(to: points[1].coordinate.longitude))
         
-        self.region.span = .init(latitudeDelta: latDistance * 1.5 , longitudeDelta: lonDistance * 1.5)
+        self.region.span = .init(latitudeDelta: latDistance * 2 , longitudeDelta: lonDistance * 2)
         
         showBottomSheet.toggle()
     }

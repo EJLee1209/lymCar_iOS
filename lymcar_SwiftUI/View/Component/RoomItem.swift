@@ -32,12 +32,12 @@ struct RoomItem: View {
                         .lineLimit(2)
                 }.padding(.top, 9)
                 
-                Text("\(room.genderOption)끼리 탑승하기")
+                Text(genderOptionWrapper())
                     .font(.system(size:13))
                     .foregroundColor(isMyRoom ? Color("white") : Color("black"))
                     .padding(.top, 13)
                     
-                Text(room.departureTime)
+                Text(Utils.getPrettyDateTime(dateTime: room.departureTime))
                     .font(.system(size:13))
                     .foregroundColor(isMyRoom ? Color("white") : Color("black"))
                 
@@ -59,6 +59,17 @@ struct RoomItem: View {
             .background(isMyRoom ? Color("main_blue") : Color("white"))
             .cornerRadius(10)
             .shadow(radius: 3, y:3)
+        }
+    }
+    
+    private func genderOptionWrapper() -> String {
+        switch room.genderOption {
+        case Constants.GENDER_OPTION_MALE:
+            return "남성끼리 탑승하기"
+        case Constants.GENDER_OPTION_FEMALE:
+            return "여성끼리 탑승하기"
+        default:
+            return "상관없이 탑승하기"
         }
     }
 }

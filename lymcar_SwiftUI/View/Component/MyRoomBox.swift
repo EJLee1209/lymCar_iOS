@@ -31,7 +31,7 @@ struct MyRoomBox: View {
                 Spacer()
                 
                 VStack(alignment: .trailing,spacing: 0) {
-                    Text(room.departureTime)
+                    Text(Utils.getPrettyDateTime(dateTime: room.departureTime))
                         .font(.system(size: 12))
                         .foregroundColor(Color("white"))
                     Text("\(room.userCount)/\(room.userMaxCount)")
