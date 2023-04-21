@@ -191,6 +191,7 @@
 			children = (
 				CFBC8B1829E96A8800257059 /* Component */,
 				CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */,
+				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
 				CF8D054829EEAFE300B90AD4 /* MainView.swift */,
 				CFC39D6729EE750B0096E580 /* Welcome */,
 				CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */,
@@ -209,7 +210,6 @@
 				CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */,
 				CF45C3A329EC36B800719703 /* LoadingView.swift */,
 				CF66735C29EF7BD400F3EDDC /* SearchView.swift */,
-				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
 				CF2751E229EFE65200FE550F /* searchResultItem.swift */,
 				CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */,
 				CF5B783229F25FF4004120FB /* RoomItem.swift */,

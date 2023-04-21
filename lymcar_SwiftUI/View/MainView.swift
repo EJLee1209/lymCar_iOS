@@ -56,8 +56,7 @@ struct MainView: View {
                                 Image("menu")
                                     .renderingMode(.template)
                                     .foregroundColor(tabIndex == .menu ? Color("main_blue") : Color("667080"))
-                                    .frame(width: proxy.size.width/3, height: 90)
-                                    
+                                    .frame(width: proxy.size.width/3, height: 90) 
                             }
 
                         }

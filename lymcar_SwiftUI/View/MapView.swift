@@ -38,6 +38,7 @@ struct MapView: View {
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true)
     ]
     @State var isExpanded: Bool = false
+    @State var poolList: [CarPoolRoom] = []
     
     @StateObject var viewModel = MainViewModel()
     
@@ -160,12 +161,21 @@ struct MapView: View {
                                     .padding(.trailing, 4)
                                 }
                                 
-                                Image("character")
-                                Text("+버튼을 눌러\n첫번째 채팅방을 생성해보세요!")
-                                    .multilineTextAlignment(.center)
-                                    .font(.system(size:16))
-                                    .foregroundColor(Color("black"))
-
+                                if poolList.isEmpty {
+                                    Image("character")
+                                    Text("+버튼을 눌러\n첫번째 채팅방을 생성해보세요!")
+                                        .multilineTextAlignment(.center)
+                                        .font(.system(size:16))
+                                        .foregroundColor(Color("black"))
+                                } else {
+                                    ScrollView(.horizontal) {
+                                        LazyHStack {
+                                            ForEach(poolList, id: \.self) { room in
+                                                RoomItem(room: room)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             .padding(.leading, 22)
                             
@@ -180,6 +190,17 @@ struct MapView: View {
                     )
                     .offset(y: bottomSheetOffSet(proxy: proxy))
                     .animation(.easeOut(duration: 0.3), value: self.showBottomSheet)
+                    .onAppear {
+                        viewModel.getAllRoom(
+                            genderOption: Constants.GENDER_OPTION_MALE) { result in
+                                switch result {
+                                case .success(let rooms):
+                                    self.poolList = rooms
+                                case .failure(let errorCode):
+                                    print(errorCode.localizedDescription)
+                                }
+                            }
+                    }
                 }
                 
             }.edgesIgnoringSafeArea(.all)

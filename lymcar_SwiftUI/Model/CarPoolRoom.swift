@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CarPoolRoom: Codable {
+struct CarPoolRoom: Codable, Hashable {
     var roomId: String = "" // 방 고유번호
     var participants: [String] = [String]() // 참여자들의 uid
     var userMaxCount: Int = 4 // 제한 인원
@@ -35,5 +35,12 @@ struct CarPoolRoom: Codable {
     }
 }
 
+extension CarPoolRoom: Equatable {
+    static func == (lhs: CarPoolRoom, rhs: CarPoolRoom) -> Bool {
+        return lhs.roomId == rhs.roomId
+    }
+    
+    
+}
 
 

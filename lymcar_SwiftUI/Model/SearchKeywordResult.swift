@@ -36,7 +36,7 @@ struct Place: Codable, Hashable {
     var y: String = ""
 }
 
-struct PlaceForDB: Codable {
+struct PlaceForDB: Codable, Hashable {
     var place_name: String = ""
     var address_name: String = ""
     var road_address_name: String = ""
