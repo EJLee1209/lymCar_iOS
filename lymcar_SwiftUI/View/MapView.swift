@@ -160,7 +160,8 @@ struct MapView: View {
                                             startPlace: startPlace,
                                             endPlace: endPlace
                                         )
-                                            .navigationBarBackButtonHidden()
+                                        .navigationBarBackButtonHidden()
+                                        
                                     } label: {}
                                     
                                     Button {

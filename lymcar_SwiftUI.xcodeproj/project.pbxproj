@@ -14,6 +14,7 @@
 		CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E229EFE65200FE550F /* searchResultItem.swift */; };
 		CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */; };
 		CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF312B1429F3D2C8007F6BED /* MainPicker.swift */; };
+		CF312B1729F3E069007F6BED /* ChatRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF312B1629F3E069007F6BED /* ChatRoomView.swift */; };
 		CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */; };
 		CF45C3A029EC2FE000719703 /* VerifyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C39F29EC2FE000719703 /* VerifyInfo.swift */; };
 		CF45C3A229EC312300719703 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A129EC312300719703 /* Constants.swift */; };
@@ -77,6 +78,7 @@
 		CF2751E229EFE65200FE550F /* searchResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = searchResultItem.swift; sourceTree = "<group>"; };
 		CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultModal.swift; sourceTree = "<group>"; };
 		CF312B1429F3D2C8007F6BED /* MainPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPicker.swift; sourceTree = "<group>"; };
+		CF312B1629F3E069007F6BED /* ChatRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomView.swift; sourceTree = "<group>"; };
 		CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryGetter.swift; sourceTree = "<group>"; };
 		CF45C39F29EC2FE000719703 /* VerifyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyInfo.swift; sourceTree = "<group>"; };
 		CF45C3A129EC312300719703 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				CFC39D6729EE750B0096E580 /* Welcome */,
 				CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */,
 				CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */,
+				CF312B1629F3E069007F6BED /* ChatRoomView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */,
 				CF07B6C429F1839800C482F1 /* CarPoolRoom.swift in Sources */,
 				CFBC8B1C29E9707D00257059 /* LoginView.swift in Sources */,
+				CF312B1729F3E069007F6BED /* ChatRoomView.swift in Sources */,
 				CF0435BC29F2403700F8A3D6 /* CreateRoomView.swift in Sources */,
 				CFBC8B1E29E9749300257059 /* RoundedTextField.swift in Sources */,
 				CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */,
