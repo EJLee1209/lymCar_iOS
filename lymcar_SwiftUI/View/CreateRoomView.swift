@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct CreateRoomView: View {
+    @Binding var currentUser: User?
     @Binding var showCreateRoomView: Bool
-    var startPlace: Place?
-    var endPlace: Place?
+    @State var startPlace: Place?
+    @State var endPlace: Place?
     
     @State var startPlaceName: String = ""
     @State var endPlaceName: String = ""
@@ -20,7 +21,12 @@ struct CreateRoomView: View {
     @State var genderOption: Bool = false
     @State var showAlert: Bool = false
     @State var alertMsg: String = ""
+    @State var showModal: Bool = false
+    @State var placeList = [Place]()
+    @State var searchField: SearchField?
+    
     @StateObject var viewModel = MainViewModel()
+    
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
@@ -56,12 +62,23 @@ struct CreateRoomView: View {
                         isExpanded: .constant(true),
                         buttonImage: "change",
                         submitAction: { searchField in
-                            
+                            showModal = true
+                            self.searchField = searchField
+                            switch searchField {
+                            case .start:
+                                viewModel.searchPlace(keyword: startPlaceName)
+                            case .end:
+                                viewModel.searchPlace(keyword: endPlaceName)
+                            }
                         }) {
                             // change button click action
                             let tmp = startPlaceName
                             startPlaceName = endPlaceName
                             endPlaceName = tmp
+                            
+                            let tmp2 = startPlace
+                            startPlace = endPlace
+                            endPlace = tmp2
                         }
                         .padding([.horizontal, .top], 12)
                         .shadow(radius: 5)
@@ -190,7 +207,7 @@ struct CreateRoomView: View {
                         endPlace: endPlaceForDB,
                         departureTime: departureTime,
                         created: Utils.getCurrentDateTime(),
-                        genderOption: Constants.GENDER_OPTION_MALE
+                        genderOption: self.genderOption ? currentUser?.gender ?? Constants.GENDER_OPTION_NONE : Constants.GENDER_OPTION_NONE
                     )
                     
                     viewModel.createRoom(
@@ -228,12 +245,35 @@ struct CreateRoomView: View {
                 startPlaceName = startPlace?.place_name ?? ""
                 endPlaceName = endPlace?.place_name ?? ""
             }
+            .sheet(isPresented: $showModal) {
+                SearchResultModal(documents: $placeList) { place in
+                    if searchField == .start {
+                        self.startPlace = place
+                        startPlaceName = place.place_name
+                    }
+                    if searchField == .end {
+                        self.endPlace = place
+                        endPlaceName = place.place_name
+                    }
+                    showModal = false
+                }
+            }
+            .onChange(of: viewModel.searchResult) { newValue in
+                switch newValue {
+                case .success(let result):
+                    placeList = result.documents
+                case .failure(let msg):
+                    print(msg)
+                default:
+                    break
+                }
+            }
         }
     }
 }
 
 struct CreateRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateRoomView(showCreateRoomView: .constant(false))
+        CreateRoomView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showCreateRoomView: .constant(false))
     }
 }

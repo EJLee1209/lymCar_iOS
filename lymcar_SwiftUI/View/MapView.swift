@@ -18,6 +18,7 @@ struct Point: Identifiable {
 
 struct MapView: View {
     private let manager = CLLocationManager()
+    @Binding var currentUser: User?
     @Binding var showBottomSheet: Bool // bottomSheet visibility
     @Binding var showCreateRoomView: Bool
     
@@ -154,6 +155,7 @@ struct MapView: View {
                                     
                                     NavigationLink(isActive: $showCreateRoomView) {
                                         CreateRoomView(
+                                            currentUser: $currentUser,
                                             showCreateRoomView: $showCreateRoomView,
                                             startPlace: startPlace,
                                             endPlace: endPlace
@@ -340,6 +342,6 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(showBottomSheet: .constant(false), showCreateRoomView: .constant(false))
+        MapView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showBottomSheet: .constant(false), showCreateRoomView: .constant(false))
     }
 }

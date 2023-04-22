@@ -47,18 +47,17 @@ class MainViewModel: ObservableObject {
     private let db = Firestore.firestore()
     private var moniteringRegistration: ListenerRegistration? = nil
     private var myRoomRegistration: ListenerRegistration? = nil
-    init() {
-        moniteringLogged()
-    }
+    private var userRegistration: ListenerRegistration? = nil
+    
     deinit {
-        moniteringRegistration?.remove()
-        myRoomRegistration?.remove()
+        removeRegistration()
     }
     
     func removeRegistration() {
         myRoomRegistration?.remove()
+        moniteringRegistration?.remove()
+        userRegistration?.remove()
     }
-    
     
     func moniteringLogged() {
         moniteringRegistration = db.collection(FireStoreTable.SIGNEDIN).document(auth.currentUser!.uid)
@@ -76,6 +75,26 @@ class MainViewModel: ObservableObject {
                 if deviceId != Utils.getDeviceUUID() {
                     self.detectAnonymous = true
                 }
+                
+            }
+    }
+    
+    func subscribeUser(completion: @escaping (Result<User?, FirestoreErrorCode>) -> Void) {
+        guard let safeUser = auth.currentUser else { return }
+        userRegistration = db.collection(FireStoreTable.USER).document(safeUser.uid)
+            .addSnapshotListener { snapshot, error in
+                if let safeError = error {
+                    print(safeError.localizedDescription)
+                    completion(.failure(FirestoreErrorCode(.cancelled)))
+                    return
+                }
+                do {
+                    let user = try snapshot?.data(as: User.self)
+                    completion(.success(user))
+                } catch{
+                    print(error.localizedDescription)
+                }
+                
                 
             }
     }

@@ -20,6 +20,7 @@ struct MainView: View {
     @State var barWidth: CGFloat = 0
     @State var showBottomSheet: Bool = false
     @State var showCreateRoomView: Bool = false
+    @State var currentUser: User?
     
     var body: some View {
         GeometryReader { proxy in
@@ -73,6 +74,15 @@ struct MainView: View {
                 }.edgesIgnoringSafeArea(.all)
                     .onAppear {
                         barWidth = proxy.size.width/3
+                        viewModel.moniteringLogged()
+                        viewModel.subscribeUser { result in
+                            switch result {
+                            case .success(let user):
+                                self.currentUser = user
+                            default:
+                                break
+                            }
+                        }
                     }
             }
         }
@@ -93,7 +103,7 @@ struct MainView: View {
         case .history:
             Fragment(backgroundColor: .blue, title: "히스토리")
         case .map:
-            MapView(showBottomSheet: $showBottomSheet, showCreateRoomView: $showCreateRoomView)
+            MapView(currentUser: $currentUser, showBottomSheet: $showBottomSheet, showCreateRoomView: $showCreateRoomView)
         case .menu:
             Fragment(backgroundColor: .cyan, title: "메뉴")
         }
