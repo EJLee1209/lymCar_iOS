@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatRoomView: View {
     @Binding var myRoom: CarPoolRoom
+    @Binding var mapToChatRoom: Bool
     @State var showAlert: Bool = false
     @State var alertTitle: String = ""
     @State var alertMsg: String = ""
@@ -19,7 +20,7 @@ struct ChatRoomView: View {
                 HStack(alignment: .center, spacing: 0) {
                     Button {
                         // 뒤로가기
-                        
+                        self.mapToChatRoom = false
                     } label: {
                         Image(systemName: "chevron.left")
                             .padding(10)
@@ -89,6 +90,6 @@ struct ChatRoomView: View {
 
 struct ChatRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatRoomView(myRoom: .constant(CarPoolRoom()))
+        ChatRoomView(myRoom: .constant(CarPoolRoom()), mapToChatRoom: .constant(true))
     }
 }

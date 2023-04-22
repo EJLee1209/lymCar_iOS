@@ -20,7 +20,6 @@ struct MapView: View {
     private let manager = CLLocationManager()
     @Binding var currentUser: User?
     @Binding var showBottomSheet: Bool // bottomSheet visibility
-    @Binding var showCreateRoomView: Bool
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.8856353, longitude: 127.7383948),
@@ -34,7 +33,7 @@ struct MapView: View {
     @State var searchField: SearchField?
     @State var showModal: Bool = false // 장소 검색 결과 모달 visibility
     @State var showMyRoomBox: Bool = false
-    @State var myRoom: CarPoolRoom? = nil
+    @State var myRoom: CarPoolRoom?
     @State var points : [Point] = [
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true),
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true)
@@ -43,6 +42,12 @@ struct MapView: View {
     @State var poolList: [CarPoolRoom] = []
     @State var showAlert: Bool = false
     @State var alertMsg: String = ""
+    
+    @State var showParticipationAlert: Bool = false
+    @State var clickedRoom: CarPoolRoom?
+    
+    @State var createToChatRoom: Bool = false
+    @State var mapToChatRoom: Bool = false
     
     @StateObject var viewModel = MainViewModel()
     
@@ -102,7 +107,11 @@ struct MapView: View {
                     .padding(.bottom, showMyRoomBox ? 9 : 104)
                     
                     if showMyRoomBox {
-                        MyRoomBox(room: myRoom!)
+                        MyRoomBox(
+                            room: myRoom!
+                        ) {
+                            self.mapToChatRoom = true
+                        }
                             .padding(.bottom, 102)
                     }
                 }
@@ -153,17 +162,6 @@ struct MapView: View {
                                         .padding(.leading, 22)
                                     Spacer()
                                     
-                                    NavigationLink(isActive: $showCreateRoomView) {
-                                        CreateRoomView(
-                                            currentUser: $currentUser,
-                                            showCreateRoomView: $showCreateRoomView,
-                                            startPlace: startPlace,
-                                            endPlace: endPlace
-                                        )
-                                        .navigationBarBackButtonHidden()
-                                        
-                                    } label: {}
-                                    
                                     Button {
                                         // 방 생성 버튼 Action
                                         if myRoom != nil {
@@ -171,19 +169,13 @@ struct MapView: View {
                                             alertMsg = "이미 참가 중인 카풀이 있습니다"
                                             return
                                         }
-                                        showCreateRoomView = true
+                                        createToChatRoom = true
                                     } label: {
                                         Image("plus")
                                             .padding(.all, 18)
                                     }
                                     .padding(.trailing, 4)
-                                    .alert("시스템 메세지", isPresented: $showAlert) {
-                                        HStack {
-                                            Button("확인", role: .cancel) {}
-                                        }
-                                    } message: {
-                                        Text(alertMsg)
-                                    }
+                                    
                                 }
                                 
                                 if poolList.isEmpty {
@@ -194,21 +186,39 @@ struct MapView: View {
                                         .foregroundColor(Color("black"))
                                 } else {
                                     ScrollView(.horizontal) {
-                                        LazyHStack(alignment: .top) {
+                                        LazyHStack(alignment: .top ) {
                                             ForEach(poolList, id: \.self) { room in
                                                 RoomItem(
                                                     room: room,
-                                                    location: manager.location?.coordinate
-                                                )
-                                                
+                                                    location: manager.location?.coordinate,
+                                                    user: currentUser
+                                                ) { clickedRoom in
+                                                    guard let safeUser = self.currentUser else {
+                                                        alertMsg = "알 수 없는 오류"
+                                                        showAlert = true
+                                                        return
+                                                    }
+                                                    if clickedRoom.participants.contains(safeUser.uid) {
+                                                        // 내 방
+                                                        self.mapToChatRoom = true
+                                                    } else {
+                                                        // 다른 방
+                                                        if myRoom != nil {
+                                                            showAlert = true
+                                                            alertMsg = "이미 참가 중인 카풀이 있습니다"
+                                                            return
+                                                        } else {
+                                                            showParticipationAlert = true
+                                                            self.clickedRoom = clickedRoom
+                                                        }
+                                                    }
+                                                }
+                                                .padding(.leading, 10)
                                             }
                                         }
                                     }
                                 }
-                                
                             }
-                            
-                            
                         }
                         .roundedCorner(30, corners: [.topLeft, .topRight])
                         
@@ -233,6 +243,23 @@ struct MapView: View {
                     }
                 }
                 
+                NavigationLink(isActive: $mapToChatRoom) {
+                    if let safeMyRoom = myRoom {
+                        ChatRoomView(
+                            myRoom: .constant(safeMyRoom),
+                            mapToChatRoom: $mapToChatRoom
+                        ).navigationBarBackButtonHidden()
+                    }
+                } label: {}
+                NavigationLink(isActive: $createToChatRoom) {
+                    CreateRoomView(
+                        currentUser: $currentUser,
+                        createToChatRoom: $createToChatRoom,
+                        mapToChatRoom: $mapToChatRoom,
+                        startPlace: startPlace,
+                        endPlace: endPlace
+                    ).navigationBarBackButtonHidden()
+                } label: {}
             }.edgesIgnoringSafeArea(.all)
                 .sheet(isPresented: $showModal) {
                     SearchResultModal(documents: $placeList) { place in
@@ -248,6 +275,25 @@ struct MapView: View {
                         }
                         showModal = false
                     }
+                }
+                .alert("시스템 메세지", isPresented: $showAlert) {
+                    HStack {
+                        Button("확인", role: .cancel) {}
+                    }
+                } message: {
+                    Text(alertMsg)
+                }
+                .alert("시스템 메세지", isPresented: $showParticipationAlert) {
+                    HStack {
+                        Button("취소", role: .cancel) {}
+                        Button("확인", role: .destructive) {
+                            // 채팅방 입장하기
+                            print("채팅방에 입장합니다.")
+                            print("입장 : \(self.clickedRoom)")
+                        }
+                    }
+                } message: {
+                    Text("채팅방에 참여하시겠습니까?")
                 }
                 .onChange(of: viewModel.searchResult) { newValue in
                     switch newValue {
@@ -280,7 +326,6 @@ struct MapView: View {
                     viewModel.removeRegistration()
                 }
         }
-        
     }
     
     fileprivate func moveCamera() {
@@ -343,6 +388,6 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showBottomSheet: .constant(false), showCreateRoomView: .constant(false))
+        MapView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showBottomSheet: .constant(true))
     }
 }

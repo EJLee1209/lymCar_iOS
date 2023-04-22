@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CreateRoomView: View {
     @Binding var currentUser: User?
-    @Binding var showCreateRoomView: Bool
+    @Binding var createToChatRoom: Bool
+    @Binding var mapToChatRoom: Bool
     @State var startPlace: Place?
     @State var endPlace: Place?
     
@@ -24,6 +25,7 @@ struct CreateRoomView: View {
     @State var showModal: Bool = false
     @State var placeList = [Place]()
     @State var searchField: SearchField?
+    @State var isCreated: Bool = false
     
     @StateObject var viewModel = MainViewModel()
     
@@ -39,7 +41,7 @@ struct CreateRoomView: View {
                     HStack(spacing: 0) {
                         Button {
                             // 뒤로가기
-                            showCreateRoomView.toggle()
+                            createToChatRoom.toggle()
                         } label: {
                             Image(systemName: "chevron.left")
                                 .padding(10)
@@ -182,7 +184,7 @@ struct CreateRoomView: View {
                     let isFuture = Utils.getLocalizedDate().isFuture(fromDate: departureTimeForValidDate)
                     if !isFuture {
                         showAlert = true
-                        alertMsg = "설정하신 출발시간이 이미 지났습니다"
+                        alertMsg = "설정하신 출발시간이 이미 지났습니다\n현재시간:\(Utils.getLocalizedDate())\n설정한 시간:\(departureTime)"
                         return
                     }
                 
@@ -214,9 +216,11 @@ struct CreateRoomView: View {
                         room: room
                     ) { result in
                         switch result {
-                        case .success(let carPoolRoom):
-                            print(carPoolRoom)
-                            showCreateRoomView.toggle()
+                        case .success(_):
+                            createToChatRoom = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                mapToChatRoom = true
+                            }
                         case .failure(_):
                             showAlert = true
                             alertMsg = "알 수 없는 오류\n잠시 후 다시 시도해주세요"
@@ -237,8 +241,6 @@ struct CreateRoomView: View {
                 } message: {
                     Text(alertMsg)
                 }
-                
-
             }
             .edgesIgnoringSafeArea(.all)
             .onAppear {
@@ -274,6 +276,6 @@ struct CreateRoomView: View {
 
 struct CreateRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateRoomView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showCreateRoomView: .constant(false))
+        CreateRoomView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), createToChatRoom: .constant(false), mapToChatRoom: .constant(false))
     }
 }

@@ -9,11 +9,12 @@ import SwiftUI
 
 struct MyRoomBox: View {
     var room: CarPoolRoom
+    var clickAction: () -> Void = {}
     
     var body: some View {
         
         Button {
-            
+            clickAction()
         } label: {
             HStack(alignment: .top, spacing: 0) {
                 VStack(alignment: .leading, spacing: 3) {

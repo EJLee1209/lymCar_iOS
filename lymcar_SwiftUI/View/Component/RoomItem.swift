@@ -9,15 +9,19 @@ import SwiftUI
 import CoreLocation
 
 struct RoomItem: View {
-    var isMyRoom: Bool = false
+    @State var isMyRoom: Bool = false
     var room: CarPoolRoom
     var location: CLLocationCoordinate2D?
+    var user: User?
+    var clickAction: (CarPoolRoom) -> Void
+    
     
     @State var distance: Int = 0
     
     var body: some View {
         Button {
             // 채팅방 입장 action
+            clickAction(room)
         } label: {
             VStack(alignment: .leading, spacing: 0) {
                 Text(room.startPlace.place_name)
@@ -78,6 +82,15 @@ struct RoomItem: View {
                 let coordinate2 = CLLocation(latitude: room.startPlace.y, longitude: room.startPlace.x)
                 
                 self.distance = Int(coordinate1.distance(from: coordinate2))
+                
+                guard let safeUser = user else {
+                    return
+                }
+                if room.participants.contains(safeUser.uid) {
+                    self.isMyRoom = true
+                } else {
+                    self.isMyRoom = false
+                }
             }
         }
     }
@@ -96,6 +109,8 @@ struct RoomItem: View {
 
 struct RoomItem_Previews: PreviewProvider {
     static var previews: some View {
-        RoomItem(room: CarPoolRoom(), location: CLLocationCoordinate2D(latitude: 0, longitude: 0))
+        RoomItem(room: CarPoolRoom(), location: CLLocationCoordinate2D(latitude: 0, longitude: 0)) { _ in
+            
+        }
     }
 }

@@ -40,7 +40,7 @@ extension String {
         return predicate.evaluate(with: self)
     }
     func getDateFromTodayOrTommorow() -> String.SubSequence {
-        let now = Date()
+        let now = Utils.getLocalizedDate()
         if self == "오늘" {
             let today = "\(now)".split(separator: " ")[0]
             return today

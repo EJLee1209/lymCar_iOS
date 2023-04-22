@@ -19,7 +19,6 @@ struct MainView: View {
     @State var barPosition: CGFloat = 0
     @State var barWidth: CGFloat = 0
     @State var showBottomSheet: Bool = false
-    @State var showCreateRoomView: Bool = false
     @State var currentUser: User?
     
     var body: some View {
@@ -103,7 +102,10 @@ struct MainView: View {
         case .history:
             Fragment(backgroundColor: .blue, title: "히스토리")
         case .map:
-            MapView(currentUser: $currentUser, showBottomSheet: $showBottomSheet, showCreateRoomView: $showCreateRoomView)
+            MapView(
+                currentUser: $currentUser,
+                showBottomSheet: $showBottomSheet
+            )
         case .menu:
             Fragment(backgroundColor: .cyan, title: "메뉴")
         }
