@@ -29,8 +29,8 @@ class Utils {
         return currentDate.replacingOccurrences(of: " ", with: "T")
     }
     
-    static func get24Hour(hour: Int, pmOrAm: String) -> Int {
-        if pmOrAm == "오전" {
+    static func get24Hour(hour: Int, pmOrAm: Int) -> Int {
+        if pmOrAm == 0 {
             return hour
         } else {
             if hour >= 1 && hour <= 11 {

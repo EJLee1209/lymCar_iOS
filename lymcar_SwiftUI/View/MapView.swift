@@ -17,6 +17,7 @@ struct Point: Identifiable {
 }
 
 struct MapView: View {
+    private let manager = CLLocationManager()
     @Binding var showBottomSheet: Bool // bottomSheet visibility
     @Binding var showCreateRoomView: Bool
     
@@ -57,9 +58,9 @@ struct MapView: View {
                         showBottomSheet.toggle()
                     }
                 }.onAppear {
-                    let manager = CLLocationManager()
                     manager.requestWhenInUseAuthorization()
                     manager.startUpdatingLocation()
+                    region.center = manager.location?.coordinate ?? region.center
                 }
                 
                 // SearchView(검색뷰) , 카풀 목록 보기 버튼
@@ -148,6 +149,7 @@ struct MapView: View {
                                         .font(.system(size: 20))
                                         .foregroundColor(Color("black"))
                                         .fontWeight(.heavy)
+                                        .padding(.leading, 22)
                                     Spacer()
                                     
                                     NavigationLink(isActive: $showCreateRoomView) {
@@ -189,15 +191,20 @@ struct MapView: View {
                                         .foregroundColor(Color("black"))
                                 } else {
                                     ScrollView(.horizontal) {
-                                        LazyHStack {
+                                        LazyHStack(alignment: .top) {
                                             ForEach(poolList, id: \.self) { room in
-                                                RoomItem(room: room)
+                                                RoomItem(
+                                                    room: room,
+                                                    location: manager.location?.coordinate
+                                                )
+                                                
                                             }
                                         }
                                     }
                                 }
+                                
                             }
-                            .padding(.leading, 22)
+                            
                             
                         }
                         .roundedCorner(30, corners: [.topLeft, .topRight])

@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct RoomItem: View {
     var isMyRoom: Bool = false
     var room: CarPoolRoom
+    var location: CLLocationCoordinate2D?
+    
+    @State var distance: Int = 0
     
     var body: some View {
         Button {
@@ -43,10 +47,17 @@ struct RoomItem: View {
                 
                 Spacer()
                 HStack {
-                    Text("지금 위치에서\n5m")
-                        .font(.system(size:10))
-                        .foregroundColor(isMyRoom ? Color("white") : Color("main_blue"))
-                        .multilineTextAlignment(.leading)
+                    VStack(alignment: .leading, spacing: 0){
+                        Text("지금 위치에서")
+                            .font(.system(size:10))
+                            .foregroundColor(isMyRoom ? Color("white") : Color("main_blue"))
+                        Text(distance < 100000 ? "\(distance)m" : "100km 이상")
+                            .font(.system(size:13))
+                            .bold()
+                            .foregroundColor(isMyRoom ? Color("white") : Color("main_blue"))
+                            .multilineTextAlignment(.leading)
+                    }
+                    
                     Spacer()
                     Text("\(room.userCount)/\(room.userMaxCount)")
                         .font(.system(size: 36))
@@ -59,6 +70,15 @@ struct RoomItem: View {
             .background(isMyRoom ? Color("main_blue") : Color("white"))
             .cornerRadius(10)
             .shadow(radius: 3, y:3)
+            .onAppear {
+                guard let safeLocation = location else {
+                    return
+                }
+                let coordinate1 = CLLocation(latitude: safeLocation.latitude, longitude: safeLocation.longitude)
+                let coordinate2 = CLLocation(latitude: room.startPlace.y, longitude: room.startPlace.x)
+                
+                self.distance = Int(coordinate1.distance(from: coordinate2))
+            }
         }
     }
     
@@ -76,6 +96,6 @@ struct RoomItem: View {
 
 struct RoomItem_Previews: PreviewProvider {
     static var previews: some View {
-        RoomItem(room: CarPoolRoom())
+        RoomItem(room: CarPoolRoom(), location: CLLocationCoordinate2D(latitude: 0, longitude: 0))
     }
 }

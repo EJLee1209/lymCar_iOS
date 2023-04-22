@@ -13,6 +13,7 @@
 		CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */; };
 		CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E229EFE65200FE550F /* searchResultItem.swift */; };
 		CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */; };
+		CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF312B1429F3D2C8007F6BED /* MainPicker.swift */; };
 		CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */; };
 		CF45C3A029EC2FE000719703 /* VerifyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C39F29EC2FE000719703 /* VerifyInfo.swift */; };
 		CF45C3A229EC312300719703 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A129EC312300719703 /* Constants.swift */; };
@@ -32,7 +33,6 @@
 		CF9C73FE29ECF57C00E5E953 /* lymcar++Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */; };
 		CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */; };
 		CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86DC29EFBD5C009A5552 /* MapView.swift */; };
-		CFB47B3329F24AD800113E73 /* MultiPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB47B3229F24AD800113E73 /* MultiPicker.swift */; };
 		CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */; };
 		CFBC8B0C29E96A3700257059 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0B29E96A3700257059 /* Assets.xcassets */; };
 		CFBC8B0F29E96A3700257059 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0E29E96A3700257059 /* Preview Assets.xcassets */; };
@@ -76,6 +76,7 @@
 		CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchKeywordResult.swift; sourceTree = "<group>"; };
 		CF2751E229EFE65200FE550F /* searchResultItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = searchResultItem.swift; sourceTree = "<group>"; };
 		CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultModal.swift; sourceTree = "<group>"; };
+		CF312B1429F3D2C8007F6BED /* MainPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPicker.swift; sourceTree = "<group>"; };
 		CF45C38D29EC1CBA00719703 /* GeometryGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryGetter.swift; sourceTree = "<group>"; };
 		CF45C39F29EC2FE000719703 /* VerifyInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyInfo.swift; sourceTree = "<group>"; };
 		CF45C3A129EC312300719703 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -96,7 +97,6 @@
 		CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "lymcar++Bundle.swift"; sourceTree = "<group>"; };
 		CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerShape.swift; sourceTree = "<group>"; };
 		CFAA86DC29EFBD5C009A5552 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
-		CFB47B3229F24AD800113E73 /* MultiPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPicker.swift; sourceTree = "<group>"; };
 		CFBC8B0429E96A3700257059 /* lymcar_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lymcar_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lymcar_SwiftUIApp.swift; sourceTree = "<group>"; };
 		CFBC8B0B29E96A3700257059 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -203,7 +203,6 @@
 		CFBC8B1829E96A8800257059 /* Component */ = {
 			isa = PBXGroup;
 			children = (
-				CFB47B3229F24AD800113E73 /* MultiPicker.swift */,
 				CFBC8B1929E96AAA00257059 /* RoundedButton.swift */,
 				CFBC8B1D29E9749300257059 /* RoundedTextField.swift */,
 				CFD385A629EA856100F0138D /* CustomRadioButton.swift */,
@@ -213,6 +212,7 @@
 				CF2751E229EFE65200FE550F /* searchResultItem.swift */,
 				CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */,
 				CF5B783229F25FF4004120FB /* RoomItem.swift */,
+				CF312B1429F3D2C8007F6BED /* MainPicker.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -364,6 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF45C3A229EC312300719703 /* Constants.swift in Sources */,
+				CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */,
 				CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */,
 				CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */,
 				CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */,
@@ -379,7 +380,6 @@
 				CFBC8B1C29E9707D00257059 /* LoginView.swift in Sources */,
 				CF0435BC29F2403700F8A3D6 /* CreateRoomView.swift in Sources */,
 				CFBC8B1E29E9749300257059 /* RoundedTextField.swift in Sources */,
-				CFB47B3329F24AD800113E73 /* MultiPicker.swift in Sources */,
 				CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */,
 				CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */,
 				CF07B6C629F18D2300C482F1 /* MyRoomBox.swift in Sources */,
@@ -536,11 +536,13 @@
 				INFOPLIST_FILE = "lymcar-SwiftUI-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "림카";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -572,11 +574,13 @@
 				INFOPLIST_FILE = "lymcar-SwiftUI-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "림카";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
