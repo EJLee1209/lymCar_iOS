@@ -107,7 +107,9 @@ struct MainView: View {
                 showBottomSheet: $showBottomSheet
             )
         case .menu:
-            Fragment(backgroundColor: .cyan, title: "메뉴")
+            if let currentUser = currentUser {
+                MenuView(user: .constant(currentUser))
+            }
         }
     }
     

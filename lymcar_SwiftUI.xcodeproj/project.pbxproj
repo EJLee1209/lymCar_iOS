@@ -45,6 +45,7 @@
 		CFBC8B2229E997B000257059 /* VerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2129E997B000257059 /* VerifyCodeView.swift */; };
 		CFBC8B2529E9984200257059 /* CodeTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2429E9984200257059 /* CodeTimer.swift */; };
 		CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2A29E9A28B00257059 /* KeyboardObserver.swift */; };
+		CFCC124229F50FD200C24099 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCC124129F50FD200C24099 /* MenuView.swift */; };
 		CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A429EA83FB00F0138D /* RegisterView.swift */; };
 		CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A629EA856100F0138D /* CustomRadioButton.swift */; };
 		CFE8645B29ECDB1200C4373C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8645A29ECDB1200C4373C /* Alamofire */; };
@@ -111,6 +112,7 @@
 		CFBC8B2129E997B000257059 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
 		CFBC8B2429E9984200257059 /* CodeTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTimer.swift; sourceTree = "<group>"; };
 		CFBC8B2A29E9A28B00257059 /* KeyboardObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardObserver.swift; sourceTree = "<group>"; };
+		CFCC124129F50FD200C24099 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		CFD385A429EA83FB00F0138D /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		CFD385A629EA856100F0138D /* CustomRadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRadioButton.swift; sourceTree = "<group>"; };
 		CFF4A52529ED64150037FAF2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -196,9 +198,9 @@
 				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
 				CF8D054829EEAFE300B90AD4 /* MainView.swift */,
 				CFC39D6729EE750B0096E580 /* Welcome */,
-				CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */,
 				CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */,
 				CF312B1629F3E069007F6BED /* ChatRoomView.swift */,
+				CFCC124129F50FD200C24099 /* MenuView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -206,6 +208,7 @@
 		CFBC8B1829E96A8800257059 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				CF2751E429EFE7AC00FE550F /* SearchResultModal.swift */,
 				CFBC8B1929E96AAA00257059 /* RoundedButton.swift */,
 				CFBC8B1D29E9749300257059 /* RoundedTextField.swift */,
 				CFD385A629EA856100F0138D /* CustomRadioButton.swift */,
@@ -373,6 +376,7 @@
 				CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */,
 				CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */,
 				CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */,
+				CFCC124229F50FD200C24099 /* MenuView.swift in Sources */,
 				CF8D054B29EEB25800B90AD4 /* MainViewModel.swift in Sources */,
 				CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */,
 				CFBC8B2029E9968200257059 /* EmailVerifyView.swift in Sources */,
