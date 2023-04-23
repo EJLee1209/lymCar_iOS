@@ -56,7 +56,7 @@ struct WelcomeView: View {
                 .padding(.top, 137)
             }.edgesIgnoringSafeArea(.all)
         }
-        
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

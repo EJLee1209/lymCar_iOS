@@ -10,13 +10,13 @@ import Firebase
 
 
 @main
-struct lymcar_SwiftUIApp: App {    
+struct lymcar_SwiftUIApp: App {
     init() {
         FirebaseApp.configure()
     }
     var body: some Scene {
         WindowGroup {
-            MainView(loginStatus: .constant(true))
+            WelcomeView()
                 .onAppear {
                     UIApplication.shared.addTapGestureRecognizer()
                 }
