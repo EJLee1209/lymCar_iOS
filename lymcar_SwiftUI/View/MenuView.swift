@@ -73,7 +73,8 @@ struct MenuView: View {
                         }
                         Divider()
                         NavigationLink {
-                            Text("즐겨찾기 편집")
+                            FavoriteEditView()
+                                .navigationBarBackButtonHidden()
                         } label: {
                             HStack(alignment: .center, spacing: 17) {
                                 Image("map-pin")
