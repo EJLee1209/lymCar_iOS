@@ -49,6 +49,7 @@ class MainViewModel: ObservableObject {
     private var myRoomRegistration: ListenerRegistration? = nil
     private var userRegistration: ListenerRegistration? = nil
     
+    
     deinit {
         removeRegistration()
     }
@@ -194,7 +195,192 @@ class MainViewModel: ObservableObject {
                         print(error.localizedDescription)
                     }
                 }
+                self.progress = .idle
                 completion(.success(rooms))
             }
+    }
+    
+    func joinRoom(room: CarPoolRoom, completion: @escaping (Result<String, NSError>) -> Void) {
+        guard let safeUser = auth.currentUser else {
+            completion(.failure(
+                NSError(
+                    domain: "로그인 정보를 가져오지 못했습니다",
+                    code: -1
+                )
+            ))
+            return
+        }
+        
+        if room.participants.contains(safeUser.uid) {
+            // 이미 방에 속해있음
+            completion(.success(""))
+            return
+        }
+        progress = .loading
+        let docRef = db.collection(FireStoreTable.ROOM).document(room.roomId)
+        db.runTransaction { transaction, errorPointer in
+            let roomDocument: DocumentSnapshot
+            do {
+                roomDocument = try transaction.getDocument(docRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            guard let oldCount = roomDocument.data()?[FireStoreTable.FIELD_USER_COUNT] as? Int else {
+                let error = NSError(
+                    domain: "채팅방 데이터를 가져오는 중에 에러가 발생했습니다",
+                    code: -1
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            guard let closed = roomDocument.data()?[FireStoreTable.FIELD_CLOSED] as? Bool else {
+                let error = NSError(
+                    domain: "채팅방 데이터를 가져오는 중에 에러가 발생했습니다",
+                    code: -1
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            guard var participants = roomDocument.data()?[FireStoreTable.FIELD_PARTICIPANTS] as? [String] else {
+                let error = NSError(
+                    domain: "채팅방 데이터를 가져오는 중에 에러가 발생했습니다",
+                    code: -1
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            if oldCount >= room.userMaxCount {
+                let error = NSError(
+                    domain: "채팅방 인원 초과",
+                    code: -1
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            if closed {
+                let error = NSError(
+                    domain: "마감된 채팅방",
+                    code: -1
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            participants.append(safeUser.uid)
+            transaction.updateData([FireStoreTable.FIELD_USER_COUNT : oldCount + 1], forDocument: docRef)
+            transaction.updateData([FireStoreTable.FIELD_PARTICIPANTS : participants], forDocument: docRef)
+            
+            return nil
+            
+        } completion: { object, error in
+            if let error = error {
+                let nsError = error as NSError
+                print("transaction failed: \(error)")
+                completion(.failure(nsError))
+                DispatchQueue.main.async {
+                    self.progress = .idle
+                }
+            } else {
+                // transaction successfully committed
+                self.db.collection(FireStoreTable.FCMTOKENS).document(safeUser.uid)
+                    .updateData([
+                        FireStoreTable.FIELD_ROOM_ID : room.roomId
+                    ])
+                completion(.success(""))
+                DispatchQueue.main.async {
+                    self.progress = .idle
+                }
+            }
+        }
+
+    }
+    
+    func exitRoom(roomId: String, completion: @escaping (Result<String, FirestoreErrorCode>) -> Void) {
+        guard let safeUser = auth.currentUser else {
+            completion(.failure(FirestoreErrorCode(.unknown)))
+            return
+        }
+        progress = .loading
+        let docRef = db.collection(FireStoreTable.ROOM).document(roomId)
+        
+        db.runTransaction { transaction, errorPointer in
+            let roomDocument: DocumentSnapshot
+            do {
+                roomDocument =  try transaction.getDocument(docRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            guard let oldUserCount = roomDocument.data()?[FireStoreTable.FIELD_USER_COUNT] as? Int else {
+                let error = NSError(
+                    domain: "AppErrorDomain",
+                    code: -1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "채팅방 데이터를 가져오는 중에 에러가 발생했습니다"
+                    ]
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            guard var oldParticipants = roomDocument.data()?[FireStoreTable.FIELD_PARTICIPANTS] as? [String] else {
+                let error = NSError(
+                    domain: "AppErrorDomain",
+                    code: -1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "채팅방 데이터를 가져오는 중에 에러가 발생했습니다"
+                    ]
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            for i in 0 ..< oldParticipants.count {
+                if oldParticipants[i] == safeUser.uid {
+                    oldParticipants.remove(at: i)
+                    break
+                }
+            }
+            
+            if oldUserCount == 1 {
+                // 방 삭제하면 됨
+                self.db.collection(FireStoreTable.ROOM).document(roomId).delete()
+                completion(.success(""))
+                DispatchQueue.main.async {
+                    self.progress = .idle
+                }
+            } else {
+                // 방 퇴장 처리
+                transaction.updateData([FireStoreTable.FIELD_USER_COUNT : oldUserCount - 1], forDocument: docRef)
+                transaction.updateData([FireStoreTable.FIELD_PARTICIPANTS : oldParticipants], forDocument: docRef)
+            }
+            return nil
+        } completion: { object, error in
+            if let error = error {
+                print("transaction failed: \(error)")
+                completion(.failure(FirestoreErrorCode(.cancelled)))
+                DispatchQueue.main.async {
+                    self.progress = .idle
+                }
+            } else {
+                // transaction successfully committed
+                self.db.collection(FireStoreTable.FCMTOKENS).document(safeUser.uid)
+                    .updateData([
+                        FireStoreTable.FIELD_ROOM_ID : ""
+                    ])
+                completion(.success(""))
+                DispatchQueue.main.async {
+                    self.progress = .idle
+                }
+            }
+        }
+
+        
     }
 }

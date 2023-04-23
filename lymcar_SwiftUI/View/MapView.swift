@@ -52,7 +52,7 @@ struct MapView: View {
     @StateObject var viewModel = MainViewModel()
     
     var body: some View {
-        LoadingView(isShowing: .constant(viewModel.searchResult == .loading)) {
+        LoadingView(isShowing: .constant(viewModel.searchResult == .loading || viewModel.progress == .loading)) {
             ZStack(alignment: .top) {
                 // 애플 지도
                 Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: points) { point in
@@ -290,6 +290,19 @@ struct MapView: View {
                             // 채팅방 입장하기
                             print("채팅방에 입장합니다.")
                             print("입장 : \(self.clickedRoom)")
+                            if let clickedRoom = clickedRoom {
+                                viewModel.joinRoom(
+                                    room: clickedRoom
+                                ) { result in
+                                    switch result {
+                                    case .success(_):
+                                        self.mapToChatRoom = true
+                                    case .failure(_):
+                                        showAlert = true
+                                        alertMsg = "채팅방 입장 실패"
+                                    }
+                                }
+                            }
                         }
                     }
                 } message: {
@@ -324,6 +337,7 @@ struct MapView: View {
                 }
                 .onDisappear {
                     viewModel.removeRegistration()
+                    showBottomSheet = false
                 }
         }
     }
