@@ -84,6 +84,7 @@ struct MainView: View {
                         }
                     }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
 //        .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
 //            Button("확인", role: .cancel) {

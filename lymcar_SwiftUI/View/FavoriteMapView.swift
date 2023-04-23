@@ -23,8 +23,10 @@ struct FavoriteMapView: View {
     @State var expandBottomSheet: Bool = false
     @State var dragOffSet : CGSize = .zero
     @State var searchResults = [Place]()
-    
+    @State var showAlert: Bool = false
+
     @StateObject var viewModel = MainViewModel()
+    @GestureState var dragOffset : CGSize = .zero
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -49,7 +51,7 @@ struct FavoriteMapView: View {
                 }
                 .padding(.top, 50)
                 .background(Color("main_blue"))
-                
+
                 Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: points) { point in
                     MapAnnotation(coordinate: point.coordinate) {
                         Image(point.image)
@@ -67,102 +69,105 @@ struct FavoriteMapView: View {
                 }
             }
             
-            GeometryReader { proxy in
-                
-                ZStack(alignment: .bottom) {
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 9) {
-                            Text((place == nil ? "춘천역" : place?.place_name) ?? "춘천역")
-                                .font(.system(size: 24))
-                                .foregroundColor(Color("black"))
-                                .fontWeight(.heavy)
-                            Image("edit")
-                        }
-                        
-                        HStack(spacing: 0) {
-                            TextField(
-                                "즐겨찾기를 등록할 장소를 검색해주세요",
-                                text: $placeName
-                            )
-                            .font(.system(size: 14))
-                            .foregroundColor(Color("667080"))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal,15)
-                            .submitLabel(.search)
-                            .onSubmit {
-                                // 검색
-                                viewModel.searchPlace(keyword: placeName)
-                            }
-                            .onTapGesture {
-                                withAnimation {
-                                    expandBottomSheet = true
-                                }
-                                placeName = ""
-                            }
-                                
-                            Spacer()
-                            Button {
-                                viewModel.searchPlace(keyword: placeName)
-                            } label: {
-                                Image("search")
-                            }
-                            .padding(.trailing, 15)
-
-                        }
-                        .background(Color("f5f5f5"))
-                        .cornerRadius(15)
-                        
-                        if !expandBottomSheet{
-                            Button {
-                                // 즐찾 저장
-                            } label: {
-                                RoundedButton(label: "확인", buttonColor: "main_blue", labelColor: "white")
-                            }
-                            .padding(.top, 20)
-                        }
-                        List(searchResults, id: \.self) { result in
-                            searchResultItem(
-                                place: result
-                            ) { clickedPlace in
-                                self.placeName = clickedPlace.address_name
-                                self.place = clickedPlace
-                                
-                                let coordinate = CLLocationCoordinate2D(
-                                    latitude: Double(clickedPlace.y) ?? 0,
-                                    longitude: Double(clickedPlace.x) ?? 0
-                                )
-                                
-                                points[0] = Point(
-                                    name: clickedPlace.place_name,
-                                    coordinate: coordinate,
-                                    image: "map_pin_blue"
-                                )
-                                region.center = coordinate
-                                withAnimation {
-                                    expandBottomSheet = false
-                                }
-                            }
-                        }.listStyle(.inset)
-                
-                        Spacer()
+            ZStack(alignment: .bottom) {
+                VStack(alignment: .leading) {
+                    HStack(spacing: 9) {
+                        Text((place == nil ? "한림대학교" : place?.place_name) ?? "한림대학교")
+                            .font(.system(size: 24))
+                            .foregroundColor(Color("black"))
+                            .fontWeight(.heavy)
+                        Image("edit")
                     }
-                    .padding(.top, 26)
-                    .padding(.horizontal, 20)
+
+                    HStack(spacing: 0) {
+                        TextField(
+                            "즐겨찾기를 등록할 장소를 검색해주세요",
+                            text: $placeName
+                        )
+                        .font(.system(size: 14))
+                        .foregroundColor(Color("667080"))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal,15)
+                        .submitLabel(.search)
+                        .onSubmit {
+                            // 검색
+                            viewModel.searchPlace(keyword: placeName)
+                        }
+                        .onTapGesture {
+                            withAnimation {
+                                expandBottomSheet = true
+                            }
+                            placeName = ""
+                        }
+
+                        Spacer()
+                        Button {
+                            viewModel.searchPlace(keyword: placeName)
+                        } label: {
+                            Image("search")
+                        }
+                        .padding(.trailing, 15)
+
+                    }
+                    .background(Color("f5f5f5"))
+                    .cornerRadius(15)
+
+                    if !expandBottomSheet {
+                        Button {
+                            if let place = place {
+                                // 즐찾 저장
+
+                            } else {
+                                showAlert = true
+                            }
+                        } label: {
+                            RoundedButton(label: "확인", buttonColor: "main_blue", labelColor: "white")
+                        }
+                        .padding(.top, 20)
+                    }
+                    List(searchResults, id: \.self) { result in
+                        searchResultItem(
+                            place: result
+                        ) { clickedPlace in
+                            self.placeName = clickedPlace.address_name
+                            self.place = clickedPlace
+
+                            let coordinate = CLLocationCoordinate2D(
+                                latitude: Double(clickedPlace.y) ?? 0,
+                                longitude: Double(clickedPlace.x) ?? 0
+                            )
+
+                            points[0] = Point(
+                                name: clickedPlace.place_name,
+                                coordinate: coordinate,
+                                image: "map_pin_blue"
+                            )
+                            region.center = CLLocationCoordinate2D(
+                                latitude: coordinate.latitude - 0.002,
+                                longitude: coordinate.longitude
+                            )
+
+                            withAnimation {
+                                expandBottomSheet = false
+                            }
+                        }
+                    }.listStyle(.inset)
+
+                    Spacer()
                 }
-                .frame(
-                    width: proxy.size.width,
-                    height: proxy.size.height / 1.5 ,
-                    alignment: .center
-                )
-                .background(Color("white"))
-                .roundedCorner(30, corners: [.topLeft, .topRight])
-                .offset(y: getBottomSheetOffSet(proxy: proxy))
-                .shadow(radius: 3)
-                
+                .padding(.top, 26)
+                .padding(.horizontal, 20)
             }
+            .frame(maxWidth: .infinity)
+            .frame(height: UIScreen.main.bounds.height / 2)
+            .background(Color("white"))
+            .roundedCorner(30, corners: [.topLeft, .topRight])
+            .offset(y: getBottomSheetOffSet())
+            .shadow(radius: 3)
         }
         .edgesIgnoringSafeArea(.all)
+        .background(Color("white"))
         .onChange(of: viewModel.searchResult) { newValue in
             switch newValue {
             case .success(let result):
@@ -174,15 +179,26 @@ struct FavoriteMapView: View {
                 break
             }
         }
+        .alert("즐겨찾기 편집", isPresented: $showAlert) {
+
+        } message: {
+            Text("즐겨찾기를 등록할 장소를 검색한 후\n확인 버튼을 눌러주세요")
+        }
+        .gesture(DragGesture().updating($dragOffset, body: { value, state, transaction in
+            if value.startLocation.x < 20 && value.translation.width > 100 {
+                self.dismiss()
+            }
+        }))
+
         
         
     }
     
-    private func getBottomSheetOffSet(proxy: GeometryProxy) -> CGFloat {
+    private func getBottomSheetOffSet() -> CGFloat {
         if expandBottomSheet {
-            return proxy.size.height - proxy.size.height / 1.5
+            return 0
         } else {
-            return proxy.size.height - 227
+            return UIScreen.main.bounds.height / 2 - 227
         }
     }
 }

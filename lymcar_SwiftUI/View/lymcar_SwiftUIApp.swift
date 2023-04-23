@@ -16,7 +16,7 @@ struct lymcar_SwiftUIApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            WelcomeView()
+            MainView(loginStatus: .constant(true))
                 .onAppear {
                     UIApplication.shared.addTapGestureRecognizer()
                 }

@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct FavoriteEditView: View {
-    @State var editMode: Bool = false
     @Environment(\.dismiss) var dismiss
+    @State var editMode: Bool = false
+    @GestureState var dragOffset : CGSize = .zero
     
     var body: some View {
         ZStack(alignment: .bottom) {
+            
             VStack(spacing: 0) {
                 HStack(alignment: .center) {
                     Button {
@@ -30,7 +32,7 @@ struct FavoriteEditView: View {
                         .foregroundColor(Color("white"))
                         .bold()
                     Spacer()
-                    
+
                     if !editMode {
                         Button {
                             editMode.toggle()
@@ -39,7 +41,7 @@ struct FavoriteEditView: View {
                                 .font(.system(size: 13))
                                 .foregroundColor(Color("white"))
                                 .padding(18)
-                                
+
                         }
                     } else {
                         Text("편집").font(.system(size: 13)).padding(18).opacity(0)
@@ -48,10 +50,10 @@ struct FavoriteEditView: View {
                 .padding(.top, 50)
                 .background(Color("main_blue"))
 
-                
+
                 Spacer()
             }
-            
+
             if editMode {
                 Button {
                     // 편집 완료
@@ -68,7 +70,6 @@ struct FavoriteEditView: View {
                 .shadow(radius: 3, y:2)
             }
             else {
-                
                 NavigationLink {
                     FavoriteMapView()
                         .navigationBarBackButtonHidden()
@@ -84,7 +85,16 @@ struct FavoriteEditView: View {
                 }
             }
         }
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        .background(Color("white"))
         .edgesIgnoringSafeArea(.all)
+        .gesture(DragGesture().updating($dragOffset, body: { value, state, transaction in
+            if value.startLocation.x < 20 && value.translation.width > 100 {
+                self.dismiss()
+            }
+            print("\(value.translation)")
+        }))
+        
     }
 }
 

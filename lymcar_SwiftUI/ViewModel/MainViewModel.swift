@@ -95,8 +95,6 @@ class MainViewModel: ObservableObject {
                 } catch{
                     print(error.localizedDescription)
                 }
-                
-                
             }
     }
     
