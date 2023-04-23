@@ -85,6 +85,8 @@ struct MenuView: View {
                             .padding(.leading, 20)
                             .padding(.vertical, 11)
                         }
+                        
+                        
                         Rectangle()
                             .frame(height: 10)
                             .foregroundColor(Color("f5f5f5"))

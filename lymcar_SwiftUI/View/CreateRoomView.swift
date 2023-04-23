@@ -29,6 +29,9 @@ struct CreateRoomView: View {
     
     @StateObject var viewModel = MainViewModel()
     
+    @Environment(\.dismiss) var dismiss
+    @GestureState private var dragOffset = CGSize.zero
+    
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
@@ -270,6 +273,11 @@ struct CreateRoomView: View {
                     break
                 }
             }
+            .gesture(DragGesture().updating($dragOffset, body: { value, state, transaction in
+                if value.startLocation.x < 20 && value.translation.width > 100 {
+                    self.createToChatRoom = false
+                }
+            }))
         }
     }
 }

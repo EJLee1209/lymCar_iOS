@@ -16,8 +16,9 @@ struct ChatRoomView: View {
     @State var showSystemAlert: Bool = false
     @State var systemMsg: String = ""
     
-    
     @StateObject var viewModel = MainViewModel()
+    
+    @GestureState var dragOffset: CGSize = .zero
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
@@ -111,6 +112,11 @@ struct ChatRoomView: View {
             } message: {
                 Text(systemMsg)
             }
+            .gesture(DragGesture().updating($dragOffset, body: { value, state, transaction in
+                if value.startLocation.x < 20 && value.translation.width > 100 {
+                    self.mapToChatRoom = false
+                }
+            }))
         }
     }
 }
