@@ -49,6 +49,8 @@ struct MapView: View {
     @State var createToChatRoom: Bool = false
     @State var mapToChatRoom: Bool = false
     
+    @State var searchCurrentLocation: Bool = false
+    
     @StateObject var viewModel = MainViewModel()
     
     var body: some View {
@@ -67,6 +69,7 @@ struct MapView: View {
                     manager.requestWhenInUseAuthorization()
                     manager.startUpdatingLocation()
                     region.center = manager.location?.coordinate ?? region.center
+                    
                 }
                 
                 // SearchView(검색뷰) , 카풀 목록 보기 버튼
@@ -272,6 +275,9 @@ struct MapView: View {
                             endPlace = place
                             endPlaceName = place.place_name
                             addPoint(place, false)
+                            if let startPlace = startPlace {
+                                addPoint(startPlace, true)
+                            }
                         }
                         showModal = false
                     }
@@ -311,6 +317,15 @@ struct MapView: View {
                 .onChange(of: viewModel.searchResult) { newValue in
                     switch newValue {
                     case .success(let result):
+                        if searchCurrentLocation {
+                            // 현재 위치 검색
+                            if let place = result.documents.first {
+                                startPlace = place
+                                startPlaceName = place.place_name
+                            }
+                            searchCurrentLocation = false
+                            return
+                        }
                         placeList = result.documents
                     case .failure(let msg):
                         print(msg)
@@ -334,11 +349,26 @@ struct MapView: View {
                             break
                         }
                     }
+                    if let location = manager.location {
+                        convertCLLocationToAddress(location: location)
+                    }
                 }
                 .onDisappear {
                     viewModel.removeRegistration()
                     showBottomSheet = false
                 }
+        }
+    }
+    
+    private func convertCLLocationToAddress(location: CLLocation) {
+        let geocoder = CLGeocoder()
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            if error != nil { return }
+            guard let placemark = placemarks?.first else { return }
+            let keyword = "\(placemark.country ?? "") \(placemark.locality ?? "") \(placemark.name ?? "")"
+            self.searchCurrentLocation = true
+            viewModel.searchPlace(keyword: keyword)
         }
     }
     
