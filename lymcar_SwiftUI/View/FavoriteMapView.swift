@@ -7,6 +7,7 @@
 
 import SwiftUI
 import _MapKit_SwiftUI
+import PopupView
 
 struct FavoriteMapView: View {
     @Environment(\.dismiss) var dismiss
@@ -24,9 +25,11 @@ struct FavoriteMapView: View {
     @State var dragOffSet : CGSize = .zero
     @State var searchResults = [Place]()
     @State var showAlert: Bool = false
+    @State var showingPopup = false
 
     @StateObject var viewModel = MainViewModel()
     @GestureState var dragOffset : CGSize = .zero
+    @EnvironmentObject var realmManager: RealmManger
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -117,7 +120,8 @@ struct FavoriteMapView: View {
                         Button {
                             if let place = place {
                                 // 즐찾 저장
-
+                                realmManager.addFavorite(place: place)
+                                showingPopup = true
                             } else {
                                 showAlert = true
                             }
@@ -128,6 +132,7 @@ struct FavoriteMapView: View {
                     }
                     List(searchResults, id: \.self) { result in
                         searchResultItem(
+                            editMode: .constant(false),
                             place: result
                         ) { clickedPlace in
                             self.placeName = clickedPlace.address_name
@@ -184,11 +189,41 @@ struct FavoriteMapView: View {
         } message: {
             Text("즐겨찾기를 등록할 장소를 검색한 후\n확인 버튼을 눌러주세요")
         }
+        
         .gesture(DragGesture().updating($dragOffset, body: { value, state, transaction in
             if value.startLocation.x < 20 && value.translation.width > 100 {
                 self.dismiss()
             }
         }))
+        .popup(isPresented: $showingPopup) {
+            if let place = place {
+                Text("\(place.place_name)\n즐겨찾기로 등록되었습니다")
+                    .font(.system(size:13))
+                    .foregroundColor(Color("main_blue"))
+                    .bold()
+                    .multilineTextAlignment(.center)
+                    .frame(width: 200, height: 60)
+                    .background(Color("white"))
+                    .cornerRadius(30)
+                    .overlay {
+                        RoundedCornerShape()
+                            .stroke(lineWidth: 5)
+                            .cornerRadius(30)
+                            .foregroundColor(Color("main_blue"))
+                    }
+                    
+                    
+            }
+            
+        } customize: {
+            $0.autohideIn(2)
+                .type(.floater())
+                .position(.top)
+                .animation(.spring())
+                .closeOnTapOutside(true)
+                .backgroundColor(.black.opacity(0.5))
+        }
+
 
         
         
@@ -206,5 +241,6 @@ struct FavoriteMapView: View {
 struct FavoriteMapView_Previews: PreviewProvider {
     static var previews: some View {
         FavoriteMapView()
+            .environmentObject(RealmManger())
     }
 }

@@ -51,6 +51,12 @@
 		CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A429EA83FB00F0138D /* RegisterView.swift */; };
 		CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A629EA856100F0138D /* CustomRadioButton.swift */; };
 		CFE8645B29ECDB1200C4373C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8645A29ECDB1200C4373C /* Alamofire */; };
+		CFE8AB9B29F66E7A00890C7A /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8AB9A29F66E7A00890C7A /* Realm */; };
+		CFE8AB9D29F66E7A00890C7A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8AB9C29F66E7A00890C7A /* RealmSwift */; };
+		CFE8AB9F29F66F2A00890C7A /* PlaceForRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE8AB9E29F66F2A00890C7A /* PlaceForRealm.swift */; };
+		CFE8ABA229F674BF00890C7A /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8ABA129F674BF00890C7A /* PopupView */; };
+		CFE8ABA429F67BAE00890C7A /* FavoriteItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE8ABA329F67BAD00890C7A /* FavoriteItem.swift */; };
+		CFE8ABA629F6DC7D00890C7A /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE8ABA529F6DC7D00890C7A /* RealmManager.swift */; };
 		CFF4A52629ED64150037FAF2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF4A52529ED64150037FAF2 /* User.swift */; };
 		CFF4A52929ED671A0037FAF2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CFF4A52829ED671A0037FAF2 /* FirebaseAnalytics */; };
 		CFF4A52B29ED671A0037FAF2 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = CFF4A52A29ED671A0037FAF2 /* FirebaseAnalyticsOnDeviceConversion */; };
@@ -119,6 +125,9 @@
 		CFCC124129F50FD200C24099 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		CFD385A429EA83FB00F0138D /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		CFD385A629EA856100F0138D /* CustomRadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRadioButton.swift; sourceTree = "<group>"; };
+		CFE8AB9E29F66F2A00890C7A /* PlaceForRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceForRealm.swift; sourceTree = "<group>"; };
+		CFE8ABA329F67BAD00890C7A /* FavoriteItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItem.swift; sourceTree = "<group>"; };
+		CFE8ABA529F6DC7D00890C7A /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		CFF4A52529ED64150037FAF2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		CFF4A54C29ED69A00037FAF2 /* TokenInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -137,11 +146,14 @@
 				CFF4A52929ED671A0037FAF2 /* FirebaseAnalytics in Frameworks */,
 				CFF4A52B29ED671A0037FAF2 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				CFF4A54329ED671B0037FAF2 /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
+				CFE8AB9D29F66E7A00890C7A /* RealmSwift in Frameworks */,
 				CFF4A53529ED671A0037FAF2 /* FirebaseCrashlytics in Frameworks */,
 				CFF4A54929ED671B0037FAF2 /* FirebaseRemoteConfig in Frameworks */,
 				CFF4A54729ED671B0037FAF2 /* FirebaseMessaging in Frameworks */,
 				CFF4A53F29ED671A0037FAF2 /* FirebaseFirestoreSwift in Frameworks */,
+				CFE8ABA229F674BF00890C7A /* PopupView in Frameworks */,
 				CFF4A53729ED671A0037FAF2 /* FirebaseDatabase in Frameworks */,
+				CFE8AB9B29F66E7A00890C7A /* Realm in Frameworks */,
 				CFF4A54529ED671B0037FAF2 /* FirebaseInstallations in Frameworks */,
 				CFF4A53329ED671A0037FAF2 /* FirebaseAuthCombine-Community in Frameworks */,
 				CFF4A53D29ED671A0037FAF2 /* FirebaseFirestoreCombine-Community in Frameworks */,
@@ -225,6 +237,7 @@
 				CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */,
 				CF5B783229F25FF4004120FB /* RoomItem.swift */,
 				CF312B1429F3D2C8007F6BED /* MainPicker.swift */,
+				CFE8ABA329F67BAD00890C7A /* FavoriteItem.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -253,6 +266,7 @@
 				CF8D054229EEA1E300B90AD4 /* SignedIn.swift */,
 				CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */,
 				CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */,
+				CFE8AB9E29F66F2A00890C7A /* PlaceForRealm.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -274,6 +288,7 @@
 			children = (
 				CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */,
 				CF8D054A29EEB25800B90AD4 /* MainViewModel.swift */,
+				CFE8ABA529F6DC7D00890C7A /* RealmManager.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -314,6 +329,9 @@
 				CFF4A54629ED671B0037FAF2 /* FirebaseMessaging */,
 				CFF4A54829ED671B0037FAF2 /* FirebaseRemoteConfig */,
 				CFF4A54A29ED671B0037FAF2 /* FirebaseRemoteConfigSwift */,
+				CFE8AB9A29F66E7A00890C7A /* Realm */,
+				CFE8AB9C29F66E7A00890C7A /* RealmSwift */,
+				CFE8ABA129F674BF00890C7A /* PopupView */,
 			);
 			productName = lymcar_SwiftUI;
 			productReference = CFBC8B0429E96A3700257059 /* lymcar_SwiftUI.app */;
@@ -346,6 +364,8 @@
 			packageReferences = (
 				CFE8645929ECDB1200C4373C /* XCRemoteSwiftPackageReference "Alamofire" */,
 				CFF4A52729ED671A0037FAF2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				CFE8AB9929F66E7A00890C7A /* XCRemoteSwiftPackageReference "realm-swift" */,
+				CFE8ABA029F674BF00890C7A /* XCRemoteSwiftPackageReference "PopupView" */,
 			);
 			productRefGroup = CFBC8B0529E96A3700257059 /* Products */;
 			projectDirPath = "";
@@ -376,16 +396,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF45C3A229EC312300719703 /* Constants.swift in Sources */,
+				CFE8AB9F29F66F2A00890C7A /* PlaceForRealm.swift in Sources */,
 				CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */,
 				CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */,
 				CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */,
 				CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */,
 				CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */,
 				CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */,
+				CFE8ABA429F67BAE00890C7A /* FavoriteItem.swift in Sources */,
 				CFCC124229F50FD200C24099 /* MenuView.swift in Sources */,
 				CF8D054B29EEB25800B90AD4 /* MainViewModel.swift in Sources */,
 				CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */,
 				CFBC8B2029E9968200257059 /* EmailVerifyView.swift in Sources */,
+				CFE8ABA629F6DC7D00890C7A /* RealmManager.swift in Sources */,
 				CFBC8B1729E96A7E00257059 /* WelcomeView.swift in Sources */,
 				CFF4A54D29ED69A00037FAF2 /* TokenInfo.swift in Sources */,
 				CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */,
@@ -644,6 +667,22 @@
 				version = 5.6.1;
 			};
 		};
+		CFE8AB9929F66E7A00890C7A /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.38.0;
+			};
+		};
+		CFE8ABA029F674BF00890C7A /* XCRemoteSwiftPackageReference "PopupView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/exyte/PopupView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		CFF4A52729ED671A0037FAF2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -659,6 +698,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CFE8645929ECDB1200C4373C /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		CFE8AB9A29F66E7A00890C7A /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CFE8AB9929F66E7A00890C7A /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		CFE8AB9C29F66E7A00890C7A /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CFE8AB9929F66E7A00890C7A /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		CFE8ABA129F674BF00890C7A /* PopupView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CFE8ABA029F674BF00890C7A /* XCRemoteSwiftPackageReference "PopupView" */;
+			productName = PopupView;
 		};
 		CFF4A52829ED671A0037FAF2 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

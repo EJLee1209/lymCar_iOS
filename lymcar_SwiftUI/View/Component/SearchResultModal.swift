@@ -28,6 +28,7 @@ struct SearchResultModal: View {
             else{
                 List(documents, id: \.self) { place in
                     searchResultItem(
+                        editMode: .constant(false),
                         place: place
                     ) { place in
                         clickAction(place)

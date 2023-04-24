@@ -9,12 +9,13 @@ import SwiftUI
 
 struct FavoriteEditView: View {
     @Environment(\.dismiss) var dismiss
-    @State var editMode: Bool = false
+    @StateObject var realmManager = RealmManger()
     @GestureState var dragOffset : CGSize = .zero
-    
+    @State var showAlert: Bool = false
+    @State var clickedPlace: PlaceForRealm?
+
     var body: some View {
         ZStack(alignment: .bottom) {
-            
             VStack(spacing: 0) {
                 HStack(alignment: .center) {
                     Button {
@@ -31,58 +32,51 @@ struct FavoriteEditView: View {
                         .font(.system(size: 20))
                         .foregroundColor(Color("white"))
                         .bold()
+                        .padding(.trailing, 36)
                     Spacer()
-
-                    if !editMode {
-                        Button {
-                            editMode.toggle()
-                        } label: {
-                            Text("편집")
-                                .font(.system(size: 13))
-                                .foregroundColor(Color("white"))
-                                .padding(18)
-
-                        }
-                    } else {
-                        Text("편집").font(.system(size: 13)).padding(18).opacity(0)
-                    }
                 }
                 .padding(.top, 50)
                 .background(Color("main_blue"))
-
-
-                Spacer()
+                
+                if realmManager.favorites.count > 0 {
+                    List {
+                        ForEach(realmManager.favorites, id: \.id) { favorite in
+                            if !favorite.isInvalidated && !favorite.isFrozen {
+                                FavoriteItem(place: favorite)
+                                .listRowInsets(.init())
+                                
+                            }
+                        }
+                        .onDelete { indexSet in
+                            indexSet.forEach { index in
+                                let favoriteToDelete = realmManager.favorites[index]
+                                realmManager.deleteFavorite(id: favoriteToDelete.id)
+                            }
+                        }
+                    }
+                    .scrollContentBackground(.hidden)
+                    .listStyle(.inset)
+                    .refreshable {
+                        realmManager.getFavorites()
+                    }
+                } else {
+                    Spacer()
+                }
             }
 
-            if editMode {
-                Button {
-                    // 편집 완료
-                    editMode.toggle()
-                } label: {
-                    RoundedButton(
-                        label: "확인",
-                        buttonColor: "main_blue",
-                        labelColor: "white"
-                    )
-                }
+            NavigationLink {
+                FavoriteMapView()
+                    .navigationBarBackButtonHidden()
+                    .environmentObject(realmManager)
+            } label: {
+                RoundedButton(
+                    label: "추가하기",
+                    buttonColor: "main_blue",
+                    labelColor: "white"
+                )
                 .padding(.horizontal, 20)
                 .padding(.bottom, 47)
                 .shadow(radius: 3, y:2)
-            }
-            else {
-                NavigationLink {
-                    FavoriteMapView()
-                        .navigationBarBackButtonHidden()
-                } label: {
-                    RoundedButton(
-                        label: "추가하기",
-                        buttonColor: "main_blue",
-                        labelColor: "white"
-                    )
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 47)
-                    .shadow(radius: 3, y:2)
-                }
             }
         }
         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
@@ -92,9 +86,10 @@ struct FavoriteEditView: View {
             if value.startLocation.x < 20 && value.translation.width > 100 {
                 self.dismiss()
             }
-            print("\(value.translation)")
         }))
-        
+        .onAppear {
+            realmManager.getFavorites()
+        }
     }
 }
 
