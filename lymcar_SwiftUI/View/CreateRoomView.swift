@@ -156,6 +156,7 @@ struct CreateRoomView: View {
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 36)
+                        .padding(.bottom, 100)
                     }
                 }.padding(.top, 50)
                 

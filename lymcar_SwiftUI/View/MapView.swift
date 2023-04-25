@@ -118,6 +118,10 @@ struct MapView: View {
                                         self.isExpanded = true
                                         addPoint(favorite, false)
                                     }
+                                    if let startPlace = startPlace {
+                                        addPoint(startPlace, true)
+                                    }
+                                
                                 }
                                 .padding(.leading, 5)
                             }
@@ -154,6 +158,7 @@ struct MapView: View {
                             self.mapToChatRoom = true
                         }
                             .padding(.bottom, 102)
+                            .padding(.horizontal, 12)
                     }
                 }
                 .padding(.top, 60)

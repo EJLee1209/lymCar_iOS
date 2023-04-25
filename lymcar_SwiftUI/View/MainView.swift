@@ -21,6 +21,8 @@ struct MainView: View {
     @State var showBottomSheet: Bool = false
     @State var currentUser: User?
     
+    @AppStorage("didLogin") private var didLogin = false
+    
     var body: some View {
         GeometryReader { proxy in
             NavigationView {
@@ -86,22 +88,20 @@ struct MainView: View {
             }
             .navigationViewStyle(StackNavigationViewStyle())
         }
-//        .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
-//            Button("확인", role: .cancel) {
-//                loginStatus = false
-//            }
-//        } message: {
-//            Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
-//        }
-        
-        
+        .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
+            Button("확인", role: .cancel) {
+                loginStatus = false
+                didLogin = false
+            }
+        } message: {
+            Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
+        }
     }
-    
     @ViewBuilder
     func changeFragment() -> some View {
         switch self.tabIndex {
         case .history:
-            Fragment(backgroundColor: .blue, title: "히스토리")
+            HistoryView()
         case .map:
             MapView(
                 currentUser: $currentUser,

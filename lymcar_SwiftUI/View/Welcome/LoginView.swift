@@ -16,6 +16,7 @@ struct LoginView: View {
     // @State 속성을 포함한 데이터 저장을 위한 @AppStorage
     @AppStorage("email") private var email = ""
     @AppStorage("password") private var password = ""
+    @AppStorage("didLogin") private var didLogin = false
     
     @State var isLoginSuccess: Bool = false
     @State var showAlert: Bool = false
@@ -139,6 +140,7 @@ struct LoginView: View {
                     if msg == Constants.LOGIN_SUCCESS {
                         // 로그인 성공
                         isLoginSuccess = true
+                        self.didLogin = true
                     }
                 default:
                     break

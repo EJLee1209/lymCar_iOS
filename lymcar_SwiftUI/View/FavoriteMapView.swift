@@ -165,7 +165,7 @@ struct FavoriteMapView: View {
                 .padding(.horizontal, 20)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: UIScreen.main.bounds.height / 2)
+            .frame(height: UIScreen.main.bounds.height / 1.7)
             .background(Color("white"))
             .roundedCorner(30, corners: [.topLeft, .topRight])
             .offset(y: getBottomSheetOffSet())
@@ -223,17 +223,13 @@ struct FavoriteMapView: View {
                 .closeOnTapOutside(true)
                 .backgroundColor(.black.opacity(0.5))
         }
-
-
-        
-        
     }
     
     private func getBottomSheetOffSet() -> CGFloat {
         if expandBottomSheet {
             return 0
         } else {
-            return UIScreen.main.bounds.height / 2 - 227
+            return UIScreen.main.bounds.height / 1.7 - 227
         }
     }
 }
