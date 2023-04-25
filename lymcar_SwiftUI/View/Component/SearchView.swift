@@ -15,18 +15,16 @@ struct SearchView: View {
     @Binding var startPlaceName: String
     @Binding var endPlaceName: String
     @Binding var isExpanded: Bool
+    @Binding var editingFocus: SearchField?
     
     var buttonImage: String = "search"
     var submitAction: (SearchField) -> Void
     var buttonClickAction: () -> Void = {}
-    
     @FocusState var focus: SearchField?
-    
     
     
     var body: some View {
         HStack(spacing: 0) {
-            
             if isExpanded {
                 VStack(spacing:9) {
                     RoundedTextField(text: $startPlaceName, isValid: .constant(true), placeHolder: "출발지", type: .normal, submitLabel: .search) {
@@ -34,11 +32,17 @@ struct SearchView: View {
                         submitAction(.start)
                     }
                     .focused($focus, equals: .start)
+                    .onTapGesture {
+                        editingFocus = .start
+                    }
                     RoundedTextField(text: $endPlaceName, isValid: .constant(true), placeHolder: "목적지", type: .normal, submitLabel: .search) {
                         // submit action
                         submitAction(.end)
                     }
                     .focused($focus, equals: .end)
+                    .onTapGesture {
+                        editingFocus = .end
+                    }
                 }
             }
             else {
@@ -51,6 +55,9 @@ struct SearchView: View {
                         }
                     }
                     .focused($focus, equals: .end)
+                    .onTapGesture {
+                        self.editingFocus = .end
+                    }
                     .placeholder(when: endPlaceName.isEmpty) {
                         Text("목적지")
                             .font(.system(size: 15))
@@ -65,6 +72,7 @@ struct SearchView: View {
                         isExpanded.toggle()
                     }
                     focus = nil
+                    self.editingFocus = nil
                 }
                 
                 buttonClickAction()
@@ -83,7 +91,7 @@ struct SearchView: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView(startPlaceName: .constant("한림대학교"), endPlaceName: .constant("한림대학교"), isExpanded: .constant(true)) { _ in
+        SearchView(startPlaceName: .constant("한림대학교"), endPlaceName: .constant("한림대학교"), isExpanded: .constant(true), editingFocus: .constant(.start)) { _ in
             
         }
     }

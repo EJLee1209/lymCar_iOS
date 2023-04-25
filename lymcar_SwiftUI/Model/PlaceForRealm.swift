@@ -16,3 +16,15 @@ class PlaceForRealm: Object, ObjectKeyIdentifiable {
     @Persisted var x: Double = 0
     @Persisted var y: Double = 0
 }
+
+extension PlaceForRealm {
+    func convertToPlace() -> Place {
+        return Place(
+                place_name: self.place_name,
+                address_name: self.address_name,
+                road_address_name: self.road_address_name,
+                x: String(self.x),
+                y: String(self.y)
+            )
+    }
+}

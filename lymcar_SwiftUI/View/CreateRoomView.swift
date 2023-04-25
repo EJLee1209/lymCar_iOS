@@ -65,6 +65,7 @@ struct CreateRoomView: View {
                         startPlaceName : $startPlaceName,
                         endPlaceName: $endPlaceName,
                         isExpanded: .constant(true),
+                        editingFocus: .constant(nil),
                         buttonImage: "change",
                         submitAction: { searchField in
                             showModal = true

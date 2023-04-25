@@ -13,6 +13,7 @@ struct FavoriteEditView: View {
     @GestureState var dragOffset : CGSize = .zero
     @State var showAlert: Bool = false
     @State var clickedPlace: PlaceForRealm?
+    @State var isEditing: Bool = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -32,8 +33,28 @@ struct FavoriteEditView: View {
                         .font(.system(size: 20))
                         .foregroundColor(Color("white"))
                         .bold()
-                        .padding(.trailing, 36)
+                    
                     Spacer()
+                    
+                    if !isEditing {
+                        Button {
+                            self.isEditing.toggle()
+                        } label: {
+                            Text("편집")
+                                .font(.system(size: 13))
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(Color("white"))
+                                .padding(.trailing, 10)
+                        }
+                    }
+                    else {
+                        Text("")
+                            .font(.system(size: 13))
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(Color("white"))
+                            .padding(.trailing, 10)
+                    }
+                        
                 }
                 .padding(.top, 50)
                 .background(Color("main_blue"))
@@ -43,7 +64,7 @@ struct FavoriteEditView: View {
                         ForEach(realmManager.favorites, id: \.id) { favorite in
                             if !favorite.isInvalidated && !favorite.isFrozen {
                                 FavoriteItem(place: favorite)
-                                .listRowInsets(.init())
+                                    .listRowInsets(.init())
                                 
                             }
                         }
@@ -54,6 +75,7 @@ struct FavoriteEditView: View {
                             }
                         }
                     }
+                    .environment(\.editMode, .constant(self.isEditing ? EditMode.active : EditMode.inactive)).animation(.spring(), value: self.isEditing)
                     .scrollContentBackground(.hidden)
                     .listStyle(.inset)
                     .refreshable {
@@ -61,22 +83,50 @@ struct FavoriteEditView: View {
                     }
                 } else {
                     Spacer()
+                    VStack(spacing: 5) {
+                        Image("character")
+                        Text("즐겨찾기를 추가하고\n더 빠르게 목적지를 검색하세요!")
+                            .font(.system(size:13))
+                            .multilineTextAlignment(.center)
+                    }.padding(.bottom, 100)
+                    
+                    
                 }
+                
+                Spacer()
             }
+            
+            
+            if isEditing {
+                Button {
+                    self.isEditing.toggle()
+                } label: {
+                    RoundedButton(
+                        label: "완료",
+                        buttonColor: "main_blue",
+                        labelColor: "white"
+                    )
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 47)
+                    .shadow(radius: 3, y:2)
+                }
 
-            NavigationLink {
-                FavoriteMapView()
-                    .navigationBarBackButtonHidden()
-                    .environmentObject(realmManager)
-            } label: {
-                RoundedButton(
-                    label: "추가하기",
-                    buttonColor: "main_blue",
-                    labelColor: "white"
-                )
-                .padding(.horizontal, 20)
-                .padding(.bottom, 47)
-                .shadow(radius: 3, y:2)
+            }
+            else {
+                NavigationLink {
+                    FavoriteMapView()
+                        .navigationBarBackButtonHidden()
+                        .environmentObject(realmManager)
+                } label: {
+                    RoundedButton(
+                        label: "추가하기",
+                        buttonColor: "main_blue",
+                        labelColor: "white"
+                    )
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 47)
+                    .shadow(radius: 3, y:2)
+                }
             }
         }
         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)

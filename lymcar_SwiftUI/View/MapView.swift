@@ -52,6 +52,9 @@ struct MapView: View {
     @State var searchCurrentLocation: Bool = false
     
     @StateObject var viewModel = MainViewModel()
+    @StateObject var realmManager = RealmManger()
+    @State var favorites : [Place] = []
+    @State var editingFocus: SearchField?
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.searchResult == .loading || viewModel.progress == .loading)) {
@@ -73,11 +76,12 @@ struct MapView: View {
                 }
                 
                 // SearchView(검색뷰) , 카풀 목록 보기 버튼
-                VStack(spacing: 9) {
+                VStack(spacing: 0) {
                     SearchView(
                         startPlaceName: $startPlaceName,
                         endPlaceName: $endPlaceName,
-                        isExpanded: $isExpanded
+                        isExpanded: $isExpanded,
+                        editingFocus: $editingFocus
                     ){ searchField in
                         // submit action
                         showModal = true
@@ -88,8 +92,42 @@ struct MapView: View {
                         case .end:
                             viewModel.searchPlace(keyword: endPlaceName)
                         }
-                    }
+                    }.padding(.horizontal, 12)
+                    
                     .shadow(radius: 3, y:2)
+                    ScrollView(.horizontal) {
+                        LazyHStack(alignment: .center, spacing: 0) {
+                            ForEach(favorites, id: \.self) { favorite in
+                                FavoriteButton(favorite: favorite) {
+                                    // 즐찾 버튼 클릭 action
+                                    if let editingFocus = editingFocus {
+                                        switch editingFocus {
+                                        case .start:
+                                            self.startPlace = favorite
+                                            self.startPlaceName = favorite.place_name
+                                            addPoint(favorite, true)
+                                        case .end:
+                                            self.endPlace = favorite
+                                            self.endPlaceName = favorite.place_name
+                                            self.isExpanded = true
+                                            addPoint(favorite, false)
+                                        }
+                                    } else {
+                                        self.endPlace = favorite
+                                        self.endPlaceName = favorite.place_name
+                                        self.isExpanded = true
+                                        addPoint(favorite, false)
+                                    }
+                                }
+                                .padding(.leading, 5)
+                            }
+                        }
+                    }
+                    .scrollIndicators(.hidden)
+                    .frame(height: 40)
+                    .padding(.top, 4)
+                    
+                    
                     Spacer()
                     Button {
                         // 카풀 목록 보기
@@ -119,7 +157,6 @@ struct MapView: View {
                     }
                 }
                 .padding(.top, 60)
-                .padding(.horizontal, 12)
                 .onTapGesture {
                     if showBottomSheet {
                         showBottomSheet.toggle()
@@ -352,6 +389,11 @@ struct MapView: View {
                     if let location = manager.location {
                         convertCLLocationToAddress(location: location)
                     }
+                    
+                    realmManager.getFavorites()
+                    self.favorites = realmManager.favorites.map { $0.convertToPlace() }
+                    
+                    
                 }
                 .onDisappear {
                     viewModel.removeRegistration()
