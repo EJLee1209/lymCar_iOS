@@ -39,6 +39,7 @@ struct WelcomeView: View {
 
                     NavigationLink(isActive: $loginStatus) {
                         LoginView(loginStatus: $loginStatus)
+                            .environmentObject(viewModel)
                     } label: {
                         RoundedButton(
                             label: "로그인",
@@ -98,6 +99,7 @@ struct WelcomeView: View {
                 if msg == Constants.LOGIN_SUCCESS {
                     // 로그인 성공
                     autoLogin = true
+                    isLoading.toggle()
                 }
             default:
                 break

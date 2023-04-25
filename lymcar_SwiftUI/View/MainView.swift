@@ -20,82 +20,91 @@ struct MainView: View {
     @State var barWidth: CGFloat = 0
     @State var showBottomSheet: Bool = false
     @State var currentUser: User?
+    @State var showAlert: Bool = false
     
     @AppStorage("didLogin") private var didLogin = false
     
     var body: some View {
-        GeometryReader { proxy in
-            NavigationView {
-                ZStack(alignment: .bottom) {
-                    self.changeFragment()
-                    
-                    if !showBottomSheet {
-                        HStack(spacing: 0) {
-                            Button {
-                                tabIndex = .history
-                                changeBarPosition(proxy: proxy)
-                            } label: {
-                                Image("message-circle")
-                                    .renderingMode(.template)
-                                    .foregroundColor(tabIndex == .history ? Color("main_blue") : Color("667080"))
-                                    .frame(width: proxy.size.width/3, height: 90)
-                            }
-                            
-                            Button {
-                                tabIndex = .map
-                                changeBarPosition(proxy: proxy)
-                            } label: {
-                                Image("map")
-                                    .renderingMode(.template)
-                                    .foregroundColor(tabIndex == .map ? Color("main_blue") : Color("667080"))
-                                    .frame(width: proxy.size.width/3, height: 90)
-                            }
-                            
-                            Button {
-                                tabIndex = .menu
-                                changeBarPosition(proxy: proxy)
-                            } label: {
-                                Image("menu")
-                                    .renderingMode(.template)
-                                    .foregroundColor(tabIndex == .menu ? Color("main_blue") : Color("667080"))
-                                    .frame(width: proxy.size.width/3, height: 90) 
-                            }
-
-                        }
-                        .background(Color("white"))
-                        .roundedCorner(30, corners: [.topLeft, .topRight])
+        LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
+            GeometryReader { proxy in
+                NavigationView {
+                    ZStack(alignment: .bottom) {
+                        self.changeFragment()
                         
-                        Rectangle()
-                            .frame(width: barWidth, height: 4)
-                            .foregroundColor(Color("main_blue"))
-                            .offset(x: barPosition , y: -86)
-                    }
+                        if !showBottomSheet {
+                            HStack(spacing: 0) {
+                                Button {
+                                    tabIndex = .history
+                                    changeBarPosition(proxy: proxy)
+                                } label: {
+                                    Image("message-circle")
+                                        .renderingMode(.template)
+                                        .foregroundColor(tabIndex == .history ? Color("main_blue") : Color("667080"))
+                                        .frame(width: proxy.size.width/3, height: 90)
+                                }
+                                
+                                Button {
+                                    tabIndex = .map
+                                    changeBarPosition(proxy: proxy)
+                                } label: {
+                                    Image("map")
+                                        .renderingMode(.template)
+                                        .foregroundColor(tabIndex == .map ? Color("main_blue") : Color("667080"))
+                                        .frame(width: proxy.size.width/3, height: 90)
+                                }
+                                
+                                Button {
+                                    tabIndex = .menu
+                                    changeBarPosition(proxy: proxy)
+                                } label: {
+                                    Image("menu")
+                                        .renderingMode(.template)
+                                        .foregroundColor(tabIndex == .menu ? Color("main_blue") : Color("667080"))
+                                        .frame(width: proxy.size.width/3, height: 90)
+                                }
 
-                    
-                }.edgesIgnoringSafeArea(.all)
-                    .onAppear {
-                        barWidth = proxy.size.width/3
-                        viewModel.moniteringLogged()
-                        viewModel.subscribeUser { result in
-                            switch result {
-                            case .success(let user):
-                                self.currentUser = user
-                            default:
-                                break
+                            }
+                            .background(Color("white"))
+                            .roundedCorner(30, corners: [.topLeft, .topRight])
+                            
+                            Rectangle()
+                                .frame(width: barWidth, height: 4)
+                                .foregroundColor(Color("main_blue"))
+                                .offset(x: barPosition , y: -86)
+                        }
+
+                        
+                    }.edgesIgnoringSafeArea(.all)
+                        .onAppear {
+                            barWidth = proxy.size.width/3
+                            viewModel.moniteringLogged()
+                            viewModel.subscribeUser { result in
+                                switch result {
+                                case .success(let user):
+                                    self.currentUser = user
+                                default:
+                                    break
+                                }
                             }
                         }
-                    }
+                }
+                .navigationViewStyle(StackNavigationViewStyle())
             }
-            .navigationViewStyle(StackNavigationViewStyle())
-        }
-        .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
-            Button("확인", role: .cancel) {
-                loginStatus = false
-                didLogin = false
+            .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
+                Button("확인", role: .cancel) {
+                    loginStatus = false
+                    didLogin = false
+                }
+            } message: {
+                Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
             }
-        } message: {
-            Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
+            .alert("로그아웃 실패", isPresented: $showAlert) {
+                Button("확인", role: .cancel) {}
+            } message: {
+                Text("잠시 후에 다시 시도해주세요")
+            }
         }
+        
     }
     @ViewBuilder
     func changeFragment() -> some View {
@@ -109,7 +118,19 @@ struct MainView: View {
             )
         case .menu:
             if let currentUser = currentUser {
-                MenuView(user: .constant(currentUser))
+                MenuView(
+                    user: .constant(currentUser),
+                    loginStatus: $loginStatus
+                ) {
+                    viewModel.logout { result in
+                        switch result {
+                        case .success(_):
+                            loginStatus.toggle()
+                        case.failure(_):
+                            showAlert.toggle()
+                        }
+                    }
+                }
             }
         }
     }

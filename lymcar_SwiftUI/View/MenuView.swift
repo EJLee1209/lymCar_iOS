@@ -9,6 +9,9 @@ import SwiftUI
 
 struct MenuView: View {
     @Binding var user: User
+    @Binding var loginStatus: Bool
+    var clickedLogout: () -> Void = {}
+    @State var showAlert: Bool = false
     
     private func getGender() -> String {
         switch user.gender {
@@ -129,7 +132,7 @@ struct MenuView: View {
                         
                         Button {
                             // 로그아웃
-                            
+                            showAlert.toggle()
                         } label: {
                             HStack {
                                 Text("로그아웃")
@@ -154,12 +157,22 @@ struct MenuView: View {
             }.padding(.top, 60)
         }
         .edgesIgnoringSafeArea(.all)
+        .alert("로그아웃", isPresented: $showAlert) {
+            Button("확인", role: .destructive) {
+                clickedLogout()
+            }
+            Button("취소", role: .cancel) {}
+        } message: {
+            Text("로그아웃 하시겠습니까?")
+                .padding(.top)
+        }
+
         
     }
 }
 
 struct MenuView_Previews: PreviewProvider {
     static var previews: some View {
-        MenuView(user: .constant(User(uid: "", email: "20185158@hallym.ac.kr", name: "은재", gender: Constants.GENDER_OPTION_MALE)))
+        MenuView(user: .constant(User(uid: "", email: "20185158@hallym.ac.kr", name: "은재", gender: Constants.GENDER_OPTION_MALE)), loginStatus: .constant(true))
     }
 }

@@ -379,5 +379,27 @@ class MainViewModel: ObservableObject {
             }
         }
     }
+    
+    func logout(completion: @escaping (Result<String, Error>) -> Void) {
+        self.progress = .loading
+        if let user = auth.currentUser {
+            db.collection(FireStoreTable.FCMTOKENS).document(user.uid)
+                .updateData([
+                    FireStoreTable.FIELD_TOKEN : ""
+                ])
+            do {
+                try auth.signOut()
+                completion(.success(""))
+                self.progress = .idle
+            }catch {
+                print("Error signOut : \(error)")
+                completion(.failure(error))
+                self.progress = .idle
+            }
+        } else {
+            self.progress = .idle
+        }
+        
+    }
 
 }
