@@ -21,4 +21,14 @@ struct User: Codable {
             "gender" : gender
         ]
     }
+    var genderKor: String {
+        switch self.gender {
+        case Constants.GENDER_OPTION_MALE:
+            return "남성"
+        case Constants.GENDER_OPTION_FEMALE:
+            return "여성"
+        default:
+            return "선택 안함"
+        }
+    }
 }

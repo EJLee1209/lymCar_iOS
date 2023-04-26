@@ -12,6 +12,7 @@ struct MenuView: View {
     @Binding var loginStatus: Bool
     var clickedLogout: () -> Void = {}
     @State var showAlert: Bool = false
+    @AppStorage("didLogin") private var didLogin = false
     
     private func getGender() -> String {
         switch user.gender {
@@ -62,7 +63,8 @@ struct MenuView: View {
                     
                     Group {
                         NavigationLink {
-                            Text("계정 정보")
+                            AccountInfoView(user: $user)
+                                .navigationBarBackButtonHidden()
                         } label: {
                             HStack(alignment: .center, spacing: 17) {
                                 Image("user")
@@ -160,6 +162,7 @@ struct MenuView: View {
         .alert("로그아웃", isPresented: $showAlert) {
             Button("확인", role: .destructive) {
                 clickedLogout()
+                didLogin = false
             }
             Button("취소", role: .cancel) {}
         } message: {

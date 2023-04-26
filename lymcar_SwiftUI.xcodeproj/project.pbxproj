@@ -48,6 +48,8 @@
 		CFBC8B2229E997B000257059 /* VerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2129E997B000257059 /* VerifyCodeView.swift */; };
 		CFBC8B2529E9984200257059 /* CodeTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2429E9984200257059 /* CodeTimer.swift */; };
 		CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2A29E9A28B00257059 /* KeyboardObserver.swift */; };
+		CFC9768229F8BE1A00E272D3 /* AccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC9768129F8BE1A00E272D3 /* AccountInfoView.swift */; };
+		CFC9768429F8C2AD00E272D3 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC9768329F8C2AD00E272D3 /* InfoView.swift */; };
 		CFCC124229F50FD200C24099 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCC124129F50FD200C24099 /* MenuView.swift */; };
 		CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A429EA83FB00F0138D /* RegisterView.swift */; };
 		CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A629EA856100F0138D /* CustomRadioButton.swift */; };
@@ -125,6 +127,8 @@
 		CFBC8B2129E997B000257059 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
 		CFBC8B2429E9984200257059 /* CodeTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTimer.swift; sourceTree = "<group>"; };
 		CFBC8B2A29E9A28B00257059 /* KeyboardObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardObserver.swift; sourceTree = "<group>"; };
+		CFC9768129F8BE1A00E272D3 /* AccountInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfoView.swift; sourceTree = "<group>"; };
+		CFC9768329F8C2AD00E272D3 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		CFCC124129F50FD200C24099 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		CFD385A429EA83FB00F0138D /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		CFD385A629EA856100F0138D /* CustomRadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRadioButton.swift; sourceTree = "<group>"; };
@@ -224,6 +228,7 @@
 				CF68BCF029F55FB300742D66 /* FavoriteEditView.swift */,
 				CF205D5E29F564B900AA7608 /* FavoriteMapView.swift */,
 				CFF2AB5829F7E3190027383D /* HistoryView.swift */,
+				CFC9768129F8BE1A00E272D3 /* AccountInfoView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -244,6 +249,7 @@
 				CF312B1429F3D2C8007F6BED /* MainPicker.swift */,
 				CFE8ABA329F67BAD00890C7A /* FavoriteItem.swift */,
 				CF3F49BB29F79AD600A551E4 /* FavoriteButton.swift */,
+				CFC9768329F8C2AD00E272D3 /* InfoView.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -401,6 +407,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFC9768429F8C2AD00E272D3 /* InfoView.swift in Sources */,
 				CF45C3A229EC312300719703 /* Constants.swift in Sources */,
 				CFE8AB9F29F66F2A00890C7A /* PlaceForRealm.swift in Sources */,
 				CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */,
@@ -443,6 +450,7 @@
 				CF68BCF129F55FB300742D66 /* FavoriteEditView.swift in Sources */,
 				CF774D6429EE82F900877D60 /* AuthResult.swift in Sources */,
 				CFBC8B2529E9984200257059 /* CodeTimer.swift in Sources */,
+				CFC9768229F8BE1A00E272D3 /* AccountInfoView.swift in Sources */,
 				CF45C3A429EC36B800719703 /* LoadingView.swift in Sources */,
 				CFF4A52629ED64150037FAF2 /* User.swift in Sources */,
 				CF8D054529EEA2B100B90AD4 /* Utils.swift in Sources */,
