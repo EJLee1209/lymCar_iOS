@@ -96,7 +96,9 @@ struct LoginView: View {
                             .padding(.horizontal, 20)
                             .padding(.bottom, keyboard.isShowing ? keyboard.height : 47)
                             .onTapGesture {
-                                viewModel.checkLogged(email: email)
+                                Task {
+                                    await viewModel.checkLogged(email: email)
+                                }
                             }
                             .alert("로그인 실패", isPresented: $showAlert) {
                                 HStack {

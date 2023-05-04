@@ -399,7 +399,6 @@ class MainViewModel: ObservableObject {
         } else {
             self.progress = .idle
         }
-        
     }
 
 }

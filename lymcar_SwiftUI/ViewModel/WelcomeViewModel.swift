@@ -41,7 +41,6 @@ class WelcomeViewModel: ObservableObject {
                     }
                 }
             }
-        
     }
     
     func requestVerifyCode(_ email: String, _ code: String) {
@@ -99,32 +98,28 @@ class WelcomeViewModel: ObservableObject {
         }
     }
     
-    func checkLogged(email: String) {
+    @MainActor func checkLogged(email: String) async {
         self.authResult = .loading
         let splitEmail = email.split(separator: "@")
         
-        print(String(splitEmail[0]))
-        db.collection(FireStoreTable.SIGNEDIN).whereField(FireStoreTable.FIELD_EMAIL, isEqualTo: String(splitEmail[0]))
-            .getDocuments { snapshot, error in
-                if let error = error {
-                    self.authResult = .failure(Constants.GET_USER_INFO_FAILED)
-                    print(error.localizedDescription)
-                    return
-                }
-                
-                guard let document = snapshot?.documents.first else {
-                    self.authResult = .success(Constants.LOGIN_POSSIBLE)
-                    return
-                }
-                
-                let deviceId = document.get(FireStoreTable.FIELD_DEVICEID) as! String
-                
-                if deviceId == Utils.getDeviceUUID() {
-                    self.authResult = .success(Constants.LOGIN_POSSIBLE)
-                } else {
-                    self.authResult = .failure(Constants.LOGIN_ALREADY_LOGGED)
-                }
+        do {
+            let snapshot = try await db.collection(FireStoreTable.SIGNEDIN).whereField(FireStoreTable.FIELD_EMAIL, isEqualTo: String(splitEmail[0])).getDocuments()
+            
+            guard let document = snapshot.documents.first else {
+                self.authResult = .success(Constants.LOGIN_POSSIBLE)
+                return
             }
+            let deviceId = document.get(FireStoreTable.FIELD_DEVICEID) as! String
+            
+            if deviceId == Utils.getDeviceUUID() {
+                self.authResult = .success(Constants.LOGIN_POSSIBLE)
+            } else {
+                self.authResult = .failure(Constants.LOGIN_ALREADY_LOGGED)
+            }
+        } catch {
+            self.authResult = .failure(Constants.GET_USER_INFO_FAILED)
+            print(error.localizedDescription)
+        }
     }
     
     func login(email: String, password: String) {

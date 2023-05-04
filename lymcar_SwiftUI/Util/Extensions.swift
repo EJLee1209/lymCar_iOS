@@ -59,6 +59,24 @@ extension String {
             return nil
         }
     }
+    func getPrettyHour() -> String {
+        var prettyDateTime = ""
+        var times = self.split(separator: "T")[1].split(separator: ":")
+        var hour = Int(times[0])!
+        let min = times[1]
+        
+        if hour >= 12 {
+            prettyDateTime += " 오후"
+            if hour > 12 {
+                hour -= 12
+            }
+        } else {
+            prettyDateTime += " 오전"
+        }
+        prettyDateTime += (" \(hour):\(min)")
+        
+        return prettyDateTime
+    }
 }
 
 extension View {

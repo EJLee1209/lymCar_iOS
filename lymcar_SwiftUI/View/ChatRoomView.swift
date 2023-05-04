@@ -10,7 +10,6 @@ import SwiftUI
 struct ChatRoomView: View {
     @Binding var myRoom: CarPoolRoom
     @Binding var mapToChatRoom: Bool
-    
     @State var showExitAlert: Bool = false
     @State var showDeactivateAlert: Bool = false
     @State var showSystemAlert: Bool = false
@@ -66,6 +65,16 @@ struct ChatRoomView: View {
                                 .font(.system(size: 15))
                                 .padding(.top, 13)
                             
+                            List {
+                                ForEach(Chat().myMockList, id: \.id) { chat in
+                                    ChatItem(chat: chat)
+                                        .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
+                                        .listRowSeparator(.hidden)
+                                        .padding(.bottom, 24)
+                                }
+                                
+                            }
+                            .listStyle(.plain)
                             Spacer()
                         }
                     }

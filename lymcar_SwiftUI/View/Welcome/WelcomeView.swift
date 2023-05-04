@@ -78,7 +78,9 @@ struct WelcomeView: View {
         .onAppear {
             if didLogin {
                 // 이전에 로그인했었음
-                viewModel.checkLogged(email: email)
+                Task {
+                    await viewModel.checkLogged(email: email)
+                }
             } else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                     self.isLoading.toggle()

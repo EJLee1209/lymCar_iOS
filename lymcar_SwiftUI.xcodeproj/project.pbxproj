@@ -10,6 +10,7 @@
 		CF0435BC29F2403700F8A3D6 /* CreateRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */; };
 		CF07B6C429F1839800C482F1 /* CarPoolRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */; };
 		CF07B6C629F18D2300C482F1 /* MyRoomBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */; };
+		CF096D282A0223D800438EAC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = CF096D272A0223D800438EAC /* ComposableArchitecture */; };
 		CF205D5F29F564B900AA7608 /* FavoriteMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF205D5E29F564B900AA7608 /* FavoriteMapView.swift */; };
 		CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */; };
 		CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2751E229EFE65200FE550F /* searchResultItem.swift */; };
@@ -29,6 +30,8 @@
 		CF6C043D29EED8C6004D3123 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */; };
 		CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */; };
 		CF774D6429EE82F900877D60 /* AuthResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6329EE82F900877D60 /* AuthResult.swift */; };
+		CF7FA9362A03534F00A2936F /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA9352A03534F00A2936F /* ChatItem.swift */; };
+		CF7FA9382A0355A000A2936F /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA9372A0355A000A2936F /* Chat.swift */; };
 		CF8D054329EEA1E300B90AD4 /* SignedIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8D054229EEA1E300B90AD4 /* SignedIn.swift */; };
 		CF8D054529EEA2B100B90AD4 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8D054429EEA2B100B90AD4 /* Utils.swift */; };
 		CF8D054929EEAFE300B90AD4 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8D054829EEAFE300B90AD4 /* MainView.swift */; };
@@ -107,6 +110,8 @@
 		CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
 		CF774D6329EE82F900877D60 /* AuthResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResult.swift; sourceTree = "<group>"; };
+		CF7FA9352A03534F00A2936F /* ChatItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
+		CF7FA9372A0355A000A2936F /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		CF8D054229EEA1E300B90AD4 /* SignedIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedIn.swift; sourceTree = "<group>"; };
 		CF8D054429EEA2B100B90AD4 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		CF8D054829EEAFE300B90AD4 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -165,6 +170,7 @@
 				CFF4A54529ED671B0037FAF2 /* FirebaseInstallations in Frameworks */,
 				CFF4A53329ED671A0037FAF2 /* FirebaseAuthCombine-Community in Frameworks */,
 				CFF4A53D29ED671A0037FAF2 /* FirebaseFirestoreCombine-Community in Frameworks */,
+				CF096D282A0223D800438EAC /* ComposableArchitecture in Frameworks */,
 				CFF4A53B29ED671A0037FAF2 /* FirebaseFirestore in Frameworks */,
 				CFE8645B29ECDB1200C4373C /* Alamofire in Frameworks */,
 			);
@@ -250,6 +256,7 @@
 				CFE8ABA329F67BAD00890C7A /* FavoriteItem.swift */,
 				CF3F49BB29F79AD600A551E4 /* FavoriteButton.swift */,
 				CFC9768329F8C2AD00E272D3 /* InfoView.swift */,
+				CF7FA9352A03534F00A2936F /* ChatItem.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -279,6 +286,7 @@
 				CF2751E029EFCB8700FE550F /* SearchKeywordResult.swift */,
 				CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */,
 				CFE8AB9E29F66F2A00890C7A /* PlaceForRealm.swift */,
+				CF7FA9372A0355A000A2936F /* Chat.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -344,6 +352,7 @@
 				CFE8AB9A29F66E7A00890C7A /* Realm */,
 				CFE8AB9C29F66E7A00890C7A /* RealmSwift */,
 				CFE8ABA129F674BF00890C7A /* PopupView */,
+				CF096D272A0223D800438EAC /* ComposableArchitecture */,
 			);
 			productName = lymcar_SwiftUI;
 			productReference = CFBC8B0429E96A3700257059 /* lymcar_SwiftUI.app */;
@@ -378,6 +387,7 @@
 				CFF4A52729ED671A0037FAF2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				CFE8AB9929F66E7A00890C7A /* XCRemoteSwiftPackageReference "realm-swift" */,
 				CFE8ABA029F674BF00890C7A /* XCRemoteSwiftPackageReference "PopupView" */,
+				CF096D262A0223D800438EAC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = CFBC8B0529E96A3700257059 /* Products */;
 			projectDirPath = "";
@@ -410,6 +420,7 @@
 				CFC9768429F8C2AD00E272D3 /* InfoView.swift in Sources */,
 				CF45C3A229EC312300719703 /* Constants.swift in Sources */,
 				CFE8AB9F29F66F2A00890C7A /* PlaceForRealm.swift in Sources */,
+				CF7FA9382A0355A000A2936F /* Chat.swift in Sources */,
 				CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */,
 				CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */,
 				CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */,
@@ -437,6 +448,7 @@
 				CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */,
 				CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */,
 				CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */,
+				CF7FA9362A03534F00A2936F /* ChatItem.swift in Sources */,
 				CFF2AB5929F7E3190027383D /* HistoryView.swift in Sources */,
 				CF8D054929EEAFE300B90AD4 /* MainView.swift in Sources */,
 				CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */,
@@ -675,6 +687,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		CF096D262A0223D800438EAC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.52.0;
+			};
+		};
 		CFE8645929ECDB1200C4373C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -710,6 +730,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CF096D272A0223D800438EAC /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF096D262A0223D800438EAC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
 		CFE8645A29ECDB1200C4373C /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CFE8645929ECDB1200C4373C /* XCRemoteSwiftPackageReference "Alamofire" */;
