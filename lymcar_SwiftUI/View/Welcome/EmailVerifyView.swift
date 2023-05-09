@@ -18,6 +18,7 @@ struct EmailVerifyFeature: ReducerProtocol {
         var isLoading = false
         
         let guideText = "학교 웹메일을 통해 재학생 인증을 해주세요"
+        var verifyCodeState = VerifyCodeFeature.State() // 다음 화면의 state
     }
     
     enum Action: Equatable {
@@ -35,6 +36,8 @@ struct EmailVerifyFeature: ReducerProtocol {
         case changedEmail(String) // Email 입력
         case requestSendVerifyCode(_ email: String) // 인증 코드 전송 요청
         case responseSendVerifyCode(TaskResult<VerifyInfo>) // 인증 코드 전송 요청에 대한 response
+        case verifyCodeAction(VerifyCodeFeature.Action) // 다음화면의 action
+        
         case dismissAlert // alert 닫음
         case onDisappear
         case onAppear
@@ -100,6 +103,9 @@ struct EmailVerifyFeature: ReducerProtocol {
                 return .none
             }
         }
+        Scope(state: \.verifyCodeState, action: /Action.verifyCodeAction) {
+            VerifyCodeFeature()
+        }
     }
 }
 
@@ -161,7 +167,14 @@ struct EmailVerifyView: View {
                                 get: { viewStore.isSendOk },
                                 set: {_ in})
                             ) {
-                                VerifyCodeView(email: viewStore.email, comeBackToRootView: $comeBackToRootView)
+                                VerifyCodeView(
+                                    email: viewStore.email,
+                                    comeBackToRootView: $comeBackToRootView,
+                                    store: self.store.scope(
+                                        state: \.verifyCodeState,
+                                        action: EmailVerifyFeature.Action.verifyCodeAction
+                                    )
+                                )
                             } label: {}
                             
                             RoundedButton(label: "인증하기", buttonColor: "main_blue", labelColor: "white")
