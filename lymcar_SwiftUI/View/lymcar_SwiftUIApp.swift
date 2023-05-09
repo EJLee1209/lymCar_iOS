@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Firebase
-
+import ComposableArchitecture
 
 @main
 struct lymcar_SwiftUIApp: App {
@@ -16,7 +16,9 @@ struct lymcar_SwiftUIApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            WelcomeView()
+            WelcomeView(
+                store: Store(initialState: WelcomeFeature.State(), reducer: WelcomeFeature())
+            )
                 .onAppear {
                     UIApplication.shared.addTapGestureRecognizer()
                 }

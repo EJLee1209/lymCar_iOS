@@ -6,117 +6,110 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct WelcomeView: View {
     @AppStorage("email") private var email = ""
     @AppStorage("password") private var password = ""
     @AppStorage("didLogin") private var didLogin = false
     
-    @State var registrationInProgress = false
-    @State var loginStatus = false
-    @State var autoLogin = false
-    @State var isLoading = true
-    @State var showAlert = false
-    @StateObject var viewModel = WelcomeViewModel()
+    let store: StoreOf<WelcomeFeature>
     
     var body: some View {
-        NavigationView {
-            ZStack(alignment: .topLeading) {
-                Image("welcomeBg")
-                    .resizable()
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("Welcome!")
-                        .foregroundColor(.white)
-                        .font(.system(size: 40))
-                        .fontWeight(.heavy)
-                        .padding(.leading, 21)
-                    Text("림카에 오신걸 환영합니다")
-                        .foregroundColor(.white)
-                        .font(.system(size: 15))
-                        .padding(.top, 10)
-                        .padding(.leading, 21)
-                    Spacer()
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            NavigationView {
+                ZStack(alignment: .topLeading) {
+                    Image("welcomeBg")
+                        .resizable()
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Welcome!")
+                            .foregroundColor(.white)
+                            .font(.system(size: 40))
+                            .fontWeight(.heavy)
+                            .padding(.leading, 21)
+                        Text("림카에 오신걸 환영합니다")
+                            .foregroundColor(.white)
+                            .font(.system(size: 15))
+                            .padding(.top, 10)
+                            .padding(.leading, 21)
+                        Spacer()
 
-                    NavigationLink(isActive: $loginStatus) {
-                        LoginView(loginStatus: $loginStatus)
-                            .environmentObject(viewModel)
-                    } label: {
-                        RoundedButton(
-                            label: "로그인",
-                            buttonColor: "main_blue",
-                            labelColor: "white"
-                        )
-                            .padding(.horizontal, 78)
+                        NavigationLink(isActive: Binding(
+                            get: { viewStore.loginStatus },
+                            set: { viewStore.send(.changedLoginStatus($0)) })
+                        ) {
+                            LoginView(loginStatus: Binding(
+                                get: { viewStore.loginStatus },
+                                set: { viewStore.send(.changedLoginStatus($0)) })
+                            )
+                        } label: {
+                            RoundedButton(
+                                label: "로그인",
+                                buttonColor: "main_blue",
+                                labelColor: "white"
+                            )
+                                .padding(.horizontal, 78)
+                        }
+                        
+                        NavigationLink(isActive: Binding(
+                            get: { viewStore.registrationInProgress },
+                            set: { viewStore.send(.changedRegistrationInProgress($0)) })
+                        ) {
+                            EmailVerifyView(comeBackToRootView: Binding(
+                                get: { viewStore.registrationInProgress },
+                                set: { viewStore.send(.changedRegistrationInProgress($0)) }), store: self.store.scope(
+                                    state: \.EmailVerifyState,
+                                    action: WelcomeFeature.Action.EmailVerifyAction
+                                )
+                            )
+                        } label: {
+                            RoundedButton(
+                                label: "회원가입",
+                                buttonColor: "white",
+                                labelColor: "main_blue"
+                            )
+                                .padding(.bottom, 105)
+                                .padding(.top, 12)
+                                .padding(.horizontal, 78)
+                        }
                     }
-
-                    NavigationLink(isActive: $registrationInProgress) {
-                        EmailVerifyView(comeBackToRootView: $registrationInProgress)
-                    } label: {
-                        RoundedButton(
-                            label: "회원가입",
-                            buttonColor: "white",
-                            labelColor: "main_blue"
-                        )
-                            .padding(.bottom, 105)
-                            .padding(.top, 12)
-                            .padding(.horizontal, 78)
+                    .padding(.top, 137)
+                    
+                    if viewStore.isLoading {
+                        launchScreenView
                     }
-                }
-                .padding(.top, 137)
-                
-                if isLoading {
-                    launchScreenView
-                }
-                
-                // 자동 로그인시 이 navigation link 를 타고 메인화면으로 이동함
-                NavigationLink(isActive: $autoLogin) {
-                    MainView(loginStatus: $autoLogin).navigationBarBackButtonHidden()
-                } label: {}
-            }.edgesIgnoringSafeArea(.all)
-        }
-        .navigationViewStyle(StackNavigationViewStyle())
-        .onAppear {
-            if didLogin {
-                // 이전에 로그인했었음
-                Task {
-                    await viewModel.checkLogged(email: email)
-                }
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                    self.isLoading.toggle()
-                })
+                    
+                    // 자동 로그인시 이 navigation link 를 타고 메인화면으로 이동함
+                    NavigationLink(isActive: Binding(
+                        get: { viewStore.autoLogin },
+                        set: { viewStore.send(.changedAutoLogin($0)) })
+                    ) {
+                        MainView(loginStatus: Binding(
+                            get: { viewStore.autoLogin },
+                            set: { viewStore.send(.changedAutoLogin($0)) })
+                        ).navigationBarBackButtonHidden()
+                    } label: {}
+                }.edgesIgnoringSafeArea(.all)
             }
-            
-        }
-        .onChange(of: viewModel.authResult) { newValue in
-            switch newValue {
-            case .failure(let msg):
-                // 이미 로그인한 기기가 있거나 로그인 실패
-                showAlert = true
-            case .success(let msg):
-                if msg == Constants.LOGIN_POSSIBLE {
-                    // 로그인 가능
-                    viewModel.login(email: email, password: password)
+            .navigationViewStyle(StackNavigationViewStyle())
+            .onAppear {
+                viewStore.send(.onAppear)
+                viewStore.send(.getSavedEmail(email))
+                viewStore.send(.getSavedPassword(password))
+                if didLogin {
+                    // 이전에 로그인했었음
+                    viewStore.send(.requestCheckLogged(email))
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                        viewStore.send(.changedIsLoading)
+                    })
                 }
-                if msg == Constants.LOGIN_SUCCESS {
-                    // 로그인 성공
-                    autoLogin = true
-                    isLoading.toggle()
-                }
-            default:
-                break
             }
+            .alert(
+                self.store.scope(state: \.alert),
+                dismiss: .dismissAlert
+            )
         }
-        .alert("로그인 실패", isPresented: $showAlert) {
-            Button("확인", role: .cancel) {
-                isLoading.toggle()
-                didLogin = false
-            }
-        } message: {
-            Text("다른기기에서 로그인하여\n자동 로그아웃 처리 되었습니다")
-                .padding(.top)
-        }
-        
     }
 }
 
@@ -132,6 +125,8 @@ extension WelcomeView {
 
 struct WelcomeView_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeView()
+        WelcomeView(
+            store: Store(initialState: WelcomeFeature.State(), reducer: WelcomeFeature())
+        )
     }
 }
