@@ -158,6 +158,7 @@ struct WelcomeFeature: ReducerProtocol {
             case .dismissAlert:
                 state.alert = nil
                 return .none
+            
             case .onAppear:
                 state = .init()
                 return .none
