@@ -20,7 +20,7 @@ enum RegisterField: Hashable {
 struct RegisterView: View {
     var email: String
     // Navigation RootView 로 돌아가기 위한 Binding
-    @Binding var comeBackToRootView: Bool
+    @Binding var goToRootView: Bool
     
     // 키보드 입력 FocusState
     @FocusState private var focusField: RegisterField?
@@ -255,7 +255,7 @@ struct RegisterView: View {
                 })
                 .onChange(of: viewStore.isSuccessJoin, perform: { newValue in
                     if newValue {
-                        self.comeBackToRootView.toggle()
+                        self.goToRootView.toggle()
                     }
                 })
                 .alert(
@@ -272,7 +272,7 @@ struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
         RegisterView(
             email: "",
-            comeBackToRootView: .constant(false),
+            goToRootView: .constant(false),
             store: Store(initialState: RegisterFeature.State(), reducer: RegisterFeature())
         )
     }

@@ -34,13 +34,12 @@ struct WelcomeView: View {
                             .padding(.leading, 21)
                         Spacer()
 
-                        NavigationLink(isActive: Binding(
-                            get: { viewStore.loginStatus },
-                            set: { viewStore.send(.changedLoginStatus($0)) })
-                        ) {
-                            LoginView(loginStatus: Binding(
-                                get: { viewStore.loginStatus },
-                                set: { viewStore.send(.changedLoginStatus($0)) })
+                        NavigationLink {
+                            LoginView(
+                                store: self.store.scope(
+                                    state: \.LoginViewState,
+                                    action: WelcomeFeature.Action.LoginViewAction
+                                )
                             )
                         } label: {
                             RoundedButton(
@@ -55,9 +54,12 @@ struct WelcomeView: View {
                             get: { viewStore.registrationInProgress },
                             set: { viewStore.send(.changedRegistrationInProgress($0)) })
                         ) {
-                            EmailVerifyView(comeBackToRootView: Binding(
-                                get: { viewStore.registrationInProgress },
-                                set: { viewStore.send(.changedRegistrationInProgress($0)) }), store: self.store.scope(
+                            EmailVerifyView(
+                                goToRootView: Binding(
+                                    get: { viewStore.registrationInProgress },
+                                    set: { viewStore.send(.changedRegistrationInProgress($0)) }
+                                ),
+                                store: self.store.scope(
                                     state: \.EmailVerifyState,
                                     action: WelcomeFeature.Action.EmailVerifyAction
                                 )
@@ -82,12 +84,9 @@ struct WelcomeView: View {
                     // 자동 로그인시 이 navigation link 를 타고 메인화면으로 이동함
                     NavigationLink(isActive: Binding(
                         get: { viewStore.autoLogin },
-                        set: { viewStore.send(.changedAutoLogin($0)) })
+                        set: { _ in })
                     ) {
-                        MainView(loginStatus: Binding(
-                            get: { viewStore.autoLogin },
-                            set: { viewStore.send(.changedAutoLogin($0)) })
-                        ).navigationBarBackButtonHidden()
+                        MainView().navigationBarBackButtonHidden()
                     } label: {}
                 }.edgesIgnoringSafeArea(.all)
             }

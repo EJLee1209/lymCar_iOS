@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 //MARK: - EmailVerifyView
 struct EmailVerifyView: View {
-    @Binding var comeBackToRootView: Bool    
+    @Binding var goToRootView: Bool    
     @FocusState private var focusField: Int?
     
     @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
@@ -67,7 +67,7 @@ struct EmailVerifyView: View {
                             ) {
                                 VerifyCodeView(
                                     email: viewStore.email,
-                                    comeBackToRootView: $comeBackToRootView,
+                                    goToRootView: $goToRootView,
                                     store: self.store.scope(
                                         state: \.verifyCodeState,
                                         action: EmailVerifyFeature.Action.verifyCodeAction
@@ -108,7 +108,7 @@ struct EmailVerifyView: View {
 struct EmailVerifyView_Previews: PreviewProvider {
     static var previews: some View {
         EmailVerifyView(
-            comeBackToRootView: .constant(false),
+            goToRootView: .constant(false),
             store: Store(initialState: EmailVerifyFeature.State(), reducer: EmailVerifyFeature())
         )
     }

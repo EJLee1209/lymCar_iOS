@@ -58,6 +58,7 @@ class MainViewModel: ObservableObject {
         myRoomRegistration?.remove()
         moniteringRegistration?.remove()
         userRegistration?.remove()
+        print("removed")
     }
     
     func moniteringLogged() {

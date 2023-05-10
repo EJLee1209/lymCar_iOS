@@ -31,7 +31,7 @@
 		CF6C043D29EED8C6004D3123 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */; };
 		CF76AEF42A0B3EF8004CBA60 /* EmailVerifyFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF76AEF32A0B3EF8004CBA60 /* EmailVerifyFeature.swift */; };
 		CF76AEF62A0B4BCF004CBA60 /* VerifyCodeFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF76AEF52A0B4BCF004CBA60 /* VerifyCodeFeature.swift */; };
-		CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */; };
+		CF76AEF82A0B6296004CBA60 /* LoginFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF76AEF72A0B6296004CBA60 /* LoginFeature.swift */; };
 		CF774D6429EE82F900877D60 /* AuthResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6329EE82F900877D60 /* AuthResult.swift */; };
 		CF7FA9362A03534F00A2936F /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA9352A03534F00A2936F /* ChatItem.swift */; };
 		CF7FA9382A0355A000A2936F /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA9372A0355A000A2936F /* Chat.swift */; };
@@ -117,7 +117,7 @@
 		CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CF76AEF32A0B3EF8004CBA60 /* EmailVerifyFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerifyFeature.swift; sourceTree = "<group>"; };
 		CF76AEF52A0B4BCF004CBA60 /* VerifyCodeFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeFeature.swift; sourceTree = "<group>"; };
-		CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
+		CF76AEF72A0B6296004CBA60 /* LoginFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFeature.swift; sourceTree = "<group>"; };
 		CF774D6329EE82F900877D60 /* AuthResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResult.swift; sourceTree = "<group>"; };
 		CF7FA9352A03534F00A2936F /* ChatItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
 		CF7FA9372A0355A000A2936F /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
@@ -191,6 +191,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CF76AEF92A0B62A2004CBA60 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CF4AAC272A08D6A000B84020 /* WelcomeFeature.swift */,
+				CFB387832A0B3255005E27A5 /* RegisterFeature.swift */,
+				CF76AEF32A0B3EF8004CBA60 /* EmailVerifyFeature.swift */,
+				CF76AEF52A0B4BCF004CBA60 /* VerifyCodeFeature.swift */,
+				CF76AEF72A0B6296004CBA60 /* LoginFeature.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		CFBC8AFB29E96A3700257059 = {
 			isa = PBXGroup;
 			children = (
@@ -309,10 +321,7 @@
 			children = (
 				CFC33A642A08B71900DD18D8 /* ServerClient.swift */,
 				CFC33A662A08BDA100DD18D8 /* AuthClient.swift */,
-				CF4AAC272A08D6A000B84020 /* WelcomeFeature.swift */,
-				CFB387832A0B3255005E27A5 /* RegisterFeature.swift */,
-				CF76AEF32A0B3EF8004CBA60 /* EmailVerifyFeature.swift */,
-				CF76AEF52A0B4BCF004CBA60 /* VerifyCodeFeature.swift */,
+				CF76AEF92A0B62A2004CBA60 /* Core */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -332,7 +341,6 @@
 		CFEB077629ECD134002D7872 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */,
 				CF8D054A29EEB25800B90AD4 /* MainViewModel.swift */,
 				CFE8ABA529F6DC7D00890C7A /* RealmManager.swift */,
 			);
@@ -448,6 +456,7 @@
 				CF45C3A229EC312300719703 /* Constants.swift in Sources */,
 				CFE8AB9F29F66F2A00890C7A /* PlaceForRealm.swift in Sources */,
 				CF7FA9382A0355A000A2936F /* Chat.swift in Sources */,
+				CF76AEF82A0B6296004CBA60 /* LoginFeature.swift in Sources */,
 				CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */,
 				CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */,
 				CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */,
@@ -459,7 +468,6 @@
 				CFCC124229F50FD200C24099 /* MenuView.swift in Sources */,
 				CF76AEF62A0B4BCF004CBA60 /* VerifyCodeFeature.swift in Sources */,
 				CF8D054B29EEB25800B90AD4 /* MainViewModel.swift in Sources */,
-				CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */,
 				CFBC8B2029E9968200257059 /* EmailVerifyView.swift in Sources */,
 				CFE8ABA629F6DC7D00890C7A /* RealmManager.swift in Sources */,
 				CFBC8B1729E96A7E00257059 /* WelcomeView.swift in Sources */,

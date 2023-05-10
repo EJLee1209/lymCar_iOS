@@ -15,7 +15,7 @@ struct VerifyCodeView: View {
     @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
     
     var email: String
-    @Binding var comeBackToRootView: Bool
+    @Binding var goToRootView: Bool
     var store: StoreOf<VerifyCodeFeature>
     
     var body: some View {
@@ -106,7 +106,7 @@ struct VerifyCodeView: View {
                             ) {
                                 RegisterView(
                                     email: email,
-                                    comeBackToRootView: $comeBackToRootView,
+                                    goToRootView: $goToRootView,
                                     store: self.store.scope(
                                         state: \.registerState,
                                         action: VerifyCodeFeature.Action.registerFeatureAction
@@ -175,7 +175,7 @@ struct VerifyCodeView: View {
 struct VerifyCodeView_Previews: PreviewProvider {
     static var previews: some View {
         VerifyCodeView(
-            email: "email", comeBackToRootView: .constant(false),
+            email: "email", goToRootView: .constant(false),
             store: Store(initialState: VerifyCodeFeature.State(), reducer: VerifyCodeFeature())
         )
     }

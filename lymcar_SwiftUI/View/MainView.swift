@@ -12,8 +12,8 @@ enum TabIndex {
 }
 
 struct MainView: View {
+    @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = MainViewModel()
-    @Binding var loginStatus: Bool
     
     @State var tabIndex : TabIndex = .map
     @State var barPosition: CGFloat = 0
@@ -91,9 +91,11 @@ struct MainView: View {
                 .navigationViewStyle(StackNavigationViewStyle())
             }
             .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
-                Button("확인") {
-                    loginStatus=false
+                Button(role: .cancel) {
+                    dismiss()
                     didLogin=false
+                } label: {
+                    Text("확인")
                 }
             } message: {
                 Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
@@ -103,8 +105,10 @@ struct MainView: View {
             } message: {
                 Text("잠시 후에 다시 시도해주세요")
             }
+            .onDisappear {
+                viewModel.removeRegistration()
+            }
         }
-        
     }
     @ViewBuilder
     func changeFragment() -> some View {
@@ -119,13 +123,12 @@ struct MainView: View {
         case .menu:
             if let currentUser = currentUser {
                 MenuView(
-                    user: .constant(currentUser),
-                    loginStatus: $loginStatus
+                    user: .constant(currentUser)
                 ) {
                     viewModel.logout { result in
                         switch result {
                         case .success(_):
-                            loginStatus.toggle()
+                            dismiss()
                         case.failure(_):
                             showAlert.toggle()
                         }
@@ -169,6 +172,6 @@ struct Fragment: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView(loginStatus: .constant(true))
+        MainView()
     }
 }

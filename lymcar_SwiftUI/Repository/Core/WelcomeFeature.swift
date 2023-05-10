@@ -14,12 +14,13 @@ struct WelcomeFeature: ReducerProtocol {
         var email=""
         var password=""
         var registrationInProgress = false
-        var loginStatus = false
         var autoLogin = false
         var isLoading = true
         var alert: AlertState<Action>?
         
+        // 다른 view의 state
         var EmailVerifyState = EmailVerifyFeature.State()
+        var LoginViewState = LoginFeature.State()
     }
     
     enum Action: Equatable {
@@ -49,15 +50,15 @@ struct WelcomeFeature: ReducerProtocol {
         case getSavedEmail(_ email: String)
         case getSavedPassword(_ password: String)
         case changedRegistrationInProgress(_ newValue: Bool)
-        case changedLoginStatus(_ newValue: Bool)
-        case changedAutoLogin(_ newValue: Bool)
         case changedIsLoading
         
         // alert dismiss
         case dismissAlert
         case onAppear
         
+        // 다른 view의 action
         case EmailVerifyAction(EmailVerifyFeature.Action)
+        case LoginViewAction(LoginFeature.Action)
     }
     
     @Dependency(\.authClient) var authClient
@@ -144,13 +145,6 @@ struct WelcomeFeature: ReducerProtocol {
             case let .changedRegistrationInProgress(newValue):
                 state.registrationInProgress = newValue
                 return .none
-            case let .changedLoginStatus(newValue):
-                print("call changedLoginStatus new Value is : \(newValue)")
-                state.loginStatus = newValue
-                return .none
-            case let .changedAutoLogin(newValue):
-                state.autoLogin = newValue
-                return .none
             case .changedIsLoading:
                 state.isLoading.toggle()
                 return .none
@@ -168,6 +162,9 @@ struct WelcomeFeature: ReducerProtocol {
         }
         Scope(state: \.EmailVerifyState, action: /Action.EmailVerifyAction) {
             EmailVerifyFeature()
+        }
+        Scope(state: \.LoginViewState, action: /Action.LoginViewAction) {
+            LoginFeature()
         }
     }
 }
