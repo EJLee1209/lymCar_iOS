@@ -14,7 +14,7 @@ class Chat: Object {
     @Persisted var userId: String = ""
     @Persisted var userName: String = ""
     @Persisted var msg: String = ""
-    @Persisted var dateTime: String = Utils.getCurrentDateTime()
+    @Persisted var dateTime: String = Utils.getCurrentDateTime(isSep: false)
     @Persisted var messageType: String = ""
     @Persisted var sendSuccess: String = SEND_STATE_LOADING
 }

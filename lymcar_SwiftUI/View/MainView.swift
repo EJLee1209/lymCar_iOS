@@ -79,15 +79,6 @@ struct MainView: View {
                     }.edgesIgnoringSafeArea(.all)
                         .onAppear {
                             barWidth = proxy.size.width/3
-                            viewModel.moniteringLogged()
-                            viewModel.subscribeUser { result in
-                                switch result {
-                                case .success(let user):
-                                    self.currentUser = user
-                                default:
-                                    break
-                                }
-                            }
                         }
                 }
                 .navigationViewStyle(StackNavigationViewStyle())
@@ -108,10 +99,20 @@ struct MainView: View {
                 Text("잠시 후에 다시 시도해주세요")
             }
             .onDisappear {
-                viewModel.removeRegistration()
+                viewModel.removeAllRegistration()
+                print("mainView onDisapear")
             }
             .onAppear {
                 viewModel.updateFcmToken(token: self.appDelegate.fcmToken)
+                viewModel.moniteringLogged()
+                viewModel.subscribeMyRoom()
+                viewModel.subscribeUser()
+            }
+            .onChange(of: viewModel.myRoom) { newValue in
+                viewModel.participantsRegistration?.remove()
+                if let safeRoom = newValue {
+                    viewModel.subscribeParticipantsTokens(roomId: safeRoom.roomId)
+                }
             }
             
         }
@@ -123,13 +124,12 @@ struct MainView: View {
             HistoryView()
         case .map:
             MapView(
-                currentUser: $currentUser,
                 showBottomSheet: $showBottomSheet
             )
             .environmentObject(self.viewModel)
             .environmentObject(self.appDelegate)
         case .menu:
-            if let currentUser = currentUser {
+            if let currentUser = viewModel.currentUser {
                 MenuView(
                     user: .constant(currentUser)
                 ) {

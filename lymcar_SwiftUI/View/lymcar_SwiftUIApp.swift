@@ -23,7 +23,6 @@ struct lymcar_SwiftUIApp: App {
                 .onAppear {
                     UIApplication.shared.addTapGestureRecognizer()
                 }
-                
         }
     }
 }

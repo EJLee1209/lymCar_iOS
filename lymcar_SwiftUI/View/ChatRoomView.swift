@@ -14,11 +14,13 @@ struct ChatRoomView: View {
     @State var showDeactivateAlert: Bool = false
     @State var showSystemAlert: Bool = false
     @State var systemMsg: String = ""
+    @State var msg: String = ""
+    @State var tokensMap: [String:String] = [:]
     
     @EnvironmentObject var viewModel : MainViewModel
     @EnvironmentObject var appDelegate : AppDelegate
     @StateObject var realmManager = RealmManger()
-    
+    @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
     @GestureState var dragOffset: CGSize = .zero
     
     var body: some View {
@@ -69,21 +71,60 @@ struct ChatRoomView: View {
                             
                             ScrollViewReader { proxy in
                                 List {
-                                    ForEach(realmManager.messages.indices, id: \.self) { idx in
-                                        ChatItem(chat: realmManager.messages[idx], user: viewModel.currentUser)
+                                    ForEach(realmManager.messages, id: \.self) { chat in
+                                        ChatItem(chat: chat, user: viewModel.currentUser)
                                             .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
                                             .listRowSeparator(.hidden)
                                             .padding(.bottom, 24)
-                                            .id(idx)
+                                            .id(chat)
                                     }
                                 }
                                 .listStyle(.plain)
-                                .onChange(of: realmManager.messages.count) { cnt in
-                                    withAnimation {
-                                        proxy.scrollTo(cnt-1)
+                                .onChange(of: realmManager.messages) { messages in
+                                    proxy.scrollTo(messages.last)
+                                }
+                                .onChange(of: keyboard.isShowing) { newValue in
+                                    print("keyboard.isShowing : \(newValue)")
+                                    DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+                                        proxy.scrollTo(realmManager.messages.last)
                                     }
                                 }
                             }
+                            
+                            HStack(alignment: .center, spacing: 0) {
+                                TextField(text: $msg) {
+                                    Text("대화해보세요")
+                                }
+                                .padding(.horizontal, 10)
+                                
+                                Button {
+                                    if !msg.isEmpty {
+                                      // 메세지 전송
+                                        guard let safeUser = viewModel.currentUser else { return }
+                                        let chatToSend = Chat(value: [
+                                            "roomId" : myRoom.roomId,
+                                            "userId" : safeUser.uid,
+                                            "userName" : safeUser.name,
+                                            "msg" : self.msg,
+                                            "messageType" : CHAT_NORMAL
+                                        ])
+                                        viewModel.sendPushMessage(
+                                            chat: chatToSend,
+                                            receiveTokens: self.tokensMap
+                                        )
+                                        realmManager.saveChat(chat: chatToSend)
+                                        
+                                        self.msg = ""
+                                    }
+                                } label: {
+                                    Image("button_send")
+                                }
+                                .padding(.all, 14)
+                            }
+                            .background(Color("f5f5f5"))
+                            .cornerRadius(30)
+                            .padding(.bottom, 10)
+                            .padding(.horizontal, 14)
                             
                             Spacer()
                         }
@@ -94,7 +135,7 @@ struct ChatRoomView: View {
                     .padding(.top, 24)
                 }
             }
-            .edgesIgnoringSafeArea(.all)
+            .edgesIgnoringSafeArea(.top)
             .alert("채팅방 나가기", isPresented: $showExitAlert) {
                 HStack {
                     Button("확인", role: .destructive) {
@@ -140,6 +181,19 @@ struct ChatRoomView: View {
                 UNUserNotificationCenter.current().removeAllDeliveredNotifications()
                 realmManager.getChats(roomId: myRoom.roomId)
                 appDelegate.realmManager = self.realmManager
+                keyboard.addObserver()
+                
+                var copyTokens = viewModel.participantsTokens
+                copyTokens.removeValue(forKey: appDelegate.fcmToken)
+                self.tokensMap = copyTokens
+            }
+            .onDisappear {
+                keyboard.removeObserver()
+            }
+            .onChange(of: viewModel.participantsTokens) { tokens in
+                var copyTokens = tokens
+                copyTokens.removeValue(forKey: appDelegate.fcmToken)
+                self.tokensMap = copyTokens
             }
         }
     }

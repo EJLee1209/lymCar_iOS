@@ -18,7 +18,6 @@ struct Point: Identifiable {
 
 struct MapView: View {
     private let manager = CLLocationManager()
-    @Binding var currentUser: User?
     @Binding var showBottomSheet: Bool // bottomSheet visibility
     
     @State private var region = MKCoordinateRegion(
@@ -238,9 +237,9 @@ struct MapView: View {
                                                 RoomItem(
                                                     room: room,
                                                     location: manager.location?.coordinate,
-                                                    user: currentUser
+                                                    user: viewModel.currentUser
                                                 ) { clickedRoom in
-                                                    guard let safeUser = self.currentUser else {
+                                                    guard let safeUser = viewModel.currentUser else {
                                                         alertMsg = "알 수 없는 오류"
                                                         showAlert = true
                                                         return
@@ -302,7 +301,6 @@ struct MapView: View {
                 } label: {}
                 NavigationLink(isActive: $createToChatRoom) {
                     CreateRoomView(
-                        currentUser: $currentUser,
                         createToChatRoom: $createToChatRoom,
                         mapToChatRoom: $mapToChatRoom,
                         startPlace: startPlace,
@@ -341,8 +339,6 @@ struct MapView: View {
                         Button("취소", role: .cancel) {}
                         Button("확인", role: .destructive) {
                             // 채팅방 입장하기
-                            print("채팅방에 입장합니다.")
-                            print("입장 : \(self.clickedRoom)")
                             if let clickedRoom = clickedRoom {
                                 viewModel.joinRoom(
                                     room: clickedRoom
@@ -380,22 +376,16 @@ struct MapView: View {
                         break
                     }
                 }
-                .onAppear{
-                    viewModel.subscribeMyRoom { result in
-                        switch result {
-                        case .success(let room):
-                            if let safeRoom = room {
-                                self.showMyRoomBox = true
-                                self.myRoom = safeRoom
-                            } else {
-                                self.showMyRoomBox = false
-                                self.myRoom = nil
-                            }
-                            
-                        default:
-                            break
-                        }
+                .onChange(of: viewModel.myRoom, perform: { myRoom in
+                    if let safeRoom = myRoom {
+                        self.showMyRoomBox = true
+                        self.myRoom = safeRoom
+                    } else {
+                        self.showMyRoomBox = false
+                        self.myRoom = nil
                     }
+                })
+                .onAppear{
                     if let location = manager.location {
                         convertCLLocationToAddress(location: location)
                     }
@@ -403,10 +393,15 @@ struct MapView: View {
                     realmManager.getFavorites()
                     self.favorites = realmManager.favorites.map { $0.convertToPlace() }
                     
-                    
+                    if let safeRoom = viewModel.myRoom {
+                        self.showMyRoomBox = true
+                        self.myRoom = safeRoom
+                    } else {
+                        self.showMyRoomBox = false
+                        self.myRoom = nil
+                    }
                 }
                 .onDisappear {
-                    viewModel.removeRegistration()
                     showBottomSheet = false
                 }
         }
@@ -484,7 +479,7 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showBottomSheet: .constant(true))
+        MapView(showBottomSheet: .constant(true))
             .environmentObject(MainViewModel())
     }
 }

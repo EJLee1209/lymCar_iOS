@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CreateRoomView: View {
-    @Binding var currentUser: User?
     @Binding var createToChatRoom: Bool
     @Binding var mapToChatRoom: Bool
     @State var startPlace: Place?
@@ -214,7 +213,7 @@ struct CreateRoomView: View {
                         endPlace: endPlaceForDB,
                         departureTime: departureTime,
                         created: Utils.getCurrentDateTime(),
-                        genderOption: self.genderOption ? currentUser?.gender ?? Constants.GENDER_OPTION_NONE : Constants.GENDER_OPTION_NONE
+                        genderOption: self.genderOption ? viewModel.currentUser?.gender ?? Constants.GENDER_OPTION_NONE : Constants.GENDER_OPTION_NONE
                     )
                     
                     viewModel.createRoom(
@@ -286,7 +285,7 @@ struct CreateRoomView: View {
 
 struct CreateRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateRoomView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), createToChatRoom: .constant(false), mapToChatRoom: .constant(false))
+        CreateRoomView(createToChatRoom: .constant(false), mapToChatRoom: .constant(false))
             .environmentObject(MainViewModel())
     }
 }
