@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
+
 
 enum TabIndex {
     case history, map, menu
@@ -13,6 +15,8 @@ enum TabIndex {
 
 struct MainView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var appDelegate : AppDelegate
+    @AppStorage("didLogin") private var didLogin = false
     @StateObject var viewModel = MainViewModel()
     
     @State var tabIndex : TabIndex = .map
@@ -21,8 +25,6 @@ struct MainView: View {
     @State var showBottomSheet: Bool = false
     @State var currentUser: User?
     @State var showAlert: Bool = false
-    
-    @AppStorage("didLogin") private var didLogin = false
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
@@ -108,6 +110,10 @@ struct MainView: View {
             .onDisappear {
                 viewModel.removeRegistration()
             }
+            .onAppear {
+                viewModel.updateFcmToken(token: self.appDelegate.fcmToken)
+            }
+            
         }
     }
     @ViewBuilder
@@ -120,6 +126,8 @@ struct MainView: View {
                 currentUser: $currentUser,
                 showBottomSheet: $showBottomSheet
             )
+            .environmentObject(self.viewModel)
+            .environmentObject(self.appDelegate)
         case .menu:
             if let currentUser = currentUser {
                 MenuView(
@@ -155,23 +163,11 @@ struct MainView: View {
     }
 }
 
-struct Fragment: View {
-    var backgroundColor : Color
-    var title: String
-    
-    var body: some View {
-        ZStack{
-            backgroundColor
-            Text(title)
-                .font(.largeTitle)
-                .fontWeight(.black)
-                .foregroundColor(.white)
-        }.edgesIgnoringSafeArea(.top)
-    }
-}
+
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView()
+            .environmentObject(AppDelegate())
     }
 }

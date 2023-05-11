@@ -8,44 +8,44 @@
 import Foundation
 import RealmSwift
 
-struct Chat {
-    let id: String = UUID().uuidString
-    var roomId: String = ""
-    var userId: String = ""
-    var userName: String = ""
-    var msg: String = ""
-    let dateTime: String = Utils.getCurrentDateTime()
-    var messageType: String = ""
-    var sendSuccess: String = SEND_STATE_LOADING
+class Chat: Object {
+    @Persisted(primaryKey: true) var id: String = UUID().uuidString
+    @Persisted var roomId: String = ""
+    @Persisted var userId: String = ""
+    @Persisted var userName: String = ""
+    @Persisted var msg: String = ""
+    @Persisted var dateTime: String = Utils.getCurrentDateTime()
+    @Persisted var messageType: String = ""
+    @Persisted var sendSuccess: String = SEND_STATE_LOADING
 }
 
 extension Chat {
     var myMockList : [Chat] {
         return [
-            Chat(
-                userName: "개발자1",
-                msg: "안녕하세요~",
-                messageType: CHAT_NORMAL,
+            Chat(value: [
+                "userName" : "개발자",
+                "msg" : "안녕하세요~",
+                "messageType": CHAT_NORMAL,
                 sendSuccess: SEND_STATE_SUCCESS
-            ),
-            Chat(
-                userName: "개발자2",
-                msg: "반갑습니다",
-                messageType: CHAT_NORMAL,
+            ]),
+            Chat(value: [
+                "userName" : "개발자",
+                "msg" : "안녕하세요~",
+                "messageType": CHAT_NORMAL,
                 sendSuccess: SEND_STATE_SUCCESS
-            ),
-            Chat(
-                userName: "개발자3",
-                msg: "ㅋㅋㅋㅋ",
-                messageType: CHAT_NORMAL,
+            ]),
+            Chat(value: [
+                "userName" : "개발자",
+                "msg" : "안녕하세요~",
+                "messageType": CHAT_NORMAL,
                 sendSuccess: SEND_STATE_SUCCESS
-            ),
-            Chat(
-                userName: "개발자1",
-                msg: "테스트 중 입니다",
-                messageType: CHAT_NORMAL,
+            ]),
+            Chat(value: [
+                "userName" : "개발자",
+                "msg" : "안녕하세요~",
+                "messageType": CHAT_NORMAL,
                 sendSuccess: SEND_STATE_SUCCESS
-            )
+            ])
         ]
     }
 }

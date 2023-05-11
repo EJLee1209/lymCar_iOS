@@ -15,7 +15,9 @@ struct ChatRoomView: View {
     @State var showSystemAlert: Bool = false
     @State var systemMsg: String = ""
     
-    @StateObject var viewModel = MainViewModel()
+    @EnvironmentObject var viewModel : MainViewModel
+    @EnvironmentObject var appDelegate : AppDelegate
+    @StateObject var realmManager = RealmManger()
     
     @GestureState var dragOffset: CGSize = .zero
     
@@ -65,16 +67,24 @@ struct ChatRoomView: View {
                                 .font(.system(size: 15))
                                 .padding(.top, 13)
                             
-                            List {
-                                ForEach(Chat().myMockList, id: \.id) { chat in
-                                    ChatItem(chat: chat)
-                                        .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
-                                        .listRowSeparator(.hidden)
-                                        .padding(.bottom, 24)
+                            ScrollViewReader { proxy in
+                                List {
+                                    ForEach(realmManager.messages.indices, id: \.self) { idx in
+                                        ChatItem(chat: realmManager.messages[idx], user: viewModel.currentUser)
+                                            .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
+                                            .listRowSeparator(.hidden)
+                                            .padding(.bottom, 24)
+                                            .id(idx)
+                                    }
                                 }
-                                
+                                .listStyle(.plain)
+                                .onChange(of: realmManager.messages.count) { cnt in
+                                    withAnimation {
+                                        proxy.scrollTo(cnt-1)
+                                    }
+                                }
                             }
-                            .listStyle(.plain)
+                            
                             Spacer()
                         }
                     }
@@ -126,6 +136,11 @@ struct ChatRoomView: View {
                     self.mapToChatRoom = false
                 }
             }))
+            .onAppear {
+                UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+                realmManager.getChats(roomId: myRoom.roomId)
+                appDelegate.realmManager = self.realmManager
+            }
         }
     }
 }
@@ -133,5 +148,7 @@ struct ChatRoomView: View {
 struct ChatRoomView_Previews: PreviewProvider {
     static var previews: some View {
         ChatRoomView(myRoom: .constant(CarPoolRoom()), mapToChatRoom: .constant(true))
+            .environmentObject(MainViewModel())
+            .environmentObject(AppDelegate())
     }
 }

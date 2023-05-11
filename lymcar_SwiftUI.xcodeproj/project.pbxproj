@@ -93,6 +93,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF014F212A0BB99000E3D00F /* lymcar_SwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = lymcar_SwiftUI.entitlements; sourceTree = "<group>"; };
 		CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRoomView.swift; sourceTree = "<group>"; };
 		CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPoolRoom.swift; sourceTree = "<group>"; };
 		CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRoomBox.swift; sourceTree = "<group>"; };
@@ -223,6 +224,7 @@
 		CFBC8B0629E96A3700257059 /* lymcar_SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				CF014F212A0BB99000E3D00F /* lymcar_SwiftUI.entitlements */,
 				CFC33A632A08B70800DD18D8 /* Repository */,
 				CFEB077629ECD134002D7872 /* ViewModel */,
 				CF45C3A729EC434A00719703 /* lymcar-SwiftUI-Info.plist */,
@@ -634,6 +636,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_LINK_OBJC_RUNTIME = YES;
+				CODE_SIGN_ENTITLEMENTS = lymcar_SwiftUI/lymcar_SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"lymcar_SwiftUI/Preview Content\"";
@@ -672,6 +675,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_LINK_OBJC_RUNTIME = YES;
+				CODE_SIGN_ENTITLEMENTS = lymcar_SwiftUI/lymcar_SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"lymcar_SwiftUI/Preview Content\"";

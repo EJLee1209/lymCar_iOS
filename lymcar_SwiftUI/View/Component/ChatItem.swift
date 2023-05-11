@@ -9,18 +9,30 @@ import SwiftUI
 
 struct ChatItem: View {
     var chat: Chat
+    var user: User?
     
     var body: some View {
-        YourChat(chat)
+        if (chat.messageType == CHAT_ETC || chat.messageType == CHAT_EXIT || chat.messageType == CHAT_JOIN) {
+            EnterMessage(chat)
+        } else {
+            if let safeUser = user {
+                if (chat.userId == safeUser.uid) {
+                    MyChat(chat)
+                }
+                else {
+                    YourChat(chat)
+                }
+            } 
+        }
+        
     }
 }
 
 @ViewBuilder
 func MyChat(_ chat: Chat) -> some View {
-    
     HStack(alignment:.bottom ,spacing: 8) {
         Spacer()
-        Text(chat.dateTime.getPrettyHour())
+        Text(chat.dateTime.getPrettyHour(sep: " "))
             .font(.system(size: 11))
             .foregroundColor(Color("main_blue"))
         Text(chat.msg)
@@ -46,7 +58,7 @@ func YourChat(_ chat: Chat) -> some View {
                 .padding(.vertical, 7)
                 .background(Color("f5f5f5"))
                 .roundedCorner(20, corners: [.topLeft, .topRight, .bottomRight])
-            Text(chat.dateTime.getPrettyHour())
+            Text(chat.dateTime.getPrettyHour(sep: " "))
                 .font(.system(size: 11))
                 .foregroundColor(Color("main_blue"))
             Spacer()
@@ -54,8 +66,20 @@ func YourChat(_ chat: Chat) -> some View {
     }
 }
 
+@ViewBuilder
+func EnterMessage(_ chat: Chat) -> some View {
+    // Enter or Exit message item
+    Text(chat.msg)
+        .font(.system(size: 11))
+        .foregroundColor(Color("667080"))
+}
+
 struct ChatItem_Previews: PreviewProvider {
     static var previews: some View {
-        ChatItem(chat: Chat())
+        ChatItem(chat: Chat(
+            value: [
+                "msg" : "- 개발자님이 입장하셨습니다 -"
+            ]
+        ))
     }
 }

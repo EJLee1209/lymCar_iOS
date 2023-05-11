@@ -27,7 +27,7 @@ struct CreateRoomView: View {
     @State var searchField: SearchField?
     @State var isCreated: Bool = false
     
-    @StateObject var viewModel = MainViewModel()
+    @EnvironmentObject var viewModel: MainViewModel
     
     @Environment(\.dismiss) var dismiss
     @GestureState private var dragOffset = CGSize.zero
@@ -287,5 +287,6 @@ struct CreateRoomView: View {
 struct CreateRoomView_Previews: PreviewProvider {
     static var previews: some View {
         CreateRoomView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), createToChatRoom: .constant(false), mapToChatRoom: .constant(false))
+            .environmentObject(MainViewModel())
     }
 }

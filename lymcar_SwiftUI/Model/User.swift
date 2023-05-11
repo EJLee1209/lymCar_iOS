@@ -21,6 +21,7 @@ struct User: Codable {
             "gender" : gender
         ]
     }
+    
     var genderKor: String {
         switch self.gender {
         case Constants.GENDER_OPTION_MALE:
@@ -30,5 +31,16 @@ struct User: Codable {
         default:
             return "선택 안함"
         }
+    }
+}
+
+extension [String: Any] {
+    var dictToUser : User {
+        return User(
+            uid: self["uid"] as! String,
+            email: self["email"] as! String,
+            name: self["name"] as! String,
+            gender: self["gender"] as! String
+        )
     }
 }

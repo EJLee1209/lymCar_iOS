@@ -11,6 +11,7 @@ import RealmSwift
 class RealmManger: ObservableObject {
     private(set) var localRealm: Realm?
     @Published private(set) var favorites: [PlaceForRealm] = []
+    @Published private(set) var messages: [Chat] = []
     
     init() {
         openRealm()
@@ -68,6 +69,49 @@ class RealmManger: ObservableObject {
                 try localRealm.write {
                     localRealm.delete(favoriteToDelete)
                     getFavorites()
+                    print("Deleted favorite with id : \(id)")
+                }
+            } catch {
+                print("Error deleting favorite \(id) from Realm: \(error)")
+            }
+        }
+    }
+    
+    func getChats(roomId: String) {
+        if let localRealm = localRealm {
+            let allChats = localRealm.objects(Chat.self).filter(NSPredicate(format: "roomId == %@", roomId)).sorted(byKeyPath: "dateTime")
+            messages = []
+            allChats.forEach { chat in
+                messages.append(chat)
+            }
+        }
+    }
+    
+    func saveChat(chat: Chat) {
+        if let localRealm = localRealm {
+            do {
+                try localRealm.write {
+                    var newChat = chat
+                    chat.sendSuccess = SEND_STATE_SUCCESS
+                    
+                    localRealm.add(newChat)
+                    print("Added new favorite to Realm : \(newChat)")
+                }
+                getChats(roomId: chat.roomId)
+            } catch {
+                print("Error adding favorite to Realm : \(error)")
+            }
+        }
+    }
+    
+    func deleteChat(id: String) {
+        if let localRealm = localRealm {
+            do {
+                let chatToDelete = localRealm.objects(Chat.self).filter(NSPredicate(format: "id == %@", id))
+                guard !chatToDelete.isEmpty else { return }
+                
+                try localRealm.write {
+                    localRealm.delete(chatToDelete)
                     print("Deleted favorite with id : \(id)")
                 }
             } catch {

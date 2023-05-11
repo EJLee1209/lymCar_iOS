@@ -51,7 +51,9 @@ struct MapView: View {
     
     @State var searchCurrentLocation: Bool = false
     
-    @StateObject var viewModel = MainViewModel()
+    
+    @EnvironmentObject var viewModel : MainViewModel
+    @EnvironmentObject var appDelegate : AppDelegate
     @StateObject var realmManager = RealmManger()
     @State var favorites : [Place] = []
     @State var editingFocus: SearchField?
@@ -294,6 +296,8 @@ struct MapView: View {
                             myRoom: .constant(safeMyRoom),
                             mapToChatRoom: $mapToChatRoom
                         ).navigationBarBackButtonHidden()
+                            .environmentObject(self.viewModel)
+                            .environmentObject(self.appDelegate)
                     }
                 } label: {}
                 NavigationLink(isActive: $createToChatRoom) {
@@ -304,6 +308,7 @@ struct MapView: View {
                         startPlace: startPlace,
                         endPlace: endPlace
                     ).navigationBarBackButtonHidden()
+                        .environmentObject(self.viewModel)
                 } label: {}
             }.edgesIgnoringSafeArea(.all)
                 .sheet(isPresented: $showModal) {
@@ -480,5 +485,6 @@ struct MapView: View {
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         MapView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showBottomSheet: .constant(true))
+            .environmentObject(MainViewModel())
     }
 }

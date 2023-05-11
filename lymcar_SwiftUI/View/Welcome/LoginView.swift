@@ -13,6 +13,7 @@ enum LoginField {
 }
 
 struct LoginView: View {
+    @EnvironmentObject var appDelegate: AppDelegate
     // @State 속성을 포함한 데이터 저장을 위한 @AppStorage
     @AppStorage("email") private var email = ""
     @AppStorage("password") private var password = ""
@@ -103,6 +104,7 @@ struct LoginView: View {
                                 set: { _ in }
                             )) {
                                 MainView().navigationBarBackButtonHidden()
+                                    .environmentObject(appDelegate)
                             } label: {}
                             
                             RoundedButton(label: "로그인", buttonColor: "main_blue", labelColor: "white")
@@ -144,5 +146,6 @@ struct LoginView_Previews: PreviewProvider {
         LoginView(
             store: Store(initialState: LoginFeature.State(), reducer: LoginFeature())
         )
+        .environmentObject(AppDelegate())
     }
 }

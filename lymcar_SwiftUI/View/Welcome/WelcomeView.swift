@@ -9,6 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct WelcomeView: View {
+    @EnvironmentObject var appDelegate: AppDelegate
     @AppStorage("email") private var email = ""
     @AppStorage("password") private var password = ""
     @AppStorage("didLogin") private var didLogin = false
@@ -41,6 +42,7 @@ struct WelcomeView: View {
                                     action: WelcomeFeature.Action.LoginViewAction
                                 )
                             )
+                            .environmentObject(appDelegate)
                         } label: {
                             RoundedButton(
                                 label: "로그인",
@@ -87,6 +89,7 @@ struct WelcomeView: View {
                         set: { _ in })
                     ) {
                         MainView().navigationBarBackButtonHidden()
+                            .environmentObject(appDelegate)
                     } label: {}
                 }.edgesIgnoringSafeArea(.all)
             }
@@ -108,6 +111,7 @@ struct WelcomeView: View {
                 self.store.scope(state: \.alert),
                 dismiss: .dismissAlert
             )
+
         }
     }
 }
@@ -127,5 +131,6 @@ struct WelcomeView_Previews: PreviewProvider {
         WelcomeView(
             store: Store(initialState: WelcomeFeature.State(), reducer: WelcomeFeature())
         )
+        .environmentObject(AppDelegate())
     }
 }
