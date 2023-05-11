@@ -54,7 +54,6 @@ class MainViewModel: ObservableObject {
     var userRegistration: ListenerRegistration? = nil
     var participantsRegistration: ListenerRegistration? = nil
     
-    
     deinit {
         removeAllRegistration()
     }
@@ -64,7 +63,6 @@ class MainViewModel: ObservableObject {
         moniteringRegistration?.remove()
         userRegistration?.remove()
         participantsRegistration?.remove()
-        print("remove all Registration")
     }
     
     func moniteringLogged() {
@@ -444,6 +442,7 @@ class MainViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.progress = .idle
                 }
+                self.myRoom = nil
             }
         }
     }
@@ -478,7 +477,4 @@ class MainViewModel: ObservableObject {
                 FireStoreTable.FIELD_PLATFORM : "ios"
             ])
     }
-    
-    
-
 }

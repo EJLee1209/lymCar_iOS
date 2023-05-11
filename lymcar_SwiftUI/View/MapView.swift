@@ -154,7 +154,7 @@ struct MapView: View {
                     
                     if showMyRoomBox {
                         MyRoomBox(
-                            room: myRoom!
+                            room: $myRoom
                         ) {
                             self.mapToChatRoom = true
                         }
