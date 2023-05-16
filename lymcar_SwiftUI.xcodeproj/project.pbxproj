@@ -23,12 +23,15 @@
 		CF45C3A229EC312300719703 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A129EC312300719703 /* Constants.swift */; };
 		CF45C3A429EC36B800719703 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A329EC36B800719703 /* LoadingView.swift */; };
 		CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF45C3A529EC36DB00719703 /* ActivityIndicator.swift */; };
+		CF4AAC282A08D6A000B84020 /* WelcomeFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4AAC272A08D6A000B84020 /* WelcomeFeature.swift */; };
 		CF5B783329F25FF4004120FB /* RoomItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5B783229F25FF4004120FB /* RoomItem.swift */; };
 		CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF644ED729EAE26A00AD988D /* Extensions.swift */; };
 		CF66735D29EF7BD400F3EDDC /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF66735C29EF7BD400F3EDDC /* SearchView.swift */; };
 		CF68BCF129F55FB300742D66 /* FavoriteEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF68BCF029F55FB300742D66 /* FavoriteEditView.swift */; };
 		CF6C043D29EED8C6004D3123 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */; };
-		CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */; };
+		CF76AEF42A0B3EF8004CBA60 /* EmailVerifyFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF76AEF32A0B3EF8004CBA60 /* EmailVerifyFeature.swift */; };
+		CF76AEF62A0B4BCF004CBA60 /* VerifyCodeFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF76AEF52A0B4BCF004CBA60 /* VerifyCodeFeature.swift */; };
+		CF76AEF82A0B6296004CBA60 /* LoginFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF76AEF72A0B6296004CBA60 /* LoginFeature.swift */; };
 		CF774D6429EE82F900877D60 /* AuthResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF774D6329EE82F900877D60 /* AuthResult.swift */; };
 		CF7FA9362A03534F00A2936F /* ChatItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA9352A03534F00A2936F /* ChatItem.swift */; };
 		CF7FA9382A0355A000A2936F /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FA9372A0355A000A2936F /* Chat.swift */; };
@@ -40,6 +43,7 @@
 		CF9C73FE29ECF57C00E5E953 /* lymcar++Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */; };
 		CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */; };
 		CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA86DC29EFBD5C009A5552 /* MapView.swift */; };
+		CFB387842A0B3255005E27A5 /* RegisterFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB387832A0B3255005E27A5 /* RegisterFeature.swift */; };
 		CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */; };
 		CFBC8B0C29E96A3700257059 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0B29E96A3700257059 /* Assets.xcassets */; };
 		CFBC8B0F29E96A3700257059 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFBC8B0E29E96A3700257059 /* Preview Assets.xcassets */; };
@@ -51,6 +55,8 @@
 		CFBC8B2229E997B000257059 /* VerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2129E997B000257059 /* VerifyCodeView.swift */; };
 		CFBC8B2529E9984200257059 /* CodeTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2429E9984200257059 /* CodeTimer.swift */; };
 		CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBC8B2A29E9A28B00257059 /* KeyboardObserver.swift */; };
+		CFC33A652A08B71900DD18D8 /* ServerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC33A642A08B71900DD18D8 /* ServerClient.swift */; };
+		CFC33A672A08BDA100DD18D8 /* AuthClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC33A662A08BDA100DD18D8 /* AuthClient.swift */; };
 		CFC9768229F8BE1A00E272D3 /* AccountInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC9768129F8BE1A00E272D3 /* AccountInfoView.swift */; };
 		CFC9768429F8C2AD00E272D3 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC9768329F8C2AD00E272D3 /* InfoView.swift */; };
 		CFCC124229F50FD200C24099 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCC124129F50FD200C24099 /* MenuView.swift */; };
@@ -87,6 +93,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF014F212A0BB99000E3D00F /* lymcar_SwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = lymcar_SwiftUI.entitlements; sourceTree = "<group>"; };
 		CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRoomView.swift; sourceTree = "<group>"; };
 		CF07B6C329F1839800C482F1 /* CarPoolRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPoolRoom.swift; sourceTree = "<group>"; };
 		CF07B6C529F18D2300C482F1 /* MyRoomBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRoomBox.swift; sourceTree = "<group>"; };
@@ -103,12 +110,15 @@
 		CF45C3A329EC36B800719703 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		CF45C3A529EC36DB00719703 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		CF45C3A729EC434A00719703 /* lymcar-SwiftUI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "lymcar-SwiftUI-Info.plist"; sourceTree = SOURCE_ROOT; };
+		CF4AAC272A08D6A000B84020 /* WelcomeFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeFeature.swift; sourceTree = "<group>"; };
 		CF5B783229F25FF4004120FB /* RoomItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomItem.swift; sourceTree = "<group>"; };
 		CF644ED729EAE26A00AD988D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		CF66735C29EF7BD400F3EDDC /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		CF68BCF029F55FB300742D66 /* FavoriteEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteEditView.swift; sourceTree = "<group>"; };
 		CF6C043C29EED8C6004D3123 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
+		CF76AEF32A0B3EF8004CBA60 /* EmailVerifyFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerifyFeature.swift; sourceTree = "<group>"; };
+		CF76AEF52A0B4BCF004CBA60 /* VerifyCodeFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeFeature.swift; sourceTree = "<group>"; };
+		CF76AEF72A0B6296004CBA60 /* LoginFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFeature.swift; sourceTree = "<group>"; };
 		CF774D6329EE82F900877D60 /* AuthResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResult.swift; sourceTree = "<group>"; };
 		CF7FA9352A03534F00A2936F /* ChatItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatItem.swift; sourceTree = "<group>"; };
 		CF7FA9372A0355A000A2936F /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
@@ -120,6 +130,7 @@
 		CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "lymcar++Bundle.swift"; sourceTree = "<group>"; };
 		CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerShape.swift; sourceTree = "<group>"; };
 		CFAA86DC29EFBD5C009A5552 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		CFB387832A0B3255005E27A5 /* RegisterFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterFeature.swift; sourceTree = "<group>"; };
 		CFBC8B0429E96A3700257059 /* lymcar_SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lymcar_SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lymcar_SwiftUIApp.swift; sourceTree = "<group>"; };
 		CFBC8B0B29E96A3700257059 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -132,6 +143,8 @@
 		CFBC8B2129E997B000257059 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
 		CFBC8B2429E9984200257059 /* CodeTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTimer.swift; sourceTree = "<group>"; };
 		CFBC8B2A29E9A28B00257059 /* KeyboardObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardObserver.swift; sourceTree = "<group>"; };
+		CFC33A642A08B71900DD18D8 /* ServerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerClient.swift; sourceTree = "<group>"; };
+		CFC33A662A08BDA100DD18D8 /* AuthClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthClient.swift; sourceTree = "<group>"; };
 		CFC9768129F8BE1A00E272D3 /* AccountInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfoView.swift; sourceTree = "<group>"; };
 		CFC9768329F8C2AD00E272D3 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		CFCC124129F50FD200C24099 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
@@ -179,6 +192,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CF76AEF92A0B62A2004CBA60 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CF4AAC272A08D6A000B84020 /* WelcomeFeature.swift */,
+				CFB387832A0B3255005E27A5 /* RegisterFeature.swift */,
+				CF76AEF32A0B3EF8004CBA60 /* EmailVerifyFeature.swift */,
+				CF76AEF52A0B4BCF004CBA60 /* VerifyCodeFeature.swift */,
+				CF76AEF72A0B6296004CBA60 /* LoginFeature.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		CFAC84532A0D2962008E490C /* Dependency */ = {
+			isa = PBXGroup;
+			children = (
+				CFC33A642A08B71900DD18D8 /* ServerClient.swift */,
+				CFC33A662A08BDA100DD18D8 /* AuthClient.swift */,
+			);
+			path = Dependency;
+			sourceTree = "<group>";
+		};
 		CFBC8AFB29E96A3700257059 = {
 			isa = PBXGroup;
 			children = (
@@ -199,15 +233,15 @@
 		CFBC8B0629E96A3700257059 /* lymcar_SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				CFEB077629ECD134002D7872 /* ViewModel */,
+				CF014F212A0BB99000E3D00F /* lymcar_SwiftUI.entitlements */,
+				CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */,
 				CF45C3A729EC434A00719703 /* lymcar-SwiftUI-Info.plist */,
-				CFBC8B2629E999C600257059 /* Model */,
+				CF9C73FB29ECF4F500E5E953 /* serverInfo.plist */,
+				CFBC8B0B29E96A3700257059 /* Assets.xcassets */,
+				CFC33A632A08B70800DD18D8 /* Repository */,
 				CFBC8B2329E9983000257059 /* Util */,
 				CFBC8B1529E96A4C00257059 /* View */,
-				CFBC8B0B29E96A3700257059 /* Assets.xcassets */,
 				CFBC8B0D29E96A3700257059 /* Preview Content */,
-				CF9C73FB29ECF4F500E5E953 /* serverInfo.plist */,
-				CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */,
 			);
 			path = lymcar_SwiftUI;
 			sourceTree = "<group>";
@@ -224,10 +258,10 @@
 			isa = PBXGroup;
 			children = (
 				CFBC8B1829E96A8800257059 /* Component */,
+				CFC39D6729EE750B0096E580 /* Welcome */,
 				CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */,
 				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
 				CF8D054829EEAFE300B90AD4 /* MainView.swift */,
-				CFC39D6729EE750B0096E580 /* Welcome */,
 				CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */,
 				CF312B1629F3E069007F6BED /* ChatRoomView.swift */,
 				CFCC124129F50FD200C24099 /* MenuView.swift */,
@@ -291,6 +325,17 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		CFC33A632A08B70800DD18D8 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				CFBC8B2629E999C600257059 /* Model */,
+				CFEB077629ECD134002D7872 /* ViewModel */,
+				CFAC84532A0D2962008E490C /* Dependency */,
+				CF76AEF92A0B62A2004CBA60 /* Core */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		CFC39D6729EE750B0096E580 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -306,7 +351,6 @@
 		CFEB077629ECD134002D7872 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				CF774D6129EE826A00877D60 /* WelcomeViewModel.swift */,
 				CF8D054A29EEB25800B90AD4 /* MainViewModel.swift */,
 				CFE8ABA529F6DC7D00890C7A /* RealmManager.swift */,
 			);
@@ -417,26 +461,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF4AAC282A08D6A000B84020 /* WelcomeFeature.swift in Sources */,
 				CFC9768429F8C2AD00E272D3 /* InfoView.swift in Sources */,
 				CF45C3A229EC312300719703 /* Constants.swift in Sources */,
 				CFE8AB9F29F66F2A00890C7A /* PlaceForRealm.swift in Sources */,
 				CF7FA9382A0355A000A2936F /* Chat.swift in Sources */,
+				CF76AEF82A0B6296004CBA60 /* LoginFeature.swift in Sources */,
 				CF312B1529F3D2C8007F6BED /* MainPicker.swift in Sources */,
 				CF45C3A629EC36DB00719703 /* ActivityIndicator.swift in Sources */,
 				CF45C38E29EC1CBA00719703 /* GeometryGetter.swift in Sources */,
+				CF76AEF42A0B3EF8004CBA60 /* EmailVerifyFeature.swift in Sources */,
 				CFBC8B2B29E9A28B00257059 /* KeyboardObserver.swift in Sources */,
 				CF2751E129EFCB8700FE550F /* SearchKeywordResult.swift in Sources */,
 				CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */,
 				CFE8ABA429F67BAE00890C7A /* FavoriteItem.swift in Sources */,
 				CFCC124229F50FD200C24099 /* MenuView.swift in Sources */,
+				CF76AEF62A0B4BCF004CBA60 /* VerifyCodeFeature.swift in Sources */,
 				CF8D054B29EEB25800B90AD4 /* MainViewModel.swift in Sources */,
-				CF774D6229EE826A00877D60 /* WelcomeViewModel.swift in Sources */,
 				CFBC8B2029E9968200257059 /* EmailVerifyView.swift in Sources */,
 				CFE8ABA629F6DC7D00890C7A /* RealmManager.swift in Sources */,
 				CFBC8B1729E96A7E00257059 /* WelcomeView.swift in Sources */,
 				CFF4A54D29ED69A00037FAF2 /* TokenInfo.swift in Sources */,
 				CFBC8B0829E96A3700257059 /* lymcar_SwiftUIApp.swift in Sources */,
 				CF07B6C429F1839800C482F1 /* CarPoolRoom.swift in Sources */,
+				CFC33A672A08BDA100DD18D8 /* AuthClient.swift in Sources */,
 				CFBC8B1C29E9707D00257059 /* LoginView.swift in Sources */,
 				CF312B1729F3E069007F6BED /* ChatRoomView.swift in Sources */,
 				CF0435BC29F2403700F8A3D6 /* CreateRoomView.swift in Sources */,
@@ -445,6 +493,7 @@
 				CF644ED829EAE26A00AD988D /* Extensions.swift in Sources */,
 				CFAA86DD29EFBD5C009A5552 /* MapView.swift in Sources */,
 				CF07B6C629F18D2300C482F1 /* MyRoomBox.swift in Sources */,
+				CFC33A652A08B71900DD18D8 /* ServerClient.swift in Sources */,
 				CF2751E329EFE65200FE550F /* searchResultItem.swift in Sources */,
 				CFAA86C729EFAEEA009A5552 /* RoundedCornerShape.swift in Sources */,
 				CF2751E529EFE7AC00FE550F /* SearchResultModal.swift in Sources */,
@@ -455,6 +504,7 @@
 				CF45C3A029EC2FE000719703 /* VerifyInfo.swift in Sources */,
 				CF8D054329EEA1E300B90AD4 /* SignedIn.swift in Sources */,
 				CFBC8B1A29E96AAA00257059 /* RoundedButton.swift in Sources */,
+				CFB387842A0B3255005E27A5 /* RegisterFeature.swift in Sources */,
 				CF66735D29EF7BD400F3EDDC /* SearchView.swift in Sources */,
 				CF9C73FE29ECF57C00E5E953 /* lymcar++Bundle.swift in Sources */,
 				CF5B783329F25FF4004120FB /* RoomItem.swift in Sources */,
@@ -594,6 +644,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_LINK_OBJC_RUNTIME = YES;
+				CODE_SIGN_ENTITLEMENTS = lymcar_SwiftUI/lymcar_SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"lymcar_SwiftUI/Preview Content\"";
@@ -632,6 +683,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_LINK_OBJC_RUNTIME = YES;
+				CODE_SIGN_ENTITLEMENTS = lymcar_SwiftUI/lymcar_SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"lymcar_SwiftUI/Preview Content\"";

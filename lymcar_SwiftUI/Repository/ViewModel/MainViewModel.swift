@@ -9,6 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 import Alamofire
+import Combine
 
 enum SearchResult {
     case idle
@@ -41,27 +42,32 @@ class MainViewModel: ObservableObject {
     @Published var searchResult: SearchResult = .idle
     @Published var myRoom: CarPoolRoom?
     @Published var progress: Progress = .idle
+    @Published var currentUser: User?
+    @Published var participantsTokens: [String:String] = [:]
+    private let baseUrl = Bundle.main.baseUrl
     private let kakaoApiUrl = Bundle.main.kakaoApiUrl
     private let kakaoApiKey = Bundle.main.kakaoApiKey
     private let auth = Firebase.Auth.auth()
     private let db = Firestore.firestore()
-    private var moniteringRegistration: ListenerRegistration? = nil
-    private var myRoomRegistration: ListenerRegistration? = nil
-    private var userRegistration: ListenerRegistration? = nil
-    
+    var moniteringRegistration: ListenerRegistration? = nil
+    var myRoomRegistration: ListenerRegistration? = nil
+    var userRegistration: ListenerRegistration? = nil
+    var participantsRegistration: ListenerRegistration? = nil
     
     deinit {
-        removeRegistration()
+        removeAllRegistration()
     }
     
-    func removeRegistration() {
+    func removeAllRegistration() {
         myRoomRegistration?.remove()
         moniteringRegistration?.remove()
         userRegistration?.remove()
+        participantsRegistration?.remove()
     }
     
     func moniteringLogged() {
-        moniteringRegistration = db.collection(FireStoreTable.SIGNEDIN).document(auth.currentUser!.uid)
+        guard let safeUser = auth.currentUser else { return }
+        moniteringRegistration = db.collection(FireStoreTable.SIGNEDIN).document(safeUser.uid)
             .addSnapshotListener { snapshot, error in
                 if let error = error {
                     print(error)
@@ -76,26 +82,98 @@ class MainViewModel: ObservableObject {
                 if deviceId != Utils.getDeviceUUID() {
                     self.detectAnonymous = true
                 }
-                
             }
     }
     
-    func subscribeUser(completion: @escaping (Result<User?, FirestoreErrorCode>) -> Void) {
+    func subscribeUser() {
         guard let safeUser = auth.currentUser else { return }
         userRegistration = db.collection(FireStoreTable.USER).document(safeUser.uid)
             .addSnapshotListener { snapshot, error in
                 if let safeError = error {
                     print(safeError.localizedDescription)
-                    completion(.failure(FirestoreErrorCode(.cancelled)))
+                    self.currentUser = nil
                     return
                 }
                 do {
                     let user = try snapshot?.data(as: User.self)
-                    completion(.success(user))
+                    self.currentUser = user
                 } catch{
                     print(error.localizedDescription)
+                    self.currentUser = nil
                 }
             }
+    }
+    
+    func subscribeMyRoom() {
+        if let currentUser = auth.currentUser {
+            myRoomRegistration = db.collection(FireStoreTable.ROOM)
+                .whereField(FireStoreTable.FIELD_PARTICIPANTS, arrayContains: currentUser.uid)
+                .addSnapshotListener({ snapshot, error in
+                    if let error = error {
+                        print(error)
+                        self.myRoom = nil
+                        return
+                    }
+                    guard let data = snapshot?.documents.first else {
+                        self.myRoom = nil
+                        return
+                    }
+                    do {
+                        let room = try data.data(as: CarPoolRoom.self)
+                        self.myRoom = room
+                    }
+                    catch {
+                        self.myRoom = nil
+                        print(error)
+                    }
+                })
+        }
+    }
+    
+    func subscribeParticipantsTokens(roomId: String) {
+        self.participantsRegistration = db.collection(FireStoreTable.FCMTOKENS)
+            .whereField(FireStoreTable.FIELD_ROOM_ID, isEqualTo: roomId)
+            .addSnapshotListener({ snapshot, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let document = snapshot?.documents else {
+                    print("no participants")
+                    return
+                }
+                
+                document.forEach { data in
+                    if let token = data.get(FireStoreTable.FIELD_TOKEN) as? String {
+                        if let platform = data.get(FireStoreTable.FIELD_PLATFORM) as? String {
+                            self.participantsTokens[token] = platform
+                        }
+                    }
+                }
+            })
+    }
+    
+    func getParticipantsTokens(roomId: String) async -> [String:String] {
+        self.progress = .loading
+        do {
+            let snapshot = try await db.collection(FireStoreTable.FCMTOKENS)
+                .whereField(FireStoreTable.FIELD_ROOM_ID, isEqualTo: roomId)
+                .getDocuments()
+            
+            var participantsTokens : [String:String] = [:]
+            snapshot.documents.forEach { data in
+                if let token = data.get(FireStoreTable.FIELD_TOKEN) as? String {
+                    if let platform = data.get(FireStoreTable.FIELD_PLATFORM) as? String {
+                        participantsTokens[token] = platform
+                    }
+                }
+            }
+            self.progress = .idle
+            return participantsTokens
+        } catch {
+            self.progress = .idle
+            return [:]
+        }
     }
     
     func searchPlace(keyword: String) {
@@ -123,27 +201,60 @@ class MainViewModel: ObservableObject {
             }
     }
     
-    func subscribeMyRoom(completion: @escaping (Result<CarPoolRoom?, FirestoreErrorCode>) -> Void) {
-        if let currentUser = auth.currentUser {
-            myRoomRegistration = db.collection(FireStoreTable.ROOM)
-                .whereField(FireStoreTable.FIELD_PARTICIPANTS, arrayContains: currentUser.uid)
-                .addSnapshotListener({ snapshot, error in
-                    if let error = error {
-                        print(error)
-                        return
-                    }
-                    guard let data = snapshot?.documents.first else {
-                        completion(.success(nil))
-                        return
-                    }
-                    do {
-                        let room = try data.data(as: CarPoolRoom.self)
-                        completion(.success(room))
-                    }
-                    catch {
-                        print(error)
-                    }
-                })
+    func findUserName(uid: String) async -> String? {
+        do {
+            let document = try await db.collection(FireStoreTable.USER).document(uid)
+                .getDocument()
+            
+            if let name = document.get(FireStoreTable.FIELD_NAME) as? String {
+                return name
+            } else {
+                return nil
+            }
+            
+        } catch {
+            return nil
+        }
+    }
+    
+    func deactivateRoom(roomId: String) async -> Bool {
+        self.progress = .loading
+        
+        do {
+            try await db.collection(FireStoreTable.ROOM).document(roomId)
+                .updateData([
+                    FireStoreTable.FIELD_CLOSED: true
+                ])
+            
+            self.progress = .idle
+            return true
+        } catch {
+            self.progress = .idle
+            return false
+        }
+    }
+    
+    func sendPushMessage(
+        chat: Chat,
+        receiveTokens: [String:String]
+    ) {
+        for (token, target) in receiveTokens {
+            let requestUrl = "\(baseUrl)api/message/push?token=\(token)&id=\(chat.id)&roomId=\(chat.roomId)&userId=\(chat.userId)&userName=\(chat.userName)&message=\(chat.msg)&messageType=\(chat.messageType)&target=\(target)"
+            AF.request(
+                requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
+                method: .post,
+                encoding: JSONEncoding.default
+            ).responseDecodable(of: Bool.self) { response in
+                switch response.result {
+                case .success:
+                    print("메세지 전송 성공 : \(chat)")
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    break
+                }
+            }
+            
         }
     }
     
@@ -160,9 +271,20 @@ class MainViewModel: ObservableObject {
                 self.progress = .idle
                 return
             }
-            
-            completion(.success(copyRoom))
-            self.progress = .idle
+            self.db.collection(FireStoreTable.FCMTOKENS).document(self.auth.currentUser!.uid)
+                .updateData([
+                    FireStoreTable.FIELD_ROOM_ID : copyRoom.roomId
+                ]) { error in
+                    if let error = error {
+                        print("방 생성 중 에러 발생!! : \(error)")
+                        completion(.failure(FirestoreErrorCode(.cancelled)))
+                        self.progress = .idle
+                        return
+                    }
+                    self.progress = .idle
+                    print("방 생성 완료. 현재 유져 uid : \(self.auth.currentUser!.uid)")
+                    completion(.success(copyRoom))
+                }
         }
     }
     
@@ -216,6 +338,7 @@ class MainViewModel: ObservableObject {
         }
         progress = .loading
         let docRef = db.collection(FireStoreTable.ROOM).document(room.roomId)
+        
         db.runTransaction { transaction, errorPointer in
             let roomDocument: DocumentSnapshot
             do {
@@ -295,7 +418,6 @@ class MainViewModel: ObservableObject {
                 }
             }
         }
-
     }
     
     func exitRoom(roomId: String, completion: @escaping (Result<String, FirestoreErrorCode>) -> Void) {
@@ -376,9 +498,11 @@ class MainViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.progress = .idle
                 }
+                self.myRoom = nil
             }
         }
     }
+    
     
     func logout(completion: @escaping (Result<String, Error>) -> Void) {
         self.progress = .loading
@@ -400,5 +524,13 @@ class MainViewModel: ObservableObject {
             self.progress = .idle
         }
     }
-
+    
+    func updateFcmToken(token: String) {
+        guard let safeUser = auth.currentUser else { return }
+        db.collection(FireStoreTable.FCMTOKENS).document(safeUser.uid)
+            .updateData([
+                FireStoreTable.FIELD_TOKEN : token,
+                FireStoreTable.FIELD_PLATFORM : "ios"
+            ])
+    }
 }

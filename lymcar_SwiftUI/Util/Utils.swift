@@ -20,14 +20,17 @@ class Utils {
         return localizedDate
     }
     
-    static func getCurrentDateTime() -> String {
+    static func getCurrentDateTime(isSep:Bool=true) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone.autoupdatingCurrent
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let currentDate = dateFormatter.string(from: Date())
-        
+        if !isSep{
+            return currentDate
+        }
         return currentDate.replacingOccurrences(of: " ", with: "T")
     }
+    
     
     static func get24Hour(hour: Int, pmOrAm: Int) -> Int {
         if pmOrAm == 0 {

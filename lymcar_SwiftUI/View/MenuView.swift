@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MenuView: View {
     @Binding var user: User
-    @Binding var loginStatus: Bool
     var clickedLogout: () -> Void = {}
     @State var showAlert: Bool = false
     @AppStorage("didLogin") private var didLogin = false
@@ -176,6 +175,6 @@ struct MenuView: View {
 
 struct MenuView_Previews: PreviewProvider {
     static var previews: some View {
-        MenuView(user: .constant(User(uid: "", email: "20185158@hallym.ac.kr", name: "은재", gender: Constants.GENDER_OPTION_MALE)), loginStatus: .constant(true))
+        MenuView(user: .constant(User(uid: "", email: "20185158@hallym.ac.kr", name: "은재", gender: Constants.GENDER_OPTION_MALE)))
     }
 }

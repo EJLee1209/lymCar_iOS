@@ -59,9 +59,9 @@ extension String {
             return nil
         }
     }
-    func getPrettyHour() -> String {
+    func getPrettyHour(sep:String="T") -> String {
         var prettyDateTime = ""
-        var times = self.split(separator: "T")[1].split(separator: ":")
+        var times = self.split(separator: sep)[1].split(separator: ":")
         var hour = Int(times[0])!
         let min = times[1]
         

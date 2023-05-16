@@ -37,7 +37,7 @@ struct CarPoolRoom: Codable, Hashable {
 
 extension CarPoolRoom: Equatable {
     static func == (lhs: CarPoolRoom, rhs: CarPoolRoom) -> Bool {
-        return lhs.roomId == rhs.roomId
+        return lhs.roomId == rhs.roomId && lhs.participants == rhs.participants && lhs.userCount == rhs.userCount
     }
     
     

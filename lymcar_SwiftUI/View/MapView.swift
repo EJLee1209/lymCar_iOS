@@ -18,7 +18,6 @@ struct Point: Identifiable {
 
 struct MapView: View {
     private let manager = CLLocationManager()
-    @Binding var currentUser: User?
     @Binding var showBottomSheet: Bool // bottomSheet visibility
     
     @State private var region = MKCoordinateRegion(
@@ -51,7 +50,8 @@ struct MapView: View {
     
     @State var searchCurrentLocation: Bool = false
     
-    @StateObject var viewModel = MainViewModel()
+    @EnvironmentObject var viewModel : MainViewModel
+    @EnvironmentObject var appDelegate : AppDelegate
     @StateObject var realmManager = RealmManger()
     @State var favorites : [Place] = []
     @State var editingFocus: SearchField?
@@ -153,7 +153,7 @@ struct MapView: View {
                     
                     if showMyRoomBox {
                         MyRoomBox(
-                            room: myRoom!
+                            room: $myRoom
                         ) {
                             self.mapToChatRoom = true
                         }
@@ -236,9 +236,9 @@ struct MapView: View {
                                                 RoomItem(
                                                     room: room,
                                                     location: manager.location?.coordinate,
-                                                    user: currentUser
+                                                    user: viewModel.currentUser
                                                 ) { clickedRoom in
-                                                    guard let safeUser = self.currentUser else {
+                                                    guard let safeUser = viewModel.currentUser else {
                                                         alertMsg = "알 수 없는 오류"
                                                         showAlert = true
                                                         return
@@ -294,16 +294,18 @@ struct MapView: View {
                             myRoom: .constant(safeMyRoom),
                             mapToChatRoom: $mapToChatRoom
                         ).navigationBarBackButtonHidden()
+                            .environmentObject(self.viewModel)
+                            .environmentObject(self.appDelegate)
                     }
                 } label: {}
                 NavigationLink(isActive: $createToChatRoom) {
                     CreateRoomView(
-                        currentUser: $currentUser,
                         createToChatRoom: $createToChatRoom,
                         mapToChatRoom: $mapToChatRoom,
                         startPlace: startPlace,
                         endPlace: endPlace
                     ).navigationBarBackButtonHidden()
+                        .environmentObject(self.viewModel)
                 } label: {}
             }.edgesIgnoringSafeArea(.all)
                 .sheet(isPresented: $showModal) {
@@ -336,26 +338,43 @@ struct MapView: View {
                         Button("취소", role: .cancel) {}
                         Button("확인", role: .destructive) {
                             // 채팅방 입장하기
-                            print("채팅방에 입장합니다.")
-                            print("입장 : \(self.clickedRoom)")
+                            guard let user = viewModel.currentUser else { return }
+                            
                             if let clickedRoom = clickedRoom {
-                                viewModel.joinRoom(
-                                    room: clickedRoom
-                                ) { result in
-                                    switch result {
-                                    case .success(_):
-                                        self.mapToChatRoom = true
-                                    case .failure(_):
-                                        showAlert = true
-                                        alertMsg = "채팅방 입장 실패"
+                                Task {
+                                    let tokens = await viewModel.getParticipantsTokens(roomId: clickedRoom.roomId)
+                                    viewModel.sendPushMessage(
+                                        chat: Chat(value: [
+                                            "roomId": clickedRoom.roomId,
+                                            "userId":user.uid,
+                                            "userName":user.name,
+                                            "msg":"\(user.name)님이 입장하셨습니다",
+                                            "messageType":CHAT_JOIN,
+                                            "sendSuccess":SEND_STATE_SUCCESS
+                                        ]),
+                                        receiveTokens: tokens
+                                    )
+                                    viewModel.joinRoom(
+                                        room: clickedRoom
+                                    ) { result in
+                                        switch result {
+                                        case .success(_):
+                                            self.mapToChatRoom = true
+                                            print("참여자 token값 : \(viewModel.participantsTokens)")
+                                        case .failure(_):
+                                            showAlert = true
+                                            alertMsg = "채팅방 입장 실패"
+                                        }
                                     }
                                 }
+                                
                             }
                         }
                     }
                 } message: {
                     Text("채팅방에 참여하시겠습니까?")
                 }
+                
                 .onChange(of: viewModel.searchResult) { newValue in
                     switch newValue {
                     case .success(let result):
@@ -375,22 +394,16 @@ struct MapView: View {
                         break
                     }
                 }
-                .onAppear{
-                    viewModel.subscribeMyRoom { result in
-                        switch result {
-                        case .success(let room):
-                            if let safeRoom = room {
-                                self.showMyRoomBox = true
-                                self.myRoom = safeRoom
-                            } else {
-                                self.showMyRoomBox = false
-                                self.myRoom = nil
-                            }
-                            
-                        default:
-                            break
-                        }
+                .onChange(of: viewModel.myRoom, perform: { myRoom in
+                    if let safeRoom = myRoom {
+                        self.showMyRoomBox = true
+                        self.myRoom = safeRoom
+                    } else {
+                        self.showMyRoomBox = false
+                        self.myRoom = nil
                     }
+                })
+                .onAppear{
                     if let location = manager.location {
                         convertCLLocationToAddress(location: location)
                     }
@@ -398,10 +411,15 @@ struct MapView: View {
                     realmManager.getFavorites()
                     self.favorites = realmManager.favorites.map { $0.convertToPlace() }
                     
-                    
+                    if let safeRoom = viewModel.myRoom {
+                        self.showMyRoomBox = true
+                        self.myRoom = safeRoom
+                    } else {
+                        self.showMyRoomBox = false
+                        self.myRoom = nil
+                    }
                 }
                 .onDisappear {
-                    viewModel.removeRegistration()
                     showBottomSheet = false
                 }
         }
@@ -479,6 +497,7 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(currentUser: .constant(User(uid: "", email: "", name: "", gender: "")), showBottomSheet: .constant(true))
+        MapView(showBottomSheet: .constant(true))
+            .environmentObject(MainViewModel())
     }
 }

@@ -14,9 +14,13 @@ struct ChatRoomView: View {
     @State var showDeactivateAlert: Bool = false
     @State var showSystemAlert: Bool = false
     @State var systemMsg: String = ""
+    @State var msg: String = ""
+    @State var tokensMap: [String:String] = [:]
     
-    @StateObject var viewModel = MainViewModel()
-    
+    @EnvironmentObject var viewModel : MainViewModel
+    @EnvironmentObject var appDelegate : AppDelegate
+    @StateObject var realmManager = RealmManger()
+    @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
     @GestureState var dragOffset: CGSize = .zero
     
     var body: some View {
@@ -65,16 +69,63 @@ struct ChatRoomView: View {
                                 .font(.system(size: 15))
                                 .padding(.top, 13)
                             
-                            List {
-                                ForEach(Chat().myMockList, id: \.id) { chat in
-                                    ChatItem(chat: chat)
-                                        .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
-                                        .listRowSeparator(.hidden)
-                                        .padding(.bottom, 24)
+                            ScrollViewReader { proxy in
+                                List {
+                                    ForEach(realmManager.messages, id: \.self) { chat in
+                                        ChatItem(chat: chat, user: viewModel.currentUser)
+                                            .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
+                                            .listRowSeparator(.hidden)
+                                            .padding(.bottom, 12)
+                                            .id(chat)
+                                    }
                                 }
-                                
+                                .listStyle(.plain)
+                                .onChange(of: realmManager.messages) { messages in
+                                    proxy.scrollTo(messages.last)
+                                }
+                                .onChange(of: keyboard.isShowing) { newValue in
+                                    print("keyboard.isShowing : \(newValue)")
+                                    DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+                                        proxy.scrollTo(realmManager.messages.last)
+                                    }
+                                }
                             }
-                            .listStyle(.plain)
+                            
+                            HStack(alignment: .center, spacing: 0) {
+                                TextField(text: $msg) {
+                                    Text("대화해보세요")
+                                }
+                                .padding(.horizontal, 10)
+                                
+                                Button {
+                                    if !msg.isEmpty {
+                                      // 메세지 전송
+                                        guard let safeUser = viewModel.currentUser else { return }
+                                        let chatToSend = Chat(value: [
+                                            "roomId" : myRoom.roomId,
+                                            "userId" : safeUser.uid,
+                                            "userName" : safeUser.name,
+                                            "msg" : self.msg,
+                                            "messageType" : CHAT_NORMAL
+                                        ])
+                                        viewModel.sendPushMessage(
+                                            chat: chatToSend,
+                                            receiveTokens: self.tokensMap
+                                        )
+                                        realmManager.saveChat(chat: chatToSend)
+                                        
+                                        self.msg = ""
+                                    }
+                                } label: {
+                                    Image("button_send")
+                                }
+                                .padding(.all, 14)
+                            }
+                            .background(Color("f5f5f5"))
+                            .cornerRadius(30)
+                            .padding(.bottom, 10)
+                            .padding(.horizontal, 14)
+                            
                             Spacer()
                         }
                     }
@@ -84,14 +135,49 @@ struct ChatRoomView: View {
                     .padding(.top, 24)
                 }
             }
-            .edgesIgnoringSafeArea(.all)
+            .edgesIgnoringSafeArea(.top)
             .alert("채팅방 나가기", isPresented: $showExitAlert) {
                 HStack {
                     Button("확인", role: .destructive) {
+                        guard let user = viewModel.currentUser else { return }
+                        
                         viewModel.exitRoom(roomId: myRoom.roomId) { result in
                             switch result {
                             case .success(_):
+                                // 퇴장 메세지 전송
+                                viewModel.sendPushMessage(
+                                    chat: Chat(value: [
+                                        "roomId": myRoom.roomId,
+                                        "userId": user.uid,
+                                        "userName": user.name,
+                                        "msg":"\(user.name)님이 나갔습니다",
+                                        "messageType":CHAT_JOIN,
+                                        "sendSuccess":SEND_STATE_SUCCESS
+                                    ]),
+                                    receiveTokens: self.tokensMap
+                                )
+                                if(myRoom.participants.first == user.uid && myRoom.userCount >= 2) {
+                                    // 방장이 나감
+                                    let newSuperUser = myRoom.participants[1]
+                                    Task {
+                                        if let name = await viewModel.findUserName(uid: newSuperUser) {
+                                            // 새로운 방장 안내 메세지 전송
+                                            viewModel.sendPushMessage(
+                                                chat: Chat(value: [
+                                                    "roomId": myRoom.roomId,
+                                                    "userId": user.uid,
+                                                    "userName": user.name,
+                                                    "msg":"\(name)님이 방장 입니다",
+                                                    "messageType":CHAT_ETC,
+                                                    "sendSuccess":SEND_STATE_SUCCESS
+                                                ]),
+                                                receiveTokens: self.tokensMap
+                                            )
+                                        }
+                                    }
+                                }
                                 self.mapToChatRoom = false
+                                
                             case .failure(let errorCode):
                                 self.showExitAlert = false
                                 self.showSystemAlert = true
@@ -110,13 +196,37 @@ struct ChatRoomView: View {
                 HStack {
                     Button("확인", role: .destructive) {
                         // 마감
+                        guard let user = viewModel.currentUser else { return }
+                        if(myRoom.participants.first != user.uid) {
+                            self.showSystemAlert.toggle()
+                            self.systemMsg = "방장 권한입니다"
+                            return
+                        }
+                        if(myRoom.closed) {
+                            self.showSystemAlert.toggle()
+                            self.systemMsg = "이미 마감된 방입니다"
+                            return
+                        }
+                        Task {
+                            let isSuccessDeactivate = await viewModel.deactivateRoom(roomId: myRoom.roomId)
+                            if(isSuccessDeactivate) {
+                                // 마감 성공
+                                self.showSystemAlert.toggle()
+                                self.systemMsg = "카풀이 마감됐습니다"
+                            } else {
+                                // 마감 실패
+                                self.showSystemAlert.toggle()
+                                self.systemMsg = "알 수 없는 오류입니다\n잠시 후 다시 시도해주세요"
+                            }
+                        }
+                        
                     }
                     Button("취소", role: .cancel) {}
                 }
             } message: {
                 Text("마감하기를 하면\n인원을 더이상 추가할 수 없습니다.\n마감할까요?")
             }
-            .alert("시스템 메세지", isPresented: $showDeactivateAlert) {
+            .alert("시스템 메세지", isPresented: $showSystemAlert) {
                 Button("닫기", role: .cancel) {}
             } message: {
                 Text(systemMsg)
@@ -126,6 +236,24 @@ struct ChatRoomView: View {
                     self.mapToChatRoom = false
                 }
             }))
+            .onAppear {
+                UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+                realmManager.getChats(roomId: myRoom.roomId)
+                appDelegate.realmManager = self.realmManager
+                keyboard.addObserver()
+                
+                var copyTokens = viewModel.participantsTokens
+                copyTokens.removeValue(forKey: appDelegate.fcmToken)
+                self.tokensMap = copyTokens
+            }
+            .onDisappear {
+                keyboard.removeObserver()
+            }
+            .onChange(of: viewModel.participantsTokens) { tokens in
+                var copyTokens = tokens
+                copyTokens.removeValue(forKey: appDelegate.fcmToken)
+                self.tokensMap = copyTokens
+            }
         }
     }
 }
@@ -133,5 +261,7 @@ struct ChatRoomView: View {
 struct ChatRoomView_Previews: PreviewProvider {
     static var previews: some View {
         ChatRoomView(myRoom: .constant(CarPoolRoom()), mapToChatRoom: .constant(true))
+            .environmentObject(MainViewModel())
+            .environmentObject(AppDelegate())
     }
 }

@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
+
 
 enum TabIndex {
     case history, map, menu
 }
 
 struct MainView: View {
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var appDelegate : AppDelegate
+    @AppStorage("didLogin") private var didLogin = false
     @StateObject var viewModel = MainViewModel()
-    @Binding var loginStatus: Bool
     
     @State var tabIndex : TabIndex = .map
     @State var barPosition: CGFloat = 0
@@ -21,8 +25,6 @@ struct MainView: View {
     @State var showBottomSheet: Bool = false
     @State var currentUser: User?
     @State var showAlert: Bool = false
-    
-    @AppStorage("didLogin") private var didLogin = false
     
     var body: some View {
         LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
@@ -77,23 +79,16 @@ struct MainView: View {
                     }.edgesIgnoringSafeArea(.all)
                         .onAppear {
                             barWidth = proxy.size.width/3
-                            viewModel.moniteringLogged()
-                            viewModel.subscribeUser { result in
-                                switch result {
-                                case .success(let user):
-                                    self.currentUser = user
-                                default:
-                                    break
-                                }
-                            }
                         }
                 }
                 .navigationViewStyle(StackNavigationViewStyle())
             }
             .alert("로그인 감지", isPresented: .constant(viewModel.detectAnonymous)) {
-                Button("확인", role: .cancel) {
-                    loginStatus = false
-                    didLogin = false
+                Button(role: .cancel) {
+                    dismiss()
+                    didLogin=false
+                } label: {
+                    Text("확인")
                 }
             } message: {
                 Text("다른 기기에서 로그인했습니다.\n자동으로 로그아웃합니다.")
@@ -103,8 +98,38 @@ struct MainView: View {
             } message: {
                 Text("잠시 후에 다시 시도해주세요")
             }
+            .onDisappear {
+                viewModel.removeAllRegistration()
+                print("mainView onDisapear")
+            }
+            .onAppear {
+                viewModel.updateFcmToken(token: self.appDelegate.fcmToken)
+                viewModel.moniteringLogged()
+                viewModel.subscribeMyRoom()
+                viewModel.subscribeUser()
+            }
+            .onChange(of: viewModel.myRoom) { newValue in
+                viewModel.participantsRegistration?.remove()
+                if let safeRoom = newValue {
+                    viewModel.subscribeParticipantsTokens(roomId: safeRoom.roomId)
+                }
+            }
+            // appDelegate 에서 가져온 pushMessageType 으로 snapshotListener 를 제거하고 모두 get 메서드로 대체 -> ViewModel 제거하고 TCA 리팩토링
+            
+            // if pushMessageType == Exit or join -> getMyRoom()
+            // participantsTokens도 Exit or join 푸시가 왔을 때, getParticipantsTokens() 수행
+            // 다른 기기로 로그인하는 경우 현재 로그인 중인 기기에 푸시 메세지 전송 (pushMessageType = Anonymous) => 자동 로그아웃 처리
+            // 사용자 정보는 실시간으로 가져올 필요 없어보임 MainView .onAppear 에서 1회만 getUserInfo() 수행
+            
+            // 하지만, Transaction 부분은 어떻게 처리할지..
+            
+            // 일단 MainView 부분은 ViewModel 유지하고, 나중에 리팩토링하자.
+            
+//            .onChange(of: appDelegate.pushMessageType) { newValue in
+//                print("get push message type : \(newValue)")
+//            }
+            
         }
-        
     }
     @ViewBuilder
     func changeFragment() -> some View {
@@ -113,19 +138,19 @@ struct MainView: View {
             HistoryView()
         case .map:
             MapView(
-                currentUser: $currentUser,
                 showBottomSheet: $showBottomSheet
             )
+            .environmentObject(self.viewModel)
+            .environmentObject(self.appDelegate)
         case .menu:
-            if let currentUser = currentUser {
+            if let currentUser = viewModel.currentUser {
                 MenuView(
-                    user: .constant(currentUser),
-                    loginStatus: $loginStatus
+                    user: .constant(currentUser)
                 ) {
                     viewModel.logout { result in
                         switch result {
                         case .success(_):
-                            loginStatus.toggle()
+                            dismiss()
                         case.failure(_):
                             showAlert.toggle()
                         }
@@ -152,23 +177,11 @@ struct MainView: View {
     }
 }
 
-struct Fragment: View {
-    var backgroundColor : Color
-    var title: String
-    
-    var body: some View {
-        ZStack{
-            backgroundColor
-            Text(title)
-                .font(.largeTitle)
-                .fontWeight(.black)
-                .foregroundColor(.white)
-        }.edgesIgnoringSafeArea(.top)
-    }
-}
+
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView(loginStatus: .constant(true))
+        MainView()
+            .environmentObject(AppDelegate())
     }
 }
