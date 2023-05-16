@@ -142,6 +142,7 @@ struct KeyboardAwareModifier: ViewModifier {
 
 
 extension UIApplication {
+    
     func addTapGestureRecognizer() {
         let scenes = UIApplication.shared.connectedScenes
         let windowScene = scenes.first as? UIWindowScene
@@ -152,6 +153,8 @@ extension UIApplication {
         tapGesture.cancelsTouchesInView = false
         tapGesture.delegate = self
         window.addGestureRecognizer(tapGesture)
+        
+        
     }
 }
 
