@@ -240,6 +240,7 @@ struct ChatRoomView: View {
                 UNUserNotificationCenter.current().removeAllDeliveredNotifications()
                 realmManager.getChats(roomId: myRoom.roomId)
                 appDelegate.realmManager = self.realmManager
+                appDelegate.isViewChatRoom = true
                 keyboard.addObserver()
                 
                 var copyTokens = viewModel.participantsTokens
@@ -248,6 +249,7 @@ struct ChatRoomView: View {
             }
             .onDisappear {
                 keyboard.removeObserver()
+                appDelegate.isViewChatRoom = false
             }
             .onChange(of: viewModel.participantsTokens) { tokens in
                 var copyTokens = tokens

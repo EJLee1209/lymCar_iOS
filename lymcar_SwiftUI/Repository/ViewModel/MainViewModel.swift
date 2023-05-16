@@ -499,6 +499,7 @@ class MainViewModel: ObservableObject {
                     self.progress = .idle
                 }
                 self.myRoom = nil
+                self.participantsTokens = [:]
             }
         }
     }

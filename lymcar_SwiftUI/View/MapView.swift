@@ -327,9 +327,7 @@ struct MapView: View {
                     }
                 }
                 .alert("시스템 메세지", isPresented: $showAlert) {
-                    HStack {
-                        Button("확인", role: .cancel) {}
-                    }
+                    Button("확인", role: .destructive) {}
                 } message: {
                     Text(alertMsg)
                 }
@@ -343,24 +341,24 @@ struct MapView: View {
                             if let clickedRoom = clickedRoom {
                                 Task {
                                     let tokens = await viewModel.getParticipantsTokens(roomId: clickedRoom.roomId)
-                                    viewModel.sendPushMessage(
-                                        chat: Chat(value: [
-                                            "roomId": clickedRoom.roomId,
-                                            "userId":user.uid,
-                                            "userName":user.name,
-                                            "msg":"\(user.name)님이 입장하셨습니다",
-                                            "messageType":CHAT_JOIN,
-                                            "sendSuccess":SEND_STATE_SUCCESS
-                                        ]),
-                                        receiveTokens: tokens
-                                    )
                                     viewModel.joinRoom(
                                         room: clickedRoom
                                     ) { result in
                                         switch result {
                                         case .success(_):
+                                            viewModel.sendPushMessage(
+                                                chat: Chat(value: [
+                                                    "roomId": clickedRoom.roomId,
+                                                    "userId":user.uid,
+                                                    "userName":user.name,
+                                                    "msg":"\(user.name)님이 입장하셨습니다",
+                                                    "messageType":CHAT_JOIN,
+                                                    "sendSuccess":SEND_STATE_SUCCESS
+                                                ]),
+                                                receiveTokens: tokens
+                                            )
                                             self.mapToChatRoom = true
-                                            print("참여자 token값 : \(viewModel.participantsTokens)")
+                                            
                                         case .failure(_):
                                             showAlert = true
                                             alertMsg = "채팅방 입장 실패"
