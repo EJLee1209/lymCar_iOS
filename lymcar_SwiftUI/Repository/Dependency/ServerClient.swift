@@ -28,6 +28,11 @@ enum APIError: Error {
 extension ServerClient: DependencyKey {
     static let liveValue = ServerClient(
         sendVerifyCode: { email in
+            if (!email.contains("@hallym.ac.kr")) {
+                // 한림 웹메일이 아님
+                throw APIError.invalidURL
+            }
+            
             guard let url = URL(string: "\(Bundle.main.baseUrl)api/email/create?email=\(email)") else {
                 throw APIError.invalidURL
             }

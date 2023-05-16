@@ -22,6 +22,7 @@ struct RegisterView: View {
     // Navigation RootView 로 돌아가기 위한 Binding
     @Binding var goToRootView: Bool
     
+    @StateObject var keyboard: KeyboardObserver = KeyboardObserver()
     // 키보드 입력 FocusState
     @FocusState private var focusField: RegisterField?
     let store: StoreOf<RegisterFeature>
@@ -37,7 +38,7 @@ struct RegisterView: View {
                             .foregroundColor(.white)
                             .font(.system(size: 40))
                             .fontWeight(.heavy)
-                            .padding(.top, 157)
+                            .padding(.top, keyboard.isShowing ? 100 : 157)
                             .padding(.leading, 21)
                         
                         ZStack(alignment: .bottom) {
@@ -233,9 +234,9 @@ struct RegisterView: View {
                                 }
                                 .background(Color("main_blue"))
                                 .cornerRadius(100)
-                                .padding(.horizontal, 20)
-                                .padding(.bottom, 47)
                                 .shadow(radius: 3, y:5)
+                                .padding(.horizontal, 20)
+                                .padding(.bottom, keyboard.isShowing ? keyboard.height : 47)
                             }
                         }
                         .roundedCorner(40, corners: [.topLeft, .topRight])
@@ -244,11 +245,14 @@ struct RegisterView: View {
                 }
                 .edgesIgnoringSafeArea(.all)
                 .ignoresSafeArea(.keyboard)
+                .animation(.spring(), value: self.keyboard.isShowing)
                 .onAppear {
                     viewStore.send(.onAppear)
+                    self.keyboard.addObserver()
                 }
                 .onDisappear {
                     viewStore.send(.onDisappear)
+                    self.keyboard.removeObserver()
                 }
                 .onChange(of: viewStore.focusField, perform: { newValue in
                     self.focusField = newValue

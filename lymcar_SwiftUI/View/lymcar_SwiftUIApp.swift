@@ -23,9 +23,9 @@ struct lymcar_SwiftUIApp: App {
                 )
             )
             .environmentObject(appDelegate)
-                .onAppear {
-                    UIApplication.shared.addTapGestureRecognizer()
-                }
+            .onAppear {
+                UIApplication.shared.addTapGestureRecognizer()
+            }
         }
     }
 }
@@ -34,6 +34,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     var fcmToken: String = ""
     @ObservedObject var realmManager = RealmManger()
     @Published var pushMessageType : String = ""
+    var isViewChatRoom: Bool = false
     // 앱이 켜졌을 때
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         // 대리인에게 실행 프로세스가 완료되었으며 앱을 실행할 준비가 되었음을 알림
@@ -82,7 +83,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     // 푸시메세지가 앱이 켜져 있을 때 나올 때
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // 앱이 포그라운드에서 실행되는 동안 도착한 알림을 처리하는 곳
-        completionHandler([.banner, .sound, .badge])
+        if(isViewChatRoom) {
+            completionHandler([.sound])
+        }else{
+            completionHandler([.banner, .sound, .badge])
+        }
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {

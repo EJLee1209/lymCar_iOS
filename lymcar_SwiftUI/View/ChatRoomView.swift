@@ -27,6 +27,8 @@ struct ChatRoomView: View {
         LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
             ZStack(alignment: .bottom) {
                 Color("main_blue")
+                    .onTapGesture { self.hideKeyboard() }
+                
                 VStack(alignment: .center, spacing: 0) {
                     HStack(alignment: .center, spacing: 0) {
                         Button {
@@ -63,11 +65,12 @@ struct ChatRoomView: View {
                     }
                     .padding(.top, 50)
                     .padding(.horizontal, 10)
-                    ZStack {
+                    ZStack(alignment:.bottom) {
                         VStack {
                             Text("인원 \(myRoom.userCount)명")
                                 .font(.system(size: 15))
                                 .padding(.top, 13)
+                                .onTapGesture { self.hideKeyboard() }
                             
                             ScrollViewReader { proxy in
                                 List {
@@ -90,44 +93,44 @@ struct ChatRoomView: View {
                                     }
                                 }
                             }
-                            
-                            HStack(alignment: .center, spacing: 0) {
-                                TextField(text: $msg) {
-                                    Text("대화해보세요")
-                                }
-                                .padding(.horizontal, 10)
-                                
-                                Button {
-                                    if !msg.isEmpty {
-                                      // 메세지 전송
-                                        guard let safeUser = viewModel.currentUser else { return }
-                                        let chatToSend = Chat(value: [
-                                            "roomId" : myRoom.roomId,
-                                            "userId" : safeUser.uid,
-                                            "userName" : safeUser.name,
-                                            "msg" : self.msg,
-                                            "messageType" : CHAT_NORMAL
-                                        ])
-                                        viewModel.sendPushMessage(
-                                            chat: chatToSend,
-                                            receiveTokens: self.tokensMap
-                                        )
-                                        realmManager.saveChat(chat: chatToSend)
-                                        
-                                        self.msg = ""
-                                    }
-                                } label: {
-                                    Image("button_send")
-                                }
-                                .padding(.all, 14)
-                            }
-                            .background(Color("f5f5f5"))
-                            .cornerRadius(30)
-                            .padding(.bottom, 10)
-                            .padding(.horizontal, 14)
-                            
                             Spacer()
                         }
+                        .padding(.bottom, 60)
+                        .onTapGesture { self.hideKeyboard() }
+                        
+                        HStack(alignment: .center, spacing: 0) {
+                            TextField("채팅으로 약속을 잡으세요" ,text: $msg, axis: .vertical)
+                                .lineLimit(1...4)
+                                .padding(.horizontal, 10)
+                            
+                            Button {
+                                if !msg.isEmpty {
+                                  // 메세지 전송
+                                    guard let safeUser = viewModel.currentUser else { return }
+                                    let chatToSend = Chat(value: [
+                                        "roomId" : myRoom.roomId,
+                                        "userId" : safeUser.uid,
+                                        "userName" : safeUser.name,
+                                        "msg" : self.msg,
+                                        "messageType" : CHAT_NORMAL
+                                    ])
+                                    viewModel.sendPushMessage(
+                                        chat: chatToSend,
+                                        receiveTokens: self.tokensMap
+                                    )
+                                    realmManager.saveChat(chat: chatToSend)
+                                    
+                                    self.msg = ""
+                                }
+                            } label: {
+                                Image("button_send")
+                            }
+                            .padding(.all, 14)
+                        }
+                        .background(Color("f5f5f5"))
+                        .cornerRadius(30)
+                        .padding(.bottom, 10)
+                        .padding(.horizontal, 14)
                     }
                     .frame(maxWidth: .infinity)
                     .background(Color("white"))
@@ -211,8 +214,20 @@ struct ChatRoomView: View {
                             let isSuccessDeactivate = await viewModel.deactivateRoom(roomId: myRoom.roomId)
                             if(isSuccessDeactivate) {
                                 // 마감 성공
-                                self.showSystemAlert.toggle()
-                                self.systemMsg = "카풀이 마감됐습니다"
+                                // 마감 메세지 전송
+                                let chat = Chat(value: [
+                                    "roomId": myRoom.roomId,
+                                    "userId": user.uid,
+                                    "userName": user.name,
+                                    "msg": "카풀이 마감됐습니다",
+                                    "messageType":CHAT_ETC,
+                                    "sendSuccess":SEND_STATE_SUCCESS
+                                ])
+                                viewModel.sendPushMessage(
+                                    chat: chat,
+                                    receiveTokens: self.tokensMap
+                                )
+                                realmManager.saveChat(chat: chat)
                             } else {
                                 // 마감 실패
                                 self.showSystemAlert.toggle()
@@ -227,7 +242,8 @@ struct ChatRoomView: View {
                 Text("마감하기를 하면\n인원을 더이상 추가할 수 없습니다.\n마감할까요?")
             }
             .alert("시스템 메세지", isPresented: $showSystemAlert) {
-                Button("닫기", role: .cancel) {}
+                Button { } label: { Text("확인") }
+
             } message: {
                 Text(systemMsg)
             }
@@ -238,8 +254,10 @@ struct ChatRoomView: View {
             }))
             .onAppear {
                 UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+                UIApplication.shared.removeTapGestureRecognizer()
                 realmManager.getChats(roomId: myRoom.roomId)
                 appDelegate.realmManager = self.realmManager
+                appDelegate.isViewChatRoom = true
                 keyboard.addObserver()
                 
                 var copyTokens = viewModel.participantsTokens
@@ -247,7 +265,9 @@ struct ChatRoomView: View {
                 self.tokensMap = copyTokens
             }
             .onDisappear {
+                UIApplication.shared.addTapGestureRecognizer()
                 keyboard.removeObserver()
+                appDelegate.isViewChatRoom = false
             }
             .onChange(of: viewModel.participantsTokens) { tokens in
                 var copyTokens = tokens

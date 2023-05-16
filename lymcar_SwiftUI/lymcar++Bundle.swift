@@ -39,4 +39,12 @@ extension Bundle {
         guard let key = resource["KAKAO_API_KEY"] as? String else { fatalError("serverInfo.plist에 KAKAO_API_KEY을 설정해주세요") }
         return key
     }
+    
+    var privacyPolicyUrl : String{
+        guard let file = self.path(forResource: "serverInfo", ofType: "plist") else { return "" }
+        
+        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
+        guard let key = resource["PRIVACY_POLICY_URL"] as? String else { fatalError("serverInfo.plist에 PRIVACY_POLICY_URL을 설정해주세요") }
+        return key
+    }
 }

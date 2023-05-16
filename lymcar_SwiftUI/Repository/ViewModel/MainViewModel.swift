@@ -143,6 +143,7 @@ class MainViewModel: ObservableObject {
                     return
                 }
                 
+                self.participantsTokens = [:]
                 document.forEach { data in
                     if let token = data.get(FireStoreTable.FIELD_TOKEN) as? String {
                         if let platform = data.get(FireStoreTable.FIELD_PLATFORM) as? String {
@@ -499,6 +500,7 @@ class MainViewModel: ObservableObject {
                     self.progress = .idle
                 }
                 self.myRoom = nil
+                self.participantsTokens = [:]
             }
         }
     }
