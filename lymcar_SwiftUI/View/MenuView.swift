@@ -115,7 +115,9 @@ struct MenuView: View {
                         Divider()
                         Button {
                             // 개인정보 취급방침
-                            
+                            var stringUrl = Bundle.main.privacyPolicyUrl
+                            guard let url = URL(string: stringUrl) else { return }
+                            UIApplication.shared.open(url, options: [:])
                         } label: {
                             HStack {
                                 Text("개인정보 취급방침")
