@@ -50,7 +50,6 @@ struct MapView: View {
     
     @State var searchCurrentLocation: Bool = false
     
-    
     @EnvironmentObject var viewModel : MainViewModel
     @EnvironmentObject var appDelegate : AppDelegate
     @StateObject var realmManager = RealmManger()
@@ -339,24 +338,43 @@ struct MapView: View {
                         Button("취소", role: .cancel) {}
                         Button("확인", role: .destructive) {
                             // 채팅방 입장하기
+                            guard let user = viewModel.currentUser else { return }
+                            
                             if let clickedRoom = clickedRoom {
-                                viewModel.joinRoom(
-                                    room: clickedRoom
-                                ) { result in
-                                    switch result {
-                                    case .success(_):
-                                        self.mapToChatRoom = true
-                                    case .failure(_):
-                                        showAlert = true
-                                        alertMsg = "채팅방 입장 실패"
+                                Task {
+                                    let tokens = await viewModel.getParticipantsTokens(roomId: clickedRoom.roomId)
+                                    viewModel.sendPushMessage(
+                                        chat: Chat(value: [
+                                            "roomId": clickedRoom.roomId,
+                                            "userId":user.uid,
+                                            "userName":user.name,
+                                            "msg":"\(user.name)님이 입장하셨습니다",
+                                            "messageType":CHAT_JOIN,
+                                            "sendSuccess":SEND_STATE_SUCCESS
+                                        ]),
+                                        receiveTokens: tokens
+                                    )
+                                    viewModel.joinRoom(
+                                        room: clickedRoom
+                                    ) { result in
+                                        switch result {
+                                        case .success(_):
+                                            self.mapToChatRoom = true
+                                            print("참여자 token값 : \(viewModel.participantsTokens)")
+                                        case .failure(_):
+                                            showAlert = true
+                                            alertMsg = "채팅방 입장 실패"
+                                        }
                                     }
                                 }
+                                
                             }
                         }
                     }
                 } message: {
                     Text("채팅방에 참여하시겠습니까?")
                 }
+                
                 .onChange(of: viewModel.searchResult) { newValue in
                     switch newValue {
                     case .success(let result):

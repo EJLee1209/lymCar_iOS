@@ -52,9 +52,12 @@ struct WelcomeFeature: ReducerProtocol {
         case changedRegistrationInProgress(_ newValue: Bool)
         case changedIsLoading
         
+        // LifeCycle
+        case onAppear
+        case onDisappear
+        
         // alert dismiss
         case dismissAlert
-        case onAppear
         
         // 다른 view의 action
         case EmailVerifyAction(EmailVerifyFeature.Action)
@@ -154,6 +157,10 @@ struct WelcomeFeature: ReducerProtocol {
                 return .none
             
             case .onAppear:
+                state = .init()
+                return .none
+                
+            case .onDisappear:
                 state = .init()
                 return .none
             default:

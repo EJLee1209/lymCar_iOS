@@ -17,7 +17,10 @@ struct lymcar_SwiftUIApp: App {
     var body: some Scene {
         WindowGroup {
             WelcomeView(
-                store: Store(initialState: WelcomeFeature.State(), reducer: WelcomeFeature())
+                store: Store(
+                    initialState: WelcomeFeature.State(),
+                    reducer: WelcomeFeature()
+                )
             )
             .environmentObject(appDelegate)
                 .onAppear {
@@ -30,6 +33,7 @@ struct lymcar_SwiftUIApp: App {
 class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
     var fcmToken: String = ""
     @ObservedObject var realmManager = RealmManger()
+    @Published var pushMessageType : String = ""
     // 앱이 켜졌을 때
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         // 대리인에게 실행 프로세스가 완료되었으며 앱을 실행할 준비가 되었음을 알림
@@ -100,6 +104,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         ])
         print("Receive silent push>", chatToSave)
         self.realmManager.saveChat(chat: chatToSave)
+        self.pushMessageType = messageType
         completionHandler(.newData)
     }
 }

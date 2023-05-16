@@ -114,6 +114,20 @@ struct MainView: View {
                     viewModel.subscribeParticipantsTokens(roomId: safeRoom.roomId)
                 }
             }
+            // appDelegate 에서 가져온 pushMessageType 으로 snapshotListener 를 제거하고 모두 get 메서드로 대체 -> ViewModel 제거하고 TCA 리팩토링
+            
+            // if pushMessageType == Exit or join -> getMyRoom()
+            // participantsTokens도 Exit or join 푸시가 왔을 때, getParticipantsTokens() 수행
+            // 다른 기기로 로그인하는 경우 현재 로그인 중인 기기에 푸시 메세지 전송 (pushMessageType = Anonymous) => 자동 로그아웃 처리
+            // 사용자 정보는 실시간으로 가져올 필요 없어보임 MainView .onAppear 에서 1회만 getUserInfo() 수행
+            
+            // 하지만, Transaction 부분은 어떻게 처리할지..
+            
+            // 일단 MainView 부분은 ViewModel 유지하고, 나중에 리팩토링하자.
+            
+//            .onChange(of: appDelegate.pushMessageType) { newValue in
+//                print("get push message type : \(newValue)")
+//            }
             
         }
     }

@@ -142,6 +142,7 @@ class MainViewModel: ObservableObject {
                     print("no participants")
                     return
                 }
+                
                 document.forEach { data in
                     if let token = data.get(FireStoreTable.FIELD_TOKEN) as? String {
                         if let platform = data.get(FireStoreTable.FIELD_PLATFORM) as? String {
@@ -150,6 +151,29 @@ class MainViewModel: ObservableObject {
                     }
                 }
             })
+    }
+    
+    func getParticipantsTokens(roomId: String) async -> [String:String] {
+        self.progress = .loading
+        do {
+            let snapshot = try await db.collection(FireStoreTable.FCMTOKENS)
+                .whereField(FireStoreTable.FIELD_ROOM_ID, isEqualTo: roomId)
+                .getDocuments()
+            
+            var participantsTokens : [String:String] = [:]
+            snapshot.documents.forEach { data in
+                if let token = data.get(FireStoreTable.FIELD_TOKEN) as? String {
+                    if let platform = data.get(FireStoreTable.FIELD_PLATFORM) as? String {
+                        participantsTokens[token] = platform
+                    }
+                }
+            }
+            self.progress = .idle
+            return participantsTokens
+        } catch {
+            self.progress = .idle
+            return [:]
+        }
     }
     
     func searchPlace(keyword: String) {
@@ -177,6 +201,24 @@ class MainViewModel: ObservableObject {
             }
     }
     
+    @MainActor
+    func findUserName(uid: String) async -> String? {
+        do {
+            let document = try await db.collection(FireStoreTable.USER).document(uid)
+                .getDocument()
+            
+            if let name = document.get(FireStoreTable.FIELD_NAME) as? String {
+                return name
+            } else {
+                return nil
+            }
+            
+        } catch {
+            return nil
+        }
+        
+    }
+    
     func sendPushMessage(
         chat: Chat,
         receiveTokens: [String:String]
@@ -199,7 +241,6 @@ class MainViewModel: ObservableObject {
             }
             
         }
-        
     }
     
     func createRoom(room: CarPoolRoom, completion: @escaping (Result<CarPoolRoom, FirestoreErrorCode>) -> Void) {

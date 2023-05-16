@@ -204,6 +204,15 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		CFAC84532A0D2962008E490C /* Dependency */ = {
+			isa = PBXGroup;
+			children = (
+				CFC33A642A08B71900DD18D8 /* ServerClient.swift */,
+				CFC33A662A08BDA100DD18D8 /* AuthClient.swift */,
+			);
+			path = Dependency;
+			sourceTree = "<group>";
+		};
 		CFBC8AFB29E96A3700257059 = {
 			isa = PBXGroup;
 			children = (
@@ -225,16 +234,14 @@
 			isa = PBXGroup;
 			children = (
 				CF014F212A0BB99000E3D00F /* lymcar_SwiftUI.entitlements */,
-				CFC33A632A08B70800DD18D8 /* Repository */,
-				CFEB077629ECD134002D7872 /* ViewModel */,
+				CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */,
 				CF45C3A729EC434A00719703 /* lymcar-SwiftUI-Info.plist */,
-				CFBC8B2629E999C600257059 /* Model */,
+				CF9C73FB29ECF4F500E5E953 /* serverInfo.plist */,
+				CFBC8B0B29E96A3700257059 /* Assets.xcassets */,
+				CFC33A632A08B70800DD18D8 /* Repository */,
 				CFBC8B2329E9983000257059 /* Util */,
 				CFBC8B1529E96A4C00257059 /* View */,
-				CFBC8B0B29E96A3700257059 /* Assets.xcassets */,
 				CFBC8B0D29E96A3700257059 /* Preview Content */,
-				CF9C73FB29ECF4F500E5E953 /* serverInfo.plist */,
-				CF9C73FD29ECF57C00E5E953 /* lymcar++Bundle.swift */,
 			);
 			path = lymcar_SwiftUI;
 			sourceTree = "<group>";
@@ -251,10 +258,10 @@
 			isa = PBXGroup;
 			children = (
 				CFBC8B1829E96A8800257059 /* Component */,
+				CFC39D6729EE750B0096E580 /* Welcome */,
 				CFBC8B0729E96A3700257059 /* lymcar_SwiftUIApp.swift */,
 				CFAA86DC29EFBD5C009A5552 /* MapView.swift */,
 				CF8D054829EEAFE300B90AD4 /* MainView.swift */,
-				CFC39D6729EE750B0096E580 /* Welcome */,
 				CF0435BB29F2403700F8A3D6 /* CreateRoomView.swift */,
 				CF312B1629F3E069007F6BED /* ChatRoomView.swift */,
 				CFCC124129F50FD200C24099 /* MenuView.swift */,
@@ -321,8 +328,9 @@
 		CFC33A632A08B70800DD18D8 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				CFC33A642A08B71900DD18D8 /* ServerClient.swift */,
-				CFC33A662A08BDA100DD18D8 /* AuthClient.swift */,
+				CFBC8B2629E999C600257059 /* Model */,
+				CFEB077629ECD134002D7872 /* ViewModel */,
+				CFAC84532A0D2962008E490C /* Dependency */,
 				CF76AEF92A0B62A2004CBA60 /* Core */,
 			);
 			path = Repository;

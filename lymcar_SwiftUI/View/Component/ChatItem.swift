@@ -38,8 +38,7 @@ func MyChat(_ chat: Chat) -> some View {
         Text(chat.msg)
             .font(.system(size: 13))
             .foregroundColor(Color("white"))
-            .padding(.horizontal, 24)
-            .padding(.vertical, 7)
+            .padding(12)
             .background(Color("main_blue"))
             .roundedCorner(20, corners: [.topLeft, .topRight, .bottomLeft])
     }
@@ -54,8 +53,7 @@ func YourChat(_ chat: Chat) -> some View {
             Text(chat.msg)
                 .font(.system(size: 13))
                 .foregroundColor(Color("black"))
-                .padding(.horizontal, 24)
-                .padding(.vertical, 7)
+                .padding(12)
                 .background(Color("f5f5f5"))
                 .roundedCorner(20, corners: [.topLeft, .topRight, .bottomRight])
             Text(chat.dateTime.getPrettyHour(sep: " "))
@@ -72,6 +70,7 @@ func EnterMessage(_ chat: Chat) -> some View {
     Text(chat.msg)
         .font(.system(size: 11))
         .foregroundColor(Color("667080"))
+        .frame(maxWidth: .infinity)
 }
 
 struct ChatItem_Previews: PreviewProvider {
@@ -79,7 +78,9 @@ struct ChatItem_Previews: PreviewProvider {
         ChatItem(chat: Chat(
             value: [
                 "msg" : "- 개발자님이 입장하셨습니다 -"
+                
             ]
-        ))
+        ), user: User(uid: "", email: "", name: "은재", gender: "")
+        )
     }
 }

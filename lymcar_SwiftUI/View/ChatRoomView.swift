@@ -75,7 +75,7 @@ struct ChatRoomView: View {
                                         ChatItem(chat: chat, user: viewModel.currentUser)
                                             .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
                                             .listRowSeparator(.hidden)
-                                            .padding(.bottom, 24)
+                                            .padding(.bottom, 12)
                                             .id(chat)
                                     }
                                 }
@@ -139,10 +139,45 @@ struct ChatRoomView: View {
             .alert("채팅방 나가기", isPresented: $showExitAlert) {
                 HStack {
                     Button("확인", role: .destructive) {
+                        guard let user = viewModel.currentUser else { return }
+                        
                         viewModel.exitRoom(roomId: myRoom.roomId) { result in
                             switch result {
                             case .success(_):
+                                // 퇴장 메세지 전송
+                                viewModel.sendPushMessage(
+                                    chat: Chat(value: [
+                                        "roomId": myRoom.roomId,
+                                        "userId": user.uid,
+                                        "userName": user.name,
+                                        "msg":"\(user.name)님이 나갔습니다",
+                                        "messageType":CHAT_JOIN,
+                                        "sendSuccess":SEND_STATE_SUCCESS
+                                    ]),
+                                    receiveTokens: self.tokensMap
+                                )
+                                if(myRoom.participants.first == user.uid && myRoom.userCount >= 2) {
+                                    // 방장이 나감
+                                    let newSuperUser = myRoom.participants[1]
+                                    Task {
+                                        if let name = await viewModel.findUserName(uid: newSuperUser) {
+                                            // 새로운 방장 안내 메세지 전송
+                                            viewModel.sendPushMessage(
+                                                chat: Chat(value: [
+                                                    "roomId": myRoom.roomId,
+                                                    "userId": user.uid,
+                                                    "userName": user.name,
+                                                    "msg":"\(name)님이 방장 입니다",
+                                                    "messageType":CHAT_ETC,
+                                                    "sendSuccess":SEND_STATE_SUCCESS
+                                                ]),
+                                                receiveTokens: self.tokensMap
+                                            )
+                                        }
+                                    }
+                                }
                                 self.mapToChatRoom = false
+                                
                             case .failure(let errorCode):
                                 self.showExitAlert = false
                                 self.showSystemAlert = true
