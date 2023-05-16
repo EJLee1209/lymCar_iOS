@@ -196,13 +196,37 @@ struct ChatRoomView: View {
                 HStack {
                     Button("확인", role: .destructive) {
                         // 마감
+                        guard let user = viewModel.currentUser else { return }
+                        if(myRoom.participants.first != user.uid) {
+                            self.showSystemAlert.toggle()
+                            self.systemMsg = "방장 권한입니다"
+                            return
+                        }
+                        if(myRoom.closed) {
+                            self.showSystemAlert.toggle()
+                            self.systemMsg = "이미 마감된 방입니다"
+                            return
+                        }
+                        Task {
+                            let isSuccessDeactivate = await viewModel.deactivateRoom(roomId: myRoom.roomId)
+                            if(isSuccessDeactivate) {
+                                // 마감 성공
+                                self.showSystemAlert.toggle()
+                                self.systemMsg = "카풀이 마감됐습니다"
+                            } else {
+                                // 마감 실패
+                                self.showSystemAlert.toggle()
+                                self.systemMsg = "알 수 없는 오류입니다\n잠시 후 다시 시도해주세요"
+                            }
+                        }
+                        
                     }
                     Button("취소", role: .cancel) {}
                 }
             } message: {
                 Text("마감하기를 하면\n인원을 더이상 추가할 수 없습니다.\n마감할까요?")
             }
-            .alert("시스템 메세지", isPresented: $showDeactivateAlert) {
+            .alert("시스템 메세지", isPresented: $showSystemAlert) {
                 Button("닫기", role: .cancel) {}
             } message: {
                 Text(systemMsg)

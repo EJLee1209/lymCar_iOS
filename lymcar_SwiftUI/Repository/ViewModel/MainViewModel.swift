@@ -201,7 +201,6 @@ class MainViewModel: ObservableObject {
             }
     }
     
-    @MainActor
     func findUserName(uid: String) async -> String? {
         do {
             let document = try await db.collection(FireStoreTable.USER).document(uid)
@@ -216,7 +215,23 @@ class MainViewModel: ObservableObject {
         } catch {
             return nil
         }
+    }
+    
+    func deactivateRoom(roomId: String) async -> Bool {
+        self.progress = .loading
         
+        do {
+            try await db.collection(FireStoreTable.ROOM).document(roomId)
+                .updateData([
+                    FireStoreTable.FIELD_CLOSED: true
+                ])
+            
+            self.progress = .idle
+            return true
+        } catch {
+            self.progress = .idle
+            return false
+        }
     }
     
     func sendPushMessage(
