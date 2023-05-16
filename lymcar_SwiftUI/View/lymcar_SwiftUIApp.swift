@@ -23,9 +23,9 @@ struct lymcar_SwiftUIApp: App {
                 )
             )
             .environmentObject(appDelegate)
-                .onAppear {
-                    UIApplication.shared.addTapGestureRecognizer()
-                }
+            .onAppear {
+                UIApplication.shared.addTapGestureRecognizer()
+            }
         }
     }
 }

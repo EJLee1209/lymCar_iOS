@@ -33,54 +33,40 @@ struct EmailVerifyView: View {
                         ZStack(alignment: .bottom) {
                             Color(.white)
                             
-                            ScrollView {
-                                VStack(alignment: .leading, spacing: 0) {
-                                    Text("재학생 인증")
-                                        .font(.system(size: 24))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(Color("black"))
-                                        .padding(.top, 27)
-                                        .padding(.leading, 21)
-                                    Text(viewStore.guideText)
-                                        .font(.system(size: 15))
-                                        .foregroundColor(Color("black"))
-                                        .padding(.leading, 21)
-                                        .padding(.top, 5)
-                                    
-                                    RoundedTextField(
-                                        text: Binding(
-                                            get: { viewStore.email },
-                                            set: { viewStore.send(.changedEmail($0)) }
-                                        ),
-                                        isValid: .constant(true),
-                                        placeHolder: "학교 웹메일",
-                                        type: .normal
-                                    )
-                                        .padding(.horizontal, 10)
-                                        .padding(.top, 34)
-                                        .focused($focusField, equals: 0)
-                                }
-                            }
-                            NavigationLink(isActive: Binding(
-                                get: { viewStore.isSendOk },
-                                set: { _ in})
-                            ) {
-                                VerifyCodeView(
-                                    email: viewStore.email,
-                                    goToRootView: $goToRootView,
-                                    store: self.store.scope(
-                                        state: \.verifyCodeState,
-                                        action: EmailVerifyFeature.Action.verifyCodeAction
-                                    )
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text("재학생 인증")
+                                    .font(.system(size: 24))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color("black"))
+                                    .padding(.top, 27)
+                                    .padding(.leading, 21)
+                                Text(viewStore.guideText)
+                                    .font(.system(size: 15))
+                                    .foregroundColor(Color("black"))
+                                    .padding(.leading, 21)
+                                    .padding(.top, 5)
+                                
+                                RoundedTextField(
+                                    text: Binding(
+                                        get: { viewStore.email },
+                                        set: { viewStore.send(.changedEmail($0)) }
+                                    ),
+                                    isValid: .constant(true),
+                                    placeHolder: "학교 웹메일",
+                                    type: .normal
                                 )
-                            } label: {}
+                                    .padding(.horizontal, 10)
+                                    .padding(.top, 34)
+                                    .focused($focusField, equals: 0)
+                                Spacer()
+                            }
                             
                             RoundedButton(label: "인증하기", buttonColor: "main_blue", labelColor: "white")
-                                .padding(.horizontal, 20)
-                                .padding(.bottom, keyboard.isShowing ? keyboard.height : 47)
                                 .onTapGesture {
                                     viewStore.send(.requestSendVerifyCode(viewStore.email))
                                 }
+                                .padding(.horizontal, 20)
+                                .padding(.bottom, keyboard.isShowing ? keyboard.height : 47)
                                 .alert(
                                     self.store.scope(state: \.alert),
                                     dismiss: .dismissAlert
@@ -90,16 +76,32 @@ struct EmailVerifyView: View {
                         .roundedCorner(40, corners: [.topLeft, .topRight])
                         .padding(.top, 18)
                     }
-                }.edgesIgnoringSafeArea(.all)
-                    .ignoresSafeArea(.keyboard)
-                    .onAppear {
-                        self.keyboard.addObserver()
-                        focusField = 0
-                        viewStore.send(.onAppear)
-                    }
-                    .onDisappear {
-                        self.keyboard.removeObserver()
-                    }
+                    NavigationLink(isActive: Binding(
+                        get: { viewStore.isSendOk },
+                        set: { _ in})
+                    ) {
+                        VerifyCodeView(
+                            email: viewStore.email,
+                            goToRootView: $goToRootView,
+                            store: self.store.scope(
+                                state: \.verifyCodeState,
+                                action: EmailVerifyFeature.Action.verifyCodeAction
+                            )
+                        )
+                    } label: {}
+                    
+                }
+                .edgesIgnoringSafeArea(.all)
+                .ignoresSafeArea(.keyboard)
+                .animation(.spring(), value: self.keyboard.isShowing)
+                .onAppear {
+                    self.keyboard.addObserver()
+                    focusField = 0
+                    viewStore.send(.onAppear)
+                }
+                .onDisappear {
+                    self.keyboard.removeObserver()
+                }
             }
         }
     }

@@ -105,6 +105,10 @@ extension View {
         clipShape(RoundedCornerShape(radius: radius, corners: corners) )
     }
     
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
 }
 
 extension Binding where Value == String {
@@ -142,19 +146,27 @@ struct KeyboardAwareModifier: ViewModifier {
 
 
 extension UIApplication {
-    
-    func addTapGestureRecognizer() {
+    var window: UIWindow? {
         let scenes = UIApplication.shared.connectedScenes
         let windowScene = scenes.first as? UIWindowScene
-        guard let window = windowScene?.windows.first else { return }
-        
+        guard let window = windowScene?.windows.first else { return nil }
+        return window
+    }
+    
+    var tapGesture: UITapGestureRecognizer {
         let tapGesture = UITapGestureRecognizer(target: window, action: #selector(UIView.endEditing))
         tapGesture.requiresExclusiveTouchType = false
         tapGesture.cancelsTouchesInView = false
         tapGesture.delegate = self
-        window.addGestureRecognizer(tapGesture)
-        
-        
+        return tapGesture
+    }
+    
+    func addTapGestureRecognizer() {
+        window?.addGestureRecognizer(tapGesture)
+    }
+    
+    func removeTapGestureRecognizer() {
+        window?.gestureRecognizers = []
     }
 }
 
