@@ -20,13 +20,22 @@ final class AppNetworking {
     return Session(configuration: configuration)
   }()
   
-  func requestJSON<T: Decodable>(_ url: String,
-                                 type: T.Type,
-                                 method: HTTPMethod,
-                                 parameters: Parameters? = nil) async throws -> T {
-    
-    return try await session.request(url,method: method,parameters: parameters,encoding: URLEncoding.default)
-          .serializingDecodable()
-          .value
+  func requestJSON<T: Decodable>
+    (
+        _ url: String,
+        type: T.Type,
+        method: HTTPMethod,
+        parameters: Parameters? = nil,
+        headers: HTTPHeaders? = nil
+    ) async throws -> T {
+        return try await session.request(
+            url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
+            method: method,
+            parameters: parameters,
+            encoding: URLEncoding.default,
+            headers: headers
+        )
+        .serializingDecodable()
+        .value
   }
 }

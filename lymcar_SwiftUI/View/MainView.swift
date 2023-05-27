@@ -148,11 +148,11 @@ struct MainView: View {
                 MenuView(
                     user: .constant(currentUser)
                 ) {
-                    viewModel.logout { result in
-                        switch result {
-                        case .success(_):
+                    Task {
+                        let logoutResult = await viewModel.logout()
+                        if logoutResult {
                             dismiss()
-                        case.failure(_):
+                        }else {
                             showAlert.toggle()
                         }
                     }

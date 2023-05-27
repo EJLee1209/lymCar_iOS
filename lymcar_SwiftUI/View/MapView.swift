@@ -48,8 +48,6 @@ struct MapView: View {
     @State var createToChatRoom: Bool = false
     @State var mapToChatRoom: Bool = false
     
-    @State var searchCurrentLocation: Bool = false
-    
     @EnvironmentObject var viewModel : MainViewModel
     @EnvironmentObject var appDelegate : AppDelegate
     @StateObject var realmManager = RealmManger()
@@ -57,7 +55,7 @@ struct MapView: View {
     @State var editingFocus: SearchField?
     
     var body: some View {
-        LoadingView(isShowing: .constant(viewModel.searchResult == .loading || viewModel.progress == .loading)) {
+        LoadingView(isShowing: .constant(viewModel.progress == .loading)) {
             ZStack(alignment: .top) {
                 // 애플 지도
                 Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: points) { point in
@@ -88,9 +86,15 @@ struct MapView: View {
                         self.searchField = searchField
                         switch searchField {
                         case .start:
-                            viewModel.searchPlace(keyword: startPlaceName)
+                            Task {
+                                self.placeList = await viewModel.searchPlace(keyword: startPlaceName)
+                            }
+//                            viewModel.searchPlace(keyword: startPlaceName)
                         case .end:
-                            viewModel.searchPlace(keyword: endPlaceName)
+                            Task {
+                                self.placeList = await viewModel.searchPlace(keyword: endPlaceName)
+                            }
+//                            viewModel.searchPlace(keyword: endPlaceName)
                         }
                     }.padding(.horizontal, 12)
                     
@@ -176,15 +180,12 @@ struct MapView: View {
                         // 새로고침 버튼
                         Button {
                             // action
-                            viewModel.getAllRoom(
-                                genderOption: Constants.GENDER_OPTION_MALE) { result in
-                                    switch result {
-                                    case .success(let rooms):
-                                        self.poolList = rooms
-                                    case .failure(let errorCode):
-                                        print(errorCode.localizedDescription)
-                                    }
+                            if let safeUser = viewModel.currentUser {
+                                Task {
+                                    let rooms = await viewModel.getAllRoom(genderOption: safeUser.gender)
+                                    self.poolList = rooms
                                 }
+                            }
                         } label: {
                             Image("refresh")
                                 .padding(.all, 13)
@@ -276,15 +277,12 @@ struct MapView: View {
                     .offset(y: bottomSheetOffSet(proxy: proxy))
                     .animation(.easeOut(duration: 0.3), value: self.showBottomSheet)
                     .onAppear {
-                        viewModel.getAllRoom(
-                            genderOption: Constants.GENDER_OPTION_MALE) { result in
-                                switch result {
-                                case .success(let rooms):
-                                    self.poolList = rooms
-                                case .failure(let errorCode):
-                                    print(errorCode.localizedDescription)
-                                }
+                        if let safeUser = viewModel.currentUser {
+                            Task {
+                                let rooms = await viewModel.getAllRoom(genderOption: safeUser.gender)
+                                self.poolList = rooms
                             }
+                        }
                     }
                 }
                 
@@ -374,26 +372,6 @@ struct MapView: View {
                 } message: {
                     Text("채팅방에 참여하시겠습니까?")
                 }
-                
-                .onChange(of: viewModel.searchResult) { newValue in
-                    switch newValue {
-                    case .success(let result):
-                        if searchCurrentLocation {
-                            // 현재 위치 검색
-                            if let place = result.documents.first {
-                                startPlace = place
-                                startPlaceName = place.place_name
-                            }
-                            searchCurrentLocation = false
-                            return
-                        }
-                        placeList = result.documents
-                    case .failure(let msg):
-                        print(msg)
-                    default:
-                        break
-                    }
-                }
                 .onChange(of: viewModel.myRoom, perform: { myRoom in
                     if let safeRoom = myRoom {
                         self.showMyRoomBox = true
@@ -432,8 +410,12 @@ struct MapView: View {
             if error != nil { return }
             guard let placemark = placemarks?.first else { return }
             let keyword = "\(placemark.country ?? "") \(placemark.locality ?? "") \(placemark.name ?? "")"
-            self.searchCurrentLocation = true
-            viewModel.searchPlace(keyword: keyword)
+            Task {
+                if let currentLocation = await viewModel.searchPlace(keyword: keyword).first {
+                    startPlace = currentLocation
+                    startPlaceName = currentLocation.place_name
+                }
+            }
         }
     }
     
