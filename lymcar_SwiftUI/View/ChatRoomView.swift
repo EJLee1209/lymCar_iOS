@@ -75,11 +75,17 @@ struct ChatRoomView: View {
                             ScrollViewReader { proxy in
                                 List {
                                     ForEach(realmManager.messages, id: \.self) { chat in
-                                        ChatItem(chat: chat, user: viewModel.currentUser)
+                                        if !chat.isInvalidated && !chat.isFrozen {
+                                            ChatItem(
+                                                chat: chat,
+                                                user: viewModel.currentUser
+                                            )
                                             .listRowInsets(EdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13))
                                             .listRowSeparator(.hidden)
                                             .padding(.bottom, 12)
                                             .id(chat)
+                                            
+                                        }   
                                     }
                                 }
                                 .listStyle(.plain)
@@ -114,12 +120,22 @@ struct ChatRoomView: View {
                                         "msg" : self.msg,
                                         "messageType" : CHAT_NORMAL
                                     ])
-                                    viewModel.sendPushMessage(
-                                        chat: chatToSend,
-                                        receiveTokens: self.tokensMap
-                                    )
-                                    realmManager.saveChat(chat: chatToSend)
-                                    
+                                    Task {
+                                        DispatchQueue.main.async {
+                                            realmManager.saveChat(chat: chatToSend)
+                                        }
+                                        let result = await viewModel.sendPushMessage(
+                                            chat: chatToSend,
+                                            receiveTokens: self.tokensMap
+                                        )
+                                        DispatchQueue.main.async {
+                                            if result {
+                                                realmManager.updateChat(chat: chatToSend, newState: SEND_STATE_SUCCESS)
+                                            }else {
+                                                realmManager.updateChat(chat: chatToSend, newState: SEND_STATE_FAIL)
+                                            }
+                                        }
+                                    }
                                     self.msg = ""
                                 }
                             } label: {
@@ -143,50 +159,49 @@ struct ChatRoomView: View {
                 HStack {
                     Button("확인", role: .destructive) {
                         guard let user = viewModel.currentUser else { return }
-                        
-                        viewModel.exitRoom(roomId: myRoom.roomId) { result in
-                            switch result {
-                            case .success(_):
-                                // 퇴장 메세지 전송
-                                viewModel.sendPushMessage(
-                                    chat: Chat(value: [
-                                        "roomId": myRoom.roomId,
-                                        "userId": user.uid,
-                                        "userName": user.name,
-                                        "msg":"\(user.name)님이 나갔습니다",
-                                        "messageType":CHAT_JOIN,
-                                        "sendSuccess":SEND_STATE_SUCCESS
-                                    ]),
-                                    receiveTokens: self.tokensMap
-                                )
-                                if(myRoom.participants.first == user.uid && myRoom.userCount >= 2) {
-                                    // 방장이 나감
-                                    let newSuperUser = myRoom.participants[1]
-                                    Task {
-                                        if let name = await viewModel.findUserName(uid: newSuperUser) {
-                                            // 새로운 방장 안내 메세지 전송
-                                            viewModel.sendPushMessage(
-                                                chat: Chat(value: [
-                                                    "roomId": myRoom.roomId,
-                                                    "userId": user.uid,
-                                                    "userName": user.name,
-                                                    "msg":"\(name)님이 방장 입니다",
-                                                    "messageType":CHAT_ETC,
-                                                    "sendSuccess":SEND_STATE_SUCCESS
-                                                ]),
-                                                receiveTokens: self.tokensMap
-                                            )
-                                        }
-                                    }
+                        viewModel.progress = .loading
+                        // 퇴장 메세지 전송
+                        Task {
+                            await viewModel.sendPushMessage(
+                                chat: Chat(value: [
+                                    "roomId": myRoom.roomId,
+                                    "userId": user.uid,
+                                    "userName": user.name,
+                                    "msg":"\(user.name)님이 나갔습니다",
+                                    "messageType":CHAT_JOIN,
+                                    "sendSuccess":SEND_STATE_SUCCESS
+                                ]),
+                                receiveTokens: self.tokensMap
+                            )
+                            if(myRoom.participants.first == user.uid && myRoom.userCount >= 2) {
+                                // 방장이 나감
+                                let newSuperUser = myRoom.participants[1]
+                                if let name = await viewModel.findUserName(uid: newSuperUser) {
+                                    // 새로운 방장 안내 메세지 전송
+                                    await viewModel.sendPushMessage(
+                                        chat: Chat(value: [
+                                            "roomId": myRoom.roomId,
+                                            "userId": user.uid,
+                                            "userName": user.name,
+                                            "msg":"\(name)님이 방장 입니다",
+                                            "messageType":CHAT_ETC,
+                                            "sendSuccess":SEND_STATE_SUCCESS
+                                        ]),
+                                        receiveTokens: self.tokensMap
+                                    )
                                 }
-                                self.mapToChatRoom = false
-                                
-                            case .failure(let errorCode):
-                                self.showExitAlert = false
-                                self.showSystemAlert = true
-                                self.systemMsg = "채팅방 퇴장 실패"
-                                print(errorCode.localizedDescription)
-                                break
+                            }
+                            viewModel.exitRoom(roomId: myRoom.roomId) { result in
+                                switch result {
+                                case .success(_):
+                                    self.mapToChatRoom = false
+                                case .failure(let errorCode):
+                                    self.showExitAlert = false
+                                    self.showSystemAlert = true
+                                    self.systemMsg = "채팅방 퇴장 실패"
+                                    print(errorCode.localizedDescription)
+                                    break
+                                }
                             }
                         }
                     }
@@ -223,7 +238,7 @@ struct ChatRoomView: View {
                                     "messageType":CHAT_ETC,
                                     "sendSuccess":SEND_STATE_SUCCESS
                                 ])
-                                viewModel.sendPushMessage(
+                                await viewModel.sendPushMessage(
                                     chat: chat,
                                     receiveTokens: self.tokensMap
                                 )

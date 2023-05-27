@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatItem: View {
     var chat: Chat
     var user: User?
+    var deleteAction: (Chat) -> Void = { _ in }
     
     var body: some View {
         if (chat.messageType == CHAT_ETC || chat.messageType == CHAT_EXIT || chat.messageType == CHAT_JOIN) {
@@ -32,6 +33,14 @@ struct ChatItem: View {
 func MyChat(_ chat: Chat) -> some View {
     HStack(alignment:.bottom ,spacing: 8) {
         Spacer()
+        if chat.sendSuccess == SEND_STATE_LOADING {
+            ProgressView()
+                .tint(Color("main_blue"))
+        }
+        if chat.sendSuccess == SEND_STATE_FAIL {
+            Image(systemName: "wifi.slash")
+                .foregroundColor(Color("red"))
+        }
         Text(chat.dateTime.getPrettyHour(sep: " "))
             .font(.system(size: 11))
             .foregroundColor(Color("main_blue"))
@@ -77,8 +86,8 @@ struct ChatItem_Previews: PreviewProvider {
     static var previews: some View {
         ChatItem(chat: Chat(
             value: [
-                "msg" : "- 개발자님이 입장하셨습니다 -"
-                
+                "msg" : "- 개발자님이 입장하셨습니다 -",
+                "sendSuccess" : SEND_STATE_FAIL
             ]
         ), user: User(uid: "", email: "", name: "은재", gender: "")
         )

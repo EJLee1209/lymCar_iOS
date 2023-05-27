@@ -142,16 +142,17 @@ struct MainView: View {
             )
             .environmentObject(self.viewModel)
             .environmentObject(self.appDelegate)
+            
         case .menu:
             if let currentUser = viewModel.currentUser {
                 MenuView(
                     user: .constant(currentUser)
                 ) {
-                    viewModel.logout { result in
-                        switch result {
-                        case .success(_):
+                    Task {
+                        let logoutResult = await viewModel.logout()
+                        if logoutResult {
                             dismiss()
-                        case.failure(_):
+                        }else {
                             showAlert.toggle()
                         }
                     }

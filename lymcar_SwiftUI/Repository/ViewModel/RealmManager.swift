@@ -91,31 +91,43 @@ class RealmManger: ObservableObject {
         if let localRealm = localRealm {
             do {
                 try localRealm.write {
-                    var newChat = chat
-                    chat.sendSuccess = SEND_STATE_SUCCESS
-                    
-                    localRealm.add(newChat)
-                    print("Added new favorite to Realm : \(newChat)")
+                    localRealm.add(chat)
+                    print("Added new chat to Realm : \(chat)")
                 }
                 getChats(roomId: chat.roomId)
             } catch {
-                print("Error adding favorite to Realm : \(error)")
+                print("Error adding chat to Realm : \(error)")
             }
         }
     }
     
-    func deleteChat(id: String) {
+    func updateChat(chat: Chat, newState: String) {
         if let localRealm = localRealm {
             do {
-                let chatToDelete = localRealm.objects(Chat.self).filter(NSPredicate(format: "id == %@", id))
+                try localRealm.write {
+                    chat.sendSuccess = newState
+                }
+                getChats(roomId: chat.roomId)
+            } catch {
+                print("Error updating chat to Realm")
+            }
+        }
+    }
+    
+    func deleteChat(chat: Chat) {
+        if let localRealm = localRealm {
+            do {
+                let chatToDelete = localRealm.objects(Chat.self).filter(NSPredicate(format: "id == %@", chat.id))
                 guard !chatToDelete.isEmpty else { return }
                 
                 try localRealm.write {
                     localRealm.delete(chatToDelete)
-                    print("Deleted favorite with id : \(id)")
+                    print("Deleted favorite with id : \(chat.id)")
                 }
+                getChats(roomId: chat.roomId)
+                
             } catch {
-                print("Error deleting favorite \(id) from Realm: \(error)")
+                print("Error deleting favorite \(chat.id) from Realm: \(error)")
             }
         }
     }

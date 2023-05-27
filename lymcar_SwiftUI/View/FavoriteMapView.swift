@@ -95,7 +95,12 @@ struct FavoriteMapView: View {
                         .submitLabel(.search)
                         .onSubmit {
                             // 검색
-                            viewModel.searchPlace(keyword: placeName)
+                            Task {
+                                self.searchResults = await viewModel.searchPlace(keyword: placeName)
+                                withAnimation {
+                                    self.expandBottomSheet = true
+                                }
+                            }
                         }
                         .onTapGesture {
                             withAnimation {
@@ -106,7 +111,12 @@ struct FavoriteMapView: View {
 
                         Spacer()
                         Button {
-                            viewModel.searchPlace(keyword: placeName)
+                            Task {
+                                self.searchResults = await viewModel.searchPlace(keyword: placeName)
+                                withAnimation {
+                                    self.expandBottomSheet = true
+                                }
+                            }
                         } label: {
                             Image("search")
                         }
@@ -173,17 +183,6 @@ struct FavoriteMapView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .background(Color("white"))
-        .onChange(of: viewModel.searchResult) { newValue in
-            switch newValue {
-            case .success(let result):
-                self.searchResults = result.documents
-                withAnimation {
-                    self.expandBottomSheet = true
-                }
-            default:
-                break
-            }
-        }
         .alert("즐겨찾기 편집", isPresented: $showAlert) {
 
         } message: {
@@ -211,8 +210,6 @@ struct FavoriteMapView: View {
                             .cornerRadius(30)
                             .foregroundColor(Color("main_blue"))
                     }
-                    
-                    
             }
             
         } customize: {

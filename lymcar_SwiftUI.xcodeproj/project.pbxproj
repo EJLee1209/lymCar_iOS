@@ -62,6 +62,7 @@
 		CFCC124229F50FD200C24099 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCC124129F50FD200C24099 /* MenuView.swift */; };
 		CFD385A529EA83FB00F0138D /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A429EA83FB00F0138D /* RegisterView.swift */; };
 		CFD385A729EA856100F0138D /* CustomRadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD385A629EA856100F0138D /* CustomRadioButton.swift */; };
+		CFDED5FB2A21BE0A00B866C2 /* AppNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFDED5FA2A21BE0A00B866C2 /* AppNetworking.swift */; };
 		CFE8645B29ECDB1200C4373C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8645A29ECDB1200C4373C /* Alamofire */; };
 		CFE8AB9B29F66E7A00890C7A /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8AB9A29F66E7A00890C7A /* Realm */; };
 		CFE8AB9D29F66E7A00890C7A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CFE8AB9C29F66E7A00890C7A /* RealmSwift */; };
@@ -150,6 +151,7 @@
 		CFCC124129F50FD200C24099 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		CFD385A429EA83FB00F0138D /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		CFD385A629EA856100F0138D /* CustomRadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRadioButton.swift; sourceTree = "<group>"; };
+		CFDED5FA2A21BE0A00B866C2 /* AppNetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNetworking.swift; sourceTree = "<group>"; };
 		CFE8AB9E29F66F2A00890C7A /* PlaceForRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceForRealm.swift; sourceTree = "<group>"; };
 		CFE8ABA329F67BAD00890C7A /* FavoriteItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItem.swift; sourceTree = "<group>"; };
 		CFE8ABA529F6DC7D00890C7A /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 				CF45C3A529EC36DB00719703 /* ActivityIndicator.swift */,
 				CF8D054429EEA2B100B90AD4 /* Utils.swift */,
 				CFAA86C629EFAEEA009A5552 /* RoundedCornerShape.swift */,
+				CFDED5FA2A21BE0A00B866C2 /* AppNetworking.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -508,6 +511,7 @@
 				CF66735D29EF7BD400F3EDDC /* SearchView.swift in Sources */,
 				CF9C73FE29ECF57C00E5E953 /* lymcar++Bundle.swift in Sources */,
 				CF5B783329F25FF4004120FB /* RoomItem.swift in Sources */,
+				CFDED5FB2A21BE0A00B866C2 /* AppNetworking.swift in Sources */,
 				CFBC8B2229E997B000257059 /* VerifyCodeView.swift in Sources */,
 				CF68BCF129F55FB300742D66 /* FavoriteEditView.swift in Sources */,
 				CF774D6429EE82F900877D60 /* AuthResult.swift in Sources */,

@@ -71,9 +71,13 @@ struct CreateRoomView: View {
                             self.searchField = searchField
                             switch searchField {
                             case .start:
-                                viewModel.searchPlace(keyword: startPlaceName)
+                                Task {
+                                    self.placeList = await viewModel.searchPlace(keyword: startPlaceName)
+                                }
                             case .end:
-                                viewModel.searchPlace(keyword: endPlaceName)
+                                Task {
+                                    self.placeList = await viewModel.searchPlace(keyword: endPlaceName)
+                                }
                             }
                         }) {
                             // change button click action
@@ -216,16 +220,14 @@ struct CreateRoomView: View {
                         genderOption: self.genderOption ? viewModel.currentUser?.gender ?? Constants.GENDER_OPTION_NONE : Constants.GENDER_OPTION_NONE
                     )
                     
-                    viewModel.createRoom(
-                        room: room
-                    ) { result in
-                        switch result {
-                        case .success(_):
+                    Task {
+                        let result = await viewModel.createRoom(room: room)
+                        if result {
                             createToChatRoom = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                                 mapToChatRoom = true
                             }
-                        case .failure(_):
+                        } else {
                             showAlert = true
                             alertMsg = "알 수 없는 오류\n잠시 후 다시 시도해주세요"
                         }
@@ -262,16 +264,6 @@ struct CreateRoomView: View {
                         endPlaceName = place.place_name
                     }
                     showModal = false
-                }
-            }
-            .onChange(of: viewModel.searchResult) { newValue in
-                switch newValue {
-                case .success(let result):
-                    placeList = result.documents
-                case .failure(let msg):
-                    print(msg)
-                default:
-                    break
                 }
             }
             .gesture(DragGesture().updating($dragOffset, body: { value, state, transaction in

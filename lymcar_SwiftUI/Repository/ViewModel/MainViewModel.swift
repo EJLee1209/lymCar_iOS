@@ -39,7 +39,6 @@ extension SearchResult : Equatable {
 
 class MainViewModel: ObservableObject {
     @Published var detectAnonymous: Bool = false
-    @Published var searchResult: SearchResult = .idle
     @Published var myRoom: CarPoolRoom?
     @Published var progress: Progress = .idle
     @Published var currentUser: User?
@@ -154,6 +153,7 @@ class MainViewModel: ObservableObject {
             })
     }
     
+    @MainActor
     func getParticipantsTokens(roomId: String) async -> [String:String] {
         self.progress = .loading
         do {
@@ -177,31 +177,24 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    func searchPlace(keyword: String) {
+    @MainActor
+    func searchPlace(keyword: String) async -> [Place] {
         let requestUrl = "\(kakaoApiUrl)?query=\(keyword)"
         
         let headers: HTTPHeaders = [
             "Authorization": kakaoApiKey
         ]
         
-        AF.request(
-            requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
-            method: .get,
-            parameters: nil,
-            encoding: JSONEncoding.default,
-            headers: headers
-        )
-            .responseDecodable(of: SearchKeywordResult.self) { response in
-                switch response.result {
-                case .success(let searchResult):
-                    self.searchResult = .success(searchResult)
-                case .failure(let error):
-                    self.searchResult = .failure(error.localizedDescription)
-                
-                }
-            }
+        do {
+            let result = try await AppNetworking.shared.requestJSON(requestUrl, type: SearchKeywordResult.self, method: .get, headers: headers)
+            return result.documents
+        }catch {
+            print("searchPlace 에러발생 : \(error)")
+            return []
+        }
     }
     
+    @MainActor
     func findUserName(uid: String) async -> String? {
         do {
             let document = try await db.collection(FireStoreTable.USER).document(uid)
@@ -218,6 +211,7 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     func deactivateRoom(roomId: String) async -> Bool {
         self.progress = .loading
         
@@ -235,90 +229,69 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     func sendPushMessage(
         chat: Chat,
         receiveTokens: [String:String]
-    ) {
+    ) async -> Bool {
         for (token, target) in receiveTokens {
             let requestUrl = "\(baseUrl)api/message/push?token=\(token)&id=\(chat.id)&roomId=\(chat.roomId)&userId=\(chat.userId)&userName=\(chat.userName)&message=\(chat.msg)&messageType=\(chat.messageType)&target=\(target)"
-            AF.request(
-                requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
-                method: .post,
-                encoding: JSONEncoding.default
-            ).responseDecodable(of: Bool.self) { response in
-                switch response.result {
-                case .success:
-                    print("메세지 전송 성공 : \(chat)")
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    break
+
+            do {
+                let result = try await AppNetworking.shared.requestJSON(requestUrl, type: Bool.self, method: .post)
+                if !result{
+                    return false
                 }
+            }catch {
+                return false
             }
-            
         }
+        return true
     }
     
-    func createRoom(room: CarPoolRoom, completion: @escaping (Result<CarPoolRoom, FirestoreErrorCode>) -> Void) {
+    @MainActor
+    func createRoom(room: CarPoolRoom) async -> Bool {
         progress = .loading
         let ref = db.collection(FireStoreTable.ROOM).document()
         var copyRoom = room
         copyRoom.roomId = ref.documentID
         copyRoom.participants = [auth.currentUser!.uid]
-        ref.setData(copyRoom.dictionary) { error in
-            if let safeError = error {
-                print(safeError.localizedDescription)
-                completion(.failure(FirestoreErrorCode(.cancelled)))
-                self.progress = .idle
-                return
-            }
-            self.db.collection(FireStoreTable.FCMTOKENS).document(self.auth.currentUser!.uid)
-                .updateData([
-                    FireStoreTable.FIELD_ROOM_ID : copyRoom.roomId
-                ]) { error in
-                    if let error = error {
-                        print("방 생성 중 에러 발생!! : \(error)")
-                        completion(.failure(FirestoreErrorCode(.cancelled)))
-                        self.progress = .idle
-                        return
-                    }
-                    self.progress = .idle
-                    print("방 생성 완료. 현재 유져 uid : \(self.auth.currentUser!.uid)")
-                    completion(.success(copyRoom))
-                }
+        do {
+            try await ref.setData(copyRoom.dictionary)
+            try await self.db.collection(FireStoreTable.FCMTOKENS).document(self.auth.currentUser!.uid)
+                .updateData([FireStoreTable.FIELD_ROOM_ID : copyRoom.roomId])
+            progress = .idle
+            return true
+        } catch {
+            progress = .idle
+            return false
         }
     }
     
-    func getAllRoom(genderOption: String, completion: @escaping (Result<[CarPoolRoom], FirestoreErrorCode>) -> Void) {
+    @MainActor
+    func getAllRoom(genderOption: String) async -> [CarPoolRoom] {
         progress = .loading
-        db.collection(FireStoreTable.ROOM)
-            .whereField(FireStoreTable.FIELD_CLOSED, isEqualTo: false)
-            .whereField(FireStoreTable.FIELD_GENDER_OPTION, in: [genderOption, Constants.GENDER_OPTION_NONE])
-            .whereField(FireStoreTable.FIELD_DEPARTURE_TIME, isGreaterThanOrEqualTo: Utils.getCurrentDateTime())
-            .getDocuments { querySnapshot, error in
-                if let safeError = error {
-                    print(safeError.localizedDescription)
-                    completion(.failure(FirestoreErrorCode(.cancelled)))
-                    self.progress = .idle
-                    return
+        do {
+            let querySnapshot = try await db.collection(FireStoreTable.ROOM)
+                .whereField(FireStoreTable.FIELD_CLOSED, isEqualTo: false)
+                .whereField(FireStoreTable.FIELD_GENDER_OPTION, in: [genderOption, Constants.GENDER_OPTION_NONE])
+                .whereField(FireStoreTable.FIELD_DEPARTURE_TIME, isGreaterThanOrEqualTo: Utils.getCurrentDateTime())
+                .getDocuments()
+            
+            var rooms = [CarPoolRoom]()
+            querySnapshot.documents.forEach{ queryDocumentSnapshot in
+                do {
+                    let room = try queryDocumentSnapshot.data(as: CarPoolRoom.self)
+                    rooms.append(room)
+                } catch {
+                    print("getAllRoom 에서 snapshot을 CarPoolRoom 객체로 변환 중 에러가 발생했습니다")
                 }
-                guard let safeQuery = querySnapshot else {
-                    self.progress = .idle
-                    completion(.success([]))
-                    return
-                }
-                var rooms = [CarPoolRoom]()
-                safeQuery.documents.forEach { queryDocumentSnapshot in
-                    do {
-                        let room = try queryDocumentSnapshot.data(as: CarPoolRoom.self)
-                        rooms.append(room)
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                }
-                self.progress = .idle
-                completion(.success(rooms))
             }
+            self.progress = .idle
+            return rooms
+        }catch {
+            return []
+        }
     }
     
     func joinRoom(room: CarPoolRoom, completion: @escaping (Result<String, NSError>) -> Void) {
@@ -339,7 +312,7 @@ class MainViewModel: ObservableObject {
         }
         progress = .loading
         let docRef = db.collection(FireStoreTable.ROOM).document(room.roomId)
-        
+
         db.runTransaction { transaction, errorPointer in
             let roomDocument: DocumentSnapshot
             do {
@@ -396,6 +369,7 @@ class MainViewModel: ObservableObject {
             participants.append(safeUser.uid)
             transaction.updateData([FireStoreTable.FIELD_USER_COUNT : oldCount + 1], forDocument: docRef)
             transaction.updateData([FireStoreTable.FIELD_PARTICIPANTS : participants], forDocument: docRef)
+            
             
             return nil
             
@@ -505,25 +479,23 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    
-    func logout(completion: @escaping (Result<String, Error>) -> Void) {
+    @MainActor
+    func logout() async -> Bool {
         self.progress = .loading
         if let user = auth.currentUser {
-            db.collection(FireStoreTable.FCMTOKENS).document(user.uid)
-                .updateData([
-                    FireStoreTable.FIELD_TOKEN : ""
-                ])
             do {
+                try await db.collection(FireStoreTable.FCMTOKENS).document(user.uid)
+                    .updateData([FireStoreTable.FIELD_TOKEN : ""])
                 try auth.signOut()
-                completion(.success(""))
                 self.progress = .idle
+                return true
             }catch {
-                print("Error signOut : \(error)")
-                completion(.failure(error))
                 self.progress = .idle
+                print("logout 에러 발생 : \(error)")
+                return false
             }
         } else {
-            self.progress = .idle
+            return false
         }
     }
     

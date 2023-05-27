@@ -32,27 +32,13 @@ extension ServerClient: DependencyKey {
                 // 한림 웹메일이 아님
                 throw APIError.invalidURL
             }
-            
-            guard let url = URL(string: "\(Bundle.main.baseUrl)api/email/create?email=\(email)") else {
-                throw APIError.invalidURL
-            }
-            return try await request(url: url)
+            let requestUrlString = "\(Bundle.main.baseUrl)api/email/create?email=\(email)"
+            return try await AppNetworking.shared.requestJSON(requestUrlString, type: VerifyInfo.self, method: .post)
         },
         requestVerifyCode: { email, code in
-            guard let url = URL(string: "\(Bundle.main.baseUrl)api/email/verify?email=\(email)&code=\(code)") else {
-                throw APIError.invalidURL
-            }
-            return try await request(url: url)
+            let requestUrlString = "\(Bundle.main.baseUrl)api/email/verify?email=\(email)&code=\(code)"
+            return try await AppNetworking.shared.requestJSON(requestUrlString, type: VerifyInfo.self, method: .post)
         }
     )
-    
-    static func request(url: URL) async throws -> VerifyInfo {
-        var request = URLRequest(url:url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let (data, _) = try await URLSession.shared.data(for: request)
-        return try JSONDecoder().decode(VerifyInfo.self, from: data)
-    }
-    
     
 }
