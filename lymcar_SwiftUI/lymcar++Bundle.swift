@@ -16,14 +16,6 @@ extension Bundle {
         return key
     }
     
-    var testBaseUrl: String {
-        guard let file = self.path(forResource: "serverInfo", ofType: "plist") else { return "" }
-        
-        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
-        guard let key = resource["TEST_BASE_URL"] as? String else { fatalError("serverInfo.plist에 BASE_URL을 설정해주세요") }
-        return key
-    }
-    
     var kakaoApiUrl : String {
         guard let file = self.path(forResource: "serverInfo", ofType: "plist") else { return "" }
         

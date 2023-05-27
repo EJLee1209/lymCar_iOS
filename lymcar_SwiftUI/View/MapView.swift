@@ -379,6 +379,15 @@ struct MapView: View {
                 .onDisappear {
                     showBottomSheet = false
                 }
+                .onChange(of: showBottomSheet) { newValue in
+                    if newValue {
+                        Task {
+                            if let safeUser = viewModel.currentUser {
+                                self.poolList = await viewModel.getAllRoom(genderOption: safeUser.gender)
+                            }
+                        }
+                    }
+                }
         }
     }
     

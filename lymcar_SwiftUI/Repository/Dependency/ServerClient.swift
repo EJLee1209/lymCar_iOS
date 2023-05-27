@@ -32,11 +32,11 @@ extension ServerClient: DependencyKey {
                 // 한림 웹메일이 아님
                 throw APIError.invalidURL
             }
-            let requestUrlString = "\(Bundle.main.testBaseUrl)api/email/create?email=\(email)"
+            let requestUrlString = "\(Bundle.main.baseUrl)api/email/create?email=\(email)"
             return try await AppNetworking.shared.requestJSON(requestUrlString, type: VerifyInfo.self, method: .post)
         },
         requestVerifyCode: { email, code in
-            let requestUrlString = "\(Bundle.main.testBaseUrl)api/email/verify?email=\(email)&code=\(code)"
+            let requestUrlString = "\(Bundle.main.baseUrl)api/email/verify?email=\(email)&code=\(code)"
             return try await AppNetworking.shared.requestJSON(requestUrlString, type: VerifyInfo.self, method: .post)
         }
     )
