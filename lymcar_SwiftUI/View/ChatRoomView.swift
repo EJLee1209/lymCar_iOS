@@ -157,51 +157,55 @@ struct ChatRoomView: View {
             .edgesIgnoringSafeArea(.top)
             .alert("채팅방 나가기", isPresented: $showExitAlert) {
                 HStack {
+                    
                     Button("확인", role: .destructive) {
                         guard let user = viewModel.currentUser else { return }
                         viewModel.progress = .loading
                         // 퇴장 메세지 전송
-                        Task {
-                            await viewModel.sendPushMessage(
-                                chat: Chat(value: [
-                                    "roomId": myRoom.roomId,
-                                    "userId": user.uid,
-                                    "userName": user.name,
-                                    "msg":"\(user.name)님이 나갔습니다",
-                                    "messageType":CHAT_JOIN,
-                                    "sendSuccess":SEND_STATE_SUCCESS
-                                ]),
-                                receiveTokens: self.tokensMap
-                            )
-                            if(myRoom.participants.first == user.uid && myRoom.userCount >= 2) {
-                                // 방장이 나감
-                                let newSuperUser = myRoom.participants[1]
-                                if let name = await viewModel.findUserName(uid: newSuperUser) {
-                                    // 새로운 방장 안내 메세지 전송
+                        viewModel.exitRoom(roomId: myRoom.roomId) { result in
+                            switch result {
+                            case let .success(roomId):
+                                Task {
+                                    let tokens = await viewModel.getParticipantsTokens(roomId: roomId)
                                     await viewModel.sendPushMessage(
                                         chat: Chat(value: [
-                                            "roomId": myRoom.roomId,
+                                            "roomId": roomId,
                                             "userId": user.uid,
                                             "userName": user.name,
-                                            "msg":"\(name)님이 방장 입니다",
-                                            "messageType":CHAT_ETC,
+                                            "msg":"\(user.name)님이 나갔습니다",
+                                            "messageType":CHAT_EXIT,
                                             "sendSuccess":SEND_STATE_SUCCESS
                                         ]),
-                                        receiveTokens: self.tokensMap
+                                        receiveTokens: tokens
                                     )
+                                    
+                                    if(myRoom.participants.first == user.uid && myRoom.userCount >= 2) {
+                                        // 방장이 나감
+                                        let newSuperUser = myRoom.participants[1]
+                                        if let name = await viewModel.findUserName(uid: newSuperUser) {
+                                            // 새로운 방장 안내 메세지 전송
+                                            await viewModel.sendPushMessage(
+                                                chat: Chat(value: [
+                                                    "roomId": roomId,
+                                                    "userId": user.uid,
+                                                    "userName": user.name,
+                                                    "msg":"\(name)님이 방장 입니다",
+                                                    "messageType":CHAT_ETC,
+                                                    "sendSuccess":SEND_STATE_SUCCESS
+                                                ]),
+                                                receiveTokens: tokens
+                                            )
+                                        }
+                                    }
                                 }
-                            }
-                            viewModel.exitRoom(roomId: myRoom.roomId) { result in
-                                switch result {
-                                case .success(_):
-                                    self.mapToChatRoom = false
-                                case .failure(let errorCode):
-                                    self.showExitAlert = false
-                                    self.showSystemAlert = true
-                                    self.systemMsg = "채팅방 퇴장 실패"
-                                    print(errorCode.localizedDescription)
-                                    break
-                                }
+                                self.mapToChatRoom = false
+                                
+                            case .failure(let errorCode):
+                                self.showExitAlert = false
+                                self.showSystemAlert = true
+                                self.systemMsg = "채팅방 퇴장 실패"
+                                print(errorCode.localizedDescription)
+                                break
                             }
                         }
                     }
@@ -249,7 +253,6 @@ struct ChatRoomView: View {
                                 self.systemMsg = "알 수 없는 오류입니다\n잠시 후 다시 시도해주세요"
                             }
                         }
-                        
                     }
                     Button("취소", role: .cancel) {}
                 }

@@ -106,7 +106,9 @@ struct MainView: View {
                 viewModel.updateFcmToken(token: self.appDelegate.fcmToken)
                 viewModel.moniteringLogged()
                 viewModel.subscribeMyRoom()
-                viewModel.subscribeUser()
+                Task {
+                    await viewModel.getUser()
+                }
             }
             .onChange(of: viewModel.myRoom) { newValue in
                 viewModel.participantsRegistration?.remove()
@@ -125,9 +127,13 @@ struct MainView: View {
             
             // 일단 MainView 부분은 ViewModel 유지하고, 나중에 리팩토링하자.
             
+            // 근데 이제 DB에 Write가 되기 전에 푸시메세지가 오면 get했을 때 Write 하기 이전의 데이터를 가져오게 되는 문제가 있다
+            // write 하고 푸시를 보내면?
+            
 //            .onChange(of: appDelegate.pushMessageType) { newValue in
 //                print("get push message type : \(newValue)")
 //            }
+            
             
         }
     }

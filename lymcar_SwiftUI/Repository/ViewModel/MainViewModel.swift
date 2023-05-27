@@ -11,30 +11,9 @@ import FirebaseFirestoreSwift
 import Alamofire
 import Combine
 
-enum SearchResult {
-    case idle
-    case loading
-    case success(SearchKeywordResult)
-    case failure(String)
-}
-
 enum Progress {
     case idle
     case loading
-}
-
-extension SearchResult : Equatable {
-    static func == (lhs: SearchResult, rhs: SearchResult) -> Bool {
-        switch (lhs, rhs) {
-        case (.idle, .idle): return true
-        case (.loading, .loading): return true
-        case (.success(let lhsValue), .success(let rhsValue)):
-            return lhsValue.documents == rhsValue.documents
-        case (.failure(let lhsMsg), .failure(let rhsMsg)):
-            return lhsMsg == rhsMsg
-        default: return false
-        }
-    }
 }
 
 class MainViewModel: ObservableObject {
@@ -50,7 +29,6 @@ class MainViewModel: ObservableObject {
     private let db = Firestore.firestore()
     var moniteringRegistration: ListenerRegistration? = nil
     var myRoomRegistration: ListenerRegistration? = nil
-    var userRegistration: ListenerRegistration? = nil
     var participantsRegistration: ListenerRegistration? = nil
     
     deinit {
@@ -60,7 +38,6 @@ class MainViewModel: ObservableObject {
     func removeAllRegistration() {
         myRoomRegistration?.remove()
         moniteringRegistration?.remove()
-        userRegistration?.remove()
         participantsRegistration?.remove()
     }
     
@@ -83,26 +60,7 @@ class MainViewModel: ObservableObject {
                 }
             }
     }
-    
-    func subscribeUser() {
-        guard let safeUser = auth.currentUser else { return }
-        userRegistration = db.collection(FireStoreTable.USER).document(safeUser.uid)
-            .addSnapshotListener { snapshot, error in
-                if let safeError = error {
-                    print(safeError.localizedDescription)
-                    self.currentUser = nil
-                    return
-                }
-                do {
-                    let user = try snapshot?.data(as: User.self)
-                    self.currentUser = user
-                } catch{
-                    print(error.localizedDescription)
-                    self.currentUser = nil
-                }
-            }
-    }
-    
+
     func subscribeMyRoom() {
         if let currentUser = auth.currentUser {
             myRoomRegistration = db.collection(FireStoreTable.ROOM)
@@ -151,6 +109,21 @@ class MainViewModel: ObservableObject {
                     }
                 }
             })
+    }
+    
+    @MainActor
+    func getUser() async {
+        guard let safeUser = auth.currentUser else { return }
+        do {
+            let snapshot = try await db.collection(FireStoreTable.USER).document(safeUser.uid)
+                .getDocument()
+            
+            let user = try snapshot.data(as: User.self)
+            self.currentUser = user
+        }catch {
+            print(error.localizedDescription)
+            self.currentUser = nil
+        }
     }
     
     @MainActor
@@ -234,6 +207,8 @@ class MainViewModel: ObservableObject {
         chat: Chat,
         receiveTokens: [String:String]
     ) async -> Bool {
+        print("call sendPushMessage")
+        print("participants : \(receiveTokens)")
         for (token, target) in receiveTokens {
             let requestUrl = "\(baseUrl)api/message/push?token=\(token)&id=\(chat.id)&roomId=\(chat.roomId)&userId=\(chat.userId)&userName=\(chat.userName)&message=\(chat.msg)&messageType=\(chat.messageType)&target=\(target)"
 
@@ -243,6 +218,7 @@ class MainViewModel: ObservableObject {
                     return false
                 }
             }catch {
+                print("sendPushMessage 에러 발생 : \(error)")
                 return false
             }
         }
@@ -250,7 +226,7 @@ class MainViewModel: ObservableObject {
     }
     
     @MainActor
-    func createRoom(room: CarPoolRoom) async -> Bool {
+    func createRoom(room: CarPoolRoom) async -> Bool  {
         progress = .loading
         let ref = db.collection(FireStoreTable.ROOM).document()
         var copyRoom = room
@@ -261,9 +237,11 @@ class MainViewModel: ObservableObject {
             try await self.db.collection(FireStoreTable.FCMTOKENS).document(self.auth.currentUser!.uid)
                 .updateData([FireStoreTable.FIELD_ROOM_ID : copyRoom.roomId])
             progress = .idle
+            self.myRoom = copyRoom
             return true
         } catch {
             progress = .idle
+            self.myRoom = nil
             return false
         }
     }
@@ -369,8 +347,7 @@ class MainViewModel: ObservableObject {
             participants.append(safeUser.uid)
             transaction.updateData([FireStoreTable.FIELD_USER_COUNT : oldCount + 1], forDocument: docRef)
             transaction.updateData([FireStoreTable.FIELD_PARTICIPANTS : participants], forDocument: docRef)
-            
-            
+
             return nil
             
         } completion: { object, error in
@@ -387,10 +364,11 @@ class MainViewModel: ObservableObject {
                     .updateData([
                         FireStoreTable.FIELD_ROOM_ID : room.roomId
                     ])
-                completion(.success(""))
                 DispatchQueue.main.async {
                     self.progress = .idle
                 }
+                
+                completion(.success(""))
             }
         }
     }
@@ -465,16 +443,14 @@ class MainViewModel: ObservableObject {
                 }
             } else {
                 // transaction successfully committed
+                self.progress = .idle
+                self.participantsTokens = [:]
+                
                 self.db.collection(FireStoreTable.FCMTOKENS).document(safeUser.uid)
                     .updateData([
                         FireStoreTable.FIELD_ROOM_ID : ""
                     ])
-                completion(.success(""))
-                DispatchQueue.main.async {
-                    self.progress = .idle
-                }
-                self.myRoom = nil
-                self.participantsTokens = [:]
+                completion(.success(roomId))
             }
         }
     }
