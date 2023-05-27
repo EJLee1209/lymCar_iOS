@@ -444,7 +444,6 @@ class MainViewModel: ObservableObject {
             } else {
                 // transaction successfully committed
                 self.progress = .idle
-                self.participantsTokens = [:]
                 
                 self.db.collection(FireStoreTable.FCMTOKENS).document(safeUser.uid)
                     .updateData([

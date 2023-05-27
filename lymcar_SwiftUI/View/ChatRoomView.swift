@@ -161,39 +161,40 @@ struct ChatRoomView: View {
                     Button("확인", role: .destructive) {
                         guard let user = viewModel.currentUser else { return }
                         viewModel.progress = .loading
+                        let previousRoom = myRoom
+                        let previousTokens = self.tokensMap
                         // 퇴장 메세지 전송
                         viewModel.exitRoom(roomId: myRoom.roomId) { result in
                             switch result {
-                            case let .success(roomId):
+                            case let .success(_):
                                 Task {
-                                    let tokens = await viewModel.getParticipantsTokens(roomId: roomId)
-                                    await viewModel.sendPushMessage(
+                                    async let _ = viewModel.sendPushMessage(
                                         chat: Chat(value: [
-                                            "roomId": roomId,
+                                            "roomId": previousRoom.roomId,
                                             "userId": user.uid,
                                             "userName": user.name,
                                             "msg":"\(user.name)님이 나갔습니다",
                                             "messageType":CHAT_EXIT,
                                             "sendSuccess":SEND_STATE_SUCCESS
                                         ]),
-                                        receiveTokens: tokens
+                                        receiveTokens: previousTokens
                                     )
                                     
-                                    if(myRoom.participants.first == user.uid && myRoom.userCount >= 2) {
+                                    if(previousRoom.participants.first == user.uid && previousRoom.userCount >= 2) {
                                         // 방장이 나감
-                                        let newSuperUser = myRoom.participants[1]
+                                        let newSuperUser = previousRoom.participants[1]
                                         if let name = await viewModel.findUserName(uid: newSuperUser) {
                                             // 새로운 방장 안내 메세지 전송
-                                            await viewModel.sendPushMessage(
+                                            async let _ = viewModel.sendPushMessage(
                                                 chat: Chat(value: [
-                                                    "roomId": roomId,
+                                                    "roomId": previousRoom.roomId,
                                                     "userId": user.uid,
                                                     "userName": user.name,
                                                     "msg":"\(name)님이 방장 입니다",
                                                     "messageType":CHAT_ETC,
                                                     "sendSuccess":SEND_STATE_SUCCESS
                                                 ]),
-                                                receiveTokens: tokens
+                                                receiveTokens: previousTokens
                                             )
                                         }
                                     }
