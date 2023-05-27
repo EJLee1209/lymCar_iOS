@@ -238,25 +238,20 @@ class MainViewModel: ObservableObject {
     func sendPushMessage(
         chat: Chat,
         receiveTokens: [String:String]
-    ) {
+    ) async -> Bool {
         for (token, target) in receiveTokens {
-            let requestUrl = "\(baseUrl)api/message/push?token=\(token)&id=\(chat.id)&roomId=\(chat.roomId)&userId=\(chat.userId)&userName=\(chat.userName)&message=\(chat.msg)&messageType=\(chat.messageType)&target=\(target)"
-            AF.request(
-                requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
-                method: .post,
-                encoding: JSONEncoding.default
-            ).responseDecodable(of: Bool.self) { response in
-                switch response.result {
-                case .success:
-                    print("메세지 전송 성공 : \(chat)")
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    break
+            let requestUrl = "\(baseUrl)api/message/push?token=\(token)&id=\(chat.id)&roomId=\(chat.roomId)&userId=\(chat.userId)&userName=\(chat.userName)&message=\(chat.msg)&messageType=\(chat.messageType)&target=\(target)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+
+            do {
+                let result = try await AppNetworking.shared.requestJSON(requestUrl, type: Bool.self, method: .post)
+                if !result{
+                    return false
                 }
+            }catch {
+                return false
             }
-            
         }
+        return true
     }
     
     func createRoom(room: CarPoolRoom, completion: @escaping (Result<CarPoolRoom, FirestoreErrorCode>) -> Void) {
@@ -339,7 +334,7 @@ class MainViewModel: ObservableObject {
         }
         progress = .loading
         let docRef = db.collection(FireStoreTable.ROOM).document(room.roomId)
-        
+
         db.runTransaction { transaction, errorPointer in
             let roomDocument: DocumentSnapshot
             do {

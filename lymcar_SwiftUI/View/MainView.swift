@@ -142,6 +142,7 @@ struct MainView: View {
             )
             .environmentObject(self.viewModel)
             .environmentObject(self.appDelegate)
+            
         case .menu:
             if let currentUser = viewModel.currentUser {
                 MenuView(

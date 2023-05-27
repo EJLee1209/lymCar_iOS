@@ -346,19 +346,21 @@ struct MapView: View {
                                     ) { result in
                                         switch result {
                                         case .success(_):
-                                            viewModel.sendPushMessage(
-                                                chat: Chat(value: [
-                                                    "roomId": clickedRoom.roomId,
-                                                    "userId":user.uid,
-                                                    "userName":user.name,
-                                                    "msg":"\(user.name)님이 입장하셨습니다",
-                                                    "messageType":CHAT_JOIN,
-                                                    "sendSuccess":SEND_STATE_SUCCESS
-                                                ]),
-                                                receiveTokens: tokens
-                                            )
-                                            self.mapToChatRoom = true
-                                            
+                                            Task {
+                                                await viewModel.sendPushMessage(
+                                                    chat: Chat(value: [
+                                                        "roomId": clickedRoom.roomId,
+                                                        "userId":user.uid,
+                                                        "userName":user.name,
+                                                        "msg":"\(user.name)님이 입장하셨습니다",
+                                                        "messageType":CHAT_JOIN,
+                                                        "sendSuccess":SEND_STATE_SUCCESS
+                                                    ]),
+                                                    receiveTokens: tokens
+                                                )
+                                                self.mapToChatRoom = true
+                                            }
+
                                         case .failure(_):
                                             showAlert = true
                                             alertMsg = "채팅방 입장 실패"
