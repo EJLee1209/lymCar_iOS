@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FavoriteEditView: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject var realmManager = RealmManger()
+    @EnvironmentObject var realmManager : RealmManger
     @GestureState var dragOffset : CGSize = .zero
     @State var showAlert: Bool = false
     @State var clickedPlace: PlaceForRealm?

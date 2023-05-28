@@ -31,8 +31,6 @@ struct MapView: View {
     @State var endPlace: Place?
     @State var searchField: SearchField?
     @State var showModal: Bool = false // 장소 검색 결과 모달 visibility
-    @State var showMyRoomBox: Bool = false
-    @State var myRoom: CarPoolRoom?
     @State var points : [Point] = [
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true),
         Point(name: "", coordinate: .init(latitude: 0, longitude: 0), image: "", isDummy: true)
@@ -50,7 +48,7 @@ struct MapView: View {
     
     @EnvironmentObject var viewModel : MainViewModel
     @EnvironmentObject var appDelegate : AppDelegate
-    @StateObject var realmManager = RealmManger()
+    @EnvironmentObject var realmManager :RealmManger
     @State var favorites : [Place] = []
     @State var editingFocus: SearchField?
     
@@ -89,16 +87,14 @@ struct MapView: View {
                             Task {
                                 self.placeList = await viewModel.searchPlace(keyword: startPlaceName)
                             }
-//                            viewModel.searchPlace(keyword: startPlaceName)
                         case .end:
                             Task {
                                 self.placeList = await viewModel.searchPlace(keyword: endPlaceName)
                             }
-//                            viewModel.searchPlace(keyword: endPlaceName)
                         }
                     }.padding(.horizontal, 12)
-                    
                     .shadow(radius: 3, y:2)
+                    
                     ScrollView(.horizontal) {
                         LazyHStack(alignment: .center, spacing: 0) {
                             ForEach(favorites, id: \.self) { favorite in
@@ -134,8 +130,7 @@ struct MapView: View {
                     .scrollIndicators(.hidden)
                     .frame(height: 40)
                     .padding(.top, 4)
-                    
-                    
+
                     Spacer()
                     Button {
                         // 카풀 목록 보기
@@ -153,11 +148,11 @@ struct MapView: View {
                                     .stroke().foregroundColor(Color("main_blue"))
                             }
                     }
-                    .padding(.bottom, showMyRoomBox ? 9 : 104)
+                    .padding(.bottom, viewModel.myRoom != nil ? 9 : 104)
                     
-                    if showMyRoomBox {
+                    if viewModel.myRoom != nil {
                         MyRoomBox(
-                            room: $myRoom
+                            room: .constant(viewModel.myRoom!)
                         ) {
                             self.mapToChatRoom = true
                         }
@@ -210,7 +205,7 @@ struct MapView: View {
                                     
                                     Button {
                                         // 방 생성 버튼 Action
-                                        if myRoom != nil {
+                                        if viewModel.myRoom != nil {
                                             showAlert = true
                                             alertMsg = "이미 참가 중인 카풀이 있습니다"
                                             return
@@ -249,7 +244,7 @@ struct MapView: View {
                                                         self.mapToChatRoom = true
                                                     } else {
                                                         // 다른 방
-                                                        if myRoom != nil {
+                                                        if viewModel.myRoom != nil {
                                                             showAlert = true
                                                             alertMsg = "이미 참가 중인 카풀이 있습니다"
                                                             return
@@ -287,7 +282,7 @@ struct MapView: View {
                 }
                 
                 NavigationLink(isActive: $mapToChatRoom) {
-                    if let safeMyRoom = myRoom {
+                    if let safeMyRoom = viewModel.myRoom {
                         ChatRoomView(
                             myRoom: .constant(safeMyRoom),
                             mapToChatRoom: $mapToChatRoom
@@ -372,15 +367,6 @@ struct MapView: View {
                 } message: {
                     Text("채팅방에 참여하시겠습니까?")
                 }
-                .onChange(of: viewModel.myRoom, perform: { myRoom in
-                    if let safeRoom = myRoom {
-                        self.showMyRoomBox = true
-                        self.myRoom = safeRoom
-                    } else {
-                        self.showMyRoomBox = false
-                        self.myRoom = nil
-                    }
-                })
                 .onAppear{
                     if let location = manager.location {
                         convertCLLocationToAddress(location: location)
@@ -388,17 +374,18 @@ struct MapView: View {
                     
                     realmManager.getFavorites()
                     self.favorites = realmManager.favorites.map { $0.convertToPlace() }
-                    
-                    if let safeRoom = viewModel.myRoom {
-                        self.showMyRoomBox = true
-                        self.myRoom = safeRoom
-                    } else {
-                        self.showMyRoomBox = false
-                        self.myRoom = nil
-                    }
                 }
                 .onDisappear {
                     showBottomSheet = false
+                }
+                .onChange(of: showBottomSheet) { newValue in
+                    if newValue {
+                        Task {
+                            if let safeUser = viewModel.currentUser {
+                                self.poolList = await viewModel.getAllRoom(genderOption: safeUser.gender)
+                            }
+                        }
+                    }
                 }
         }
     }
@@ -479,7 +466,7 @@ struct MapView: View {
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(showBottomSheet: .constant(true))
+        MapView(showBottomSheet: .constant(false))
             .environmentObject(MainViewModel())
     }
 }

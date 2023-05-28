@@ -84,7 +84,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // 앱이 포그라운드에서 실행되는 동안 도착한 알림을 처리하는 곳
         if(isViewChatRoom) {
-            completionHandler([.sound])
+            completionHandler([])
         }else{
             completionHandler([.banner, .sound, .badge])
         }

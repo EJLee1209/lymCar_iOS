@@ -9,10 +9,15 @@ import SwiftUI
 
 struct AccountInfoView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var viewModel: MainViewModel
     @GestureState var dragOffset : CGSize = .zero
     
     @Binding var user: User
     var accountDeleteAction: () -> Void = { }
+    @AppStorage("email") private var email = ""
+    @State var password = ""
+    @State var showAlert = false
+    @State var showSystemAlert = false
     
     var body: some View {
         VStack(alignment: .leading,spacing: 0) {
@@ -60,7 +65,7 @@ struct AccountInfoView: View {
                 .padding(.horizontal, 16)
             
             Button {
-                self.accountDeleteAction()
+                showAlert = true
             } label: {
                 HStack{
                     Text("회원탈퇴")
@@ -86,6 +91,35 @@ struct AccountInfoView: View {
                 self.dismiss()
             }
         }))
+        .alert(
+            "회원탈퇴",
+            isPresented: $showAlert,
+            actions: {
+                SecureField("Password", text: $password)
+                Button("확인", role: .destructive) {
+                    Task {
+                        let result = await viewModel.deleteAccount(email: email, password: password)
+                        if !result {
+                            showSystemAlert = true
+                        }
+                    }
+                }
+                Button("취소", role: .cancel) {}
+            },
+            message: {
+                Text("회원탈퇴를 위해 비밀번호를 입력해주세요")
+            }
+        )
+        .alert(
+            "시스템 메세지",
+            isPresented: $showSystemAlert,
+            actions: {
+                Button("확인", role: .cancel) {}
+            },
+            message: {
+                Text(viewModel.alertMsg)
+            }
+        )
         
     }
 }

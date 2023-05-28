@@ -13,6 +13,7 @@ struct AuthClient {
     var createUser: @Sendable(_ email: String, _ password: String, _ newUser: User) async throws -> Void
     var checkLogged: @Sendable(_ email: String) async throws -> Void
     var login: @Sendable(_ email: String, _ password: String) async throws -> Void
+    var passwordReset: @Sendable(_ email: String) async throws -> Void
     
     static let auth = Firebase.Auth.auth()
     static let db = Firestore.firestore()
@@ -68,6 +69,9 @@ extension AuthClient: DependencyKey {
                     deviceId: Utils.getDeviceUUID()
                     ).dictionary
                 )
+        },
+        passwordReset: { email in
+            try await auth.sendPasswordReset(withEmail: email)
         }
     )
 }

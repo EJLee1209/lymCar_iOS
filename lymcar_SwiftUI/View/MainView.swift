@@ -17,7 +17,9 @@ struct MainView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var appDelegate : AppDelegate
     @AppStorage("didLogin") private var didLogin = false
+    @AppStorage("firstLogin") private var firstLogin = true
     @StateObject var viewModel = MainViewModel()
+    @StateObject var realm = RealmManger()
     
     @State var tabIndex : TabIndex = .map
     @State var barPosition: CGFloat = 0
@@ -106,13 +108,33 @@ struct MainView: View {
                 viewModel.updateFcmToken(token: self.appDelegate.fcmToken)
                 viewModel.moniteringLogged()
                 viewModel.subscribeMyRoom()
-                viewModel.subscribeUser()
+                Task {
+                    await viewModel.getUser()
+                }
+                
+                if firstLogin {
+                    // 첫 로그인 -> 기본 즐겨찾기 추가
+                    realm.settingInit()
+                    firstLogin = false
+                }
             }
             .onChange(of: viewModel.myRoom) { newValue in
                 viewModel.participantsRegistration?.remove()
                 if let safeRoom = newValue {
                     viewModel.subscribeParticipantsTokens(roomId: safeRoom.roomId)
                 }
+            }
+            .alert("시스템 메세지", isPresented: .constant(viewModel.showSystemAlert)) {
+                Button {
+                    didLogin = false
+                    realm.clearRealm()
+                    dismiss()
+                } label: {
+                    Text("확인")
+                }
+
+            } message: {
+                Text(viewModel.alertMsg)
             }
             // appDelegate 에서 가져온 pushMessageType 으로 snapshotListener 를 제거하고 모두 get 메서드로 대체 -> ViewModel 제거하고 TCA 리팩토링
             
@@ -125,9 +147,13 @@ struct MainView: View {
             
             // 일단 MainView 부분은 ViewModel 유지하고, 나중에 리팩토링하자.
             
+            // 근데 이제 DB에 Write가 되기 전에 푸시메세지가 오면 get했을 때 Write 하기 이전의 데이터를 가져오게 되는 문제가 있다
+            // write 하고 푸시를 보내면?
+            
 //            .onChange(of: appDelegate.pushMessageType) { newValue in
 //                print("get push message type : \(newValue)")
 //            }
+            
             
         }
     }
@@ -142,6 +168,7 @@ struct MainView: View {
             )
             .environmentObject(self.viewModel)
             .environmentObject(self.appDelegate)
+            .environmentObject(self.realm)
             
         case .menu:
             if let currentUser = viewModel.currentUser {
@@ -152,11 +179,15 @@ struct MainView: View {
                         let logoutResult = await viewModel.logout()
                         if logoutResult {
                             dismiss()
+                            realm.clearRealm()
                         }else {
                             showAlert.toggle()
                         }
                     }
                 }
+                .environmentObject(realm)
+                .environmentObject(viewModel)
+                
             }
         }
     }

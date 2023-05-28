@@ -30,6 +30,23 @@ class RealmManger: ObservableObject {
         }
     }
     
+    // 기본 즐겨찾기 세팅
+    func settingInit() {
+        if let localRealm = localRealm {
+            do {
+                try localRealm.write {
+                    PlaceForRealm.mock.forEach { place in
+                        localRealm.add(place)
+                    }
+                    print("즐겨찾기 기본 세팅 완료")
+                }
+            } catch {
+                print("Error settingInit : \(error)")
+            }
+        }
+    }
+    
+    // 즐겨찾기 추가
     func addFavorite(place: Place) {
         if let localRealm = localRealm {
             do {
@@ -50,6 +67,7 @@ class RealmManger: ObservableObject {
         }
     }
     
+    // 즐겨찾기 가져오기
     func getFavorites() {
         if let localRealm = localRealm {
             let allFavorites = localRealm.objects(PlaceForRealm.self).sorted(byKeyPath: "place_name")
@@ -57,9 +75,11 @@ class RealmManger: ObservableObject {
             allFavorites.forEach { favorite in
                 favorites.append(favorite)
             }
+            print("즐겨찾기 리스트 : \(favorites)")
         }
     }
     
+    // 즐겨찾기 삭제
     func deleteFavorite(id: ObjectId) {
         if let localRealm = localRealm {
             do {
@@ -77,6 +97,7 @@ class RealmManger: ObservableObject {
         }
     }
     
+    // 채팅 내역 가져오기
     func getChats(roomId: String) {
         if let localRealm = localRealm {
             let allChats = localRealm.objects(Chat.self).filter(NSPredicate(format: "roomId == %@", roomId)).sorted(byKeyPath: "dateTime")
@@ -87,6 +108,7 @@ class RealmManger: ObservableObject {
         }
     }
     
+    // 채팅 저장
     func saveChat(chat: Chat) {
         if let localRealm = localRealm {
             do {
@@ -101,6 +123,7 @@ class RealmManger: ObservableObject {
         }
     }
     
+    // 채팅 업데이트(전송 State)
     func updateChat(chat: Chat, newState: String) {
         if let localRealm = localRealm {
             do {
@@ -114,6 +137,7 @@ class RealmManger: ObservableObject {
         }
     }
     
+    // 채팅 삭제
     func deleteChat(chat: Chat) {
         if let localRealm = localRealm {
             do {
@@ -128,6 +152,19 @@ class RealmManger: ObservableObject {
                 
             } catch {
                 print("Error deleting favorite \(chat.id) from Realm: \(error)")
+            }
+        }
+    }
+    
+    // 모든 데이터 삭제
+    func clearRealm() {
+        if let localRealm = localRealm {
+            do {
+                try localRealm.write {
+                    localRealm.deleteAll()
+                }
+            } catch {
+                print("Error clearRealm : \(error)")
             }
         }
     }
