@@ -18,6 +18,7 @@ struct MainView: View {
     @EnvironmentObject var appDelegate : AppDelegate
     @AppStorage("didLogin") private var didLogin = false
     @StateObject var viewModel = MainViewModel()
+    @StateObject var realm = RealmManger()
     
     @State var tabIndex : TabIndex = .map
     @State var barPosition: CGFloat = 0
@@ -148,6 +149,7 @@ struct MainView: View {
             )
             .environmentObject(self.viewModel)
             .environmentObject(self.appDelegate)
+            .environmentObject(self.realm)
             
         case .menu:
             if let currentUser = viewModel.currentUser {
@@ -158,11 +160,13 @@ struct MainView: View {
                         let logoutResult = await viewModel.logout()
                         if logoutResult {
                             dismiss()
+                            realm.clearRealm()
                         }else {
                             showAlert.toggle()
                         }
                     }
-                }
+                }.environmentObject(realm)
+                
             }
         }
     }

@@ -48,7 +48,7 @@ struct MapView: View {
     
     @EnvironmentObject var viewModel : MainViewModel
     @EnvironmentObject var appDelegate : AppDelegate
-    @StateObject var realmManager = RealmManger()
+    @EnvironmentObject var realmManager :RealmManger
     @State var favorites : [Place] = []
     @State var editingFocus: SearchField?
     

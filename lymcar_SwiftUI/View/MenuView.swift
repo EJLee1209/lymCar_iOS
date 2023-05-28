@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MenuView: View {
+    @EnvironmentObject var realm : RealmManger
     @Binding var user: User
     var clickedLogout: () -> Void = {}
     @State var showAlert: Bool = false
@@ -79,6 +80,7 @@ struct MenuView: View {
                         NavigationLink {
                             FavoriteEditView()
                                 .navigationBarBackButtonHidden()
+                                .environmentObject(realm)
                         } label: {
                             HStack(alignment: .center, spacing: 17) {
                                 Image("map-pin")
@@ -167,7 +169,7 @@ struct MenuView: View {
             }
             Button("취소", role: .cancel) {}
         } message: {
-            Text("로그아웃 하시겠습니까?")
+            Text("로그아웃시 모든 채팅 내역과 즐겨찾기가 삭제됩니다")
                 .padding(.top)
         }
 
