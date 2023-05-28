@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MenuView: View {
     @EnvironmentObject var realm : RealmManger
+    @EnvironmentObject var viewModel : MainViewModel
     @Binding var user: User
     var clickedLogout: () -> Void = {}
     @State var showAlert: Bool = false
@@ -65,6 +66,8 @@ struct MenuView: View {
                         NavigationLink {
                             AccountInfoView(user: $user)
                                 .navigationBarBackButtonHidden()
+                                .environmentObject(viewModel)
+                                
                         } label: {
                             HStack(alignment: .center, spacing: 17) {
                                 Image("user")

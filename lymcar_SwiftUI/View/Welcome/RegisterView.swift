@@ -62,6 +62,11 @@ struct RegisterView: View {
                                             Text("개인정보처리방침")
                                                 .font(.system(size: 14))
                                                 .underline()
+                                                .onTapGesture {
+                                                    var stringUrl = Bundle.main.privacyPolicyUrl
+                                                    guard let url = URL(string: stringUrl) else { return }
+                                                    UIApplication.shared.open(url, options: [:])
+                                                }
                                             Text("에 동의합니다")
                                                 .font(.system(size: 14))
                                             Spacer()

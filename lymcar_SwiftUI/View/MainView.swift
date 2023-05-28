@@ -117,6 +117,15 @@ struct MainView: View {
                     viewModel.subscribeParticipantsTokens(roomId: safeRoom.roomId)
                 }
             }
+            .alert("시스템 메세지", isPresented: .constant(viewModel.showSystemAlert)) {
+                Button("확인", role: .cancel) {
+                    didLogin = false
+                    realm.clearRealm()
+                    dismiss()
+                }
+            } message: {
+                Text(viewModel.alertMsg)
+            }
             // appDelegate 에서 가져온 pushMessageType 으로 snapshotListener 를 제거하고 모두 get 메서드로 대체 -> ViewModel 제거하고 TCA 리팩토링
             
             // if pushMessageType == Exit or join -> getMyRoom()
@@ -165,7 +174,9 @@ struct MainView: View {
                             showAlert.toggle()
                         }
                     }
-                }.environmentObject(realm)
+                }
+                .environmentObject(realm)
+                .environmentObject(viewModel)
                 
             }
         }

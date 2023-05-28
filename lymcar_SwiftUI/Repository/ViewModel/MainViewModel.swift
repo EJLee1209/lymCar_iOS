@@ -22,6 +22,8 @@ class MainViewModel: ObservableObject {
     @Published var progress: Progress = .idle
     @Published var currentUser: User?
     @Published var participantsTokens: [String:String] = [:]
+    @Published var showSystemAlert = false
+    @Published var alertMsg = ""
     private let baseUrl = Bundle.main.baseUrl
     private let kakaoApiUrl = Bundle.main.kakaoApiUrl
     private let kakaoApiKey = Bundle.main.kakaoApiKey
@@ -30,6 +32,7 @@ class MainViewModel: ObservableObject {
     var moniteringRegistration: ListenerRegistration? = nil
     var myRoomRegistration: ListenerRegistration? = nil
     var participantsRegistration: ListenerRegistration? = nil
+
     
     deinit {
         removeAllRegistration()
@@ -53,7 +56,11 @@ class MainViewModel: ObservableObject {
                 guard let snapshot = snapshot else {
                     return
                 }
-                let deviceId = snapshot.get(FireStoreTable.FIELD_DEVICEID) as! String
+                guard let deviceId = snapshot.get(FireStoreTable.FIELD_DEVICEID) as? String else {
+                    self.showSystemAlert = true
+                    self.alertMsg = "회원탈퇴 완료\n그동안 림카를 이용해주셔서 감사합니다"
+                    return
+                }
                 
                 if deviceId != Utils.getDeviceUUID() {
                     self.detectAnonymous = true
@@ -470,6 +477,32 @@ class MainViewModel: ObservableObject {
                 return false
             }
         } else {
+            return false
+        }
+    }
+    
+    // 계정 삭제
+    @MainActor
+    func deleteAccount(email: String, password: String) async -> Bool {
+        self.progress = .loading
+        do {
+            let authResult = try await auth.signIn(withEmail: email, password: password)
+            let uid = authResult.user.uid
+            try await authResult.user.delete()
+            async let _ = db.collection(FireStoreTable.USER)
+                .document(uid)
+                .delete()
+            async let _ = db.collection(FireStoreTable.SIGNEDIN)
+                .document(uid)
+                .delete()
+            async let _ = db.collection(FireStoreTable.FCMTOKENS)
+                .document(uid)
+                .delete()
+            self.progress = .idle
+            return true
+        } catch {
+            self.progress = .idle
+            print("deleteAccount 에러 발생 : \(error)")
             return false
         }
     }
