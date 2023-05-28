@@ -486,23 +486,31 @@ class MainViewModel: ObservableObject {
     func deleteAccount(email: String, password: String) async -> Bool {
         self.progress = .loading
         do {
-            let authResult = try await auth.signIn(withEmail: email, password: password)
-            let uid = authResult.user.uid
-            try await authResult.user.delete()
-            async let _ = db.collection(FireStoreTable.USER)
-                .document(uid)
+            let safeUser = try await auth.signIn(withEmail: email, password: password).user
+            
+            try await db.collection(FireStoreTable.USER)
+                .document(safeUser.uid)
                 .delete()
-            async let _ = db.collection(FireStoreTable.SIGNEDIN)
-                .document(uid)
+            try await db.collection(FireStoreTable.SIGNEDIN)
+                .document(safeUser.uid)
                 .delete()
-            async let _ = db.collection(FireStoreTable.FCMTOKENS)
-                .document(uid)
+            try await db.collection(FireStoreTable.FCMTOKENS)
+                .document(safeUser.uid)
                 .delete()
+            
+            try await safeUser.delete()
             self.progress = .idle
             return true
         } catch {
             self.progress = .idle
-            print("deleteAccount 에러 발생 : \(error)")
+            switch error {
+            case AuthErrorCode.wrongPassword:
+                self.alertMsg = "비밀번호 오류"
+            case AuthErrorCode.networkError:
+                self.alertMsg = "네트워크 연결을 확인해주세요"
+            default:
+                self.alertMsg = error.localizedDescription
+            }
             return false
         }
     }

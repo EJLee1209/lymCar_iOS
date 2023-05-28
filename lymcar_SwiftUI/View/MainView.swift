@@ -125,11 +125,14 @@ struct MainView: View {
                 }
             }
             .alert("시스템 메세지", isPresented: .constant(viewModel.showSystemAlert)) {
-                Button("확인", role: .cancel) {
+                Button {
                     didLogin = false
                     realm.clearRealm()
                     dismiss()
+                } label: {
+                    Text("확인")
                 }
+
             } message: {
                 Text(viewModel.alertMsg)
             }
