@@ -93,8 +93,8 @@ struct MapView: View {
                             }
                         }
                     }.padding(.horizontal, 12)
-                    
                     .shadow(radius: 3, y:2)
+                    
                     ScrollView(.horizontal) {
                         LazyHStack(alignment: .center, spacing: 0) {
                             ForEach(favorites, id: \.self) { favorite in
@@ -130,8 +130,7 @@ struct MapView: View {
                     .scrollIndicators(.hidden)
                     .frame(height: 40)
                     .padding(.top, 4)
-                    
-                    
+
                     Spacer()
                     Button {
                         // 카풀 목록 보기

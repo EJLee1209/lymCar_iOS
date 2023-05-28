@@ -30,6 +30,22 @@ class RealmManger: ObservableObject {
         }
     }
     
+    // 기본 즐겨찾기 세팅
+    func settingInit() {
+        if let localRealm = localRealm {
+            do {
+                try localRealm.write {
+                    PlaceForRealm.mock.forEach { place in
+                        localRealm.add(place)
+                    }
+                    print("즐겨찾기 기본 세팅 완료")
+                }
+            } catch {
+                print("Error settingInit : \(error)")
+            }
+        }
+    }
+    
     // 즐겨찾기 추가
     func addFavorite(place: Place) {
         if let localRealm = localRealm {
@@ -59,6 +75,7 @@ class RealmManger: ObservableObject {
             allFavorites.forEach { favorite in
                 favorites.append(favorite)
             }
+            print("즐겨찾기 리스트 : \(favorites)")
         }
     }
     

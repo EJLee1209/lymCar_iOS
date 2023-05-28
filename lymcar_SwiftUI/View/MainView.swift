@@ -17,6 +17,7 @@ struct MainView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var appDelegate : AppDelegate
     @AppStorage("didLogin") private var didLogin = false
+    @AppStorage("firstLogin") private var firstLogin = true
     @StateObject var viewModel = MainViewModel()
     @StateObject var realm = RealmManger()
     
@@ -109,6 +110,12 @@ struct MainView: View {
                 viewModel.subscribeMyRoom()
                 Task {
                     await viewModel.getUser()
+                }
+                
+                if firstLogin {
+                    // 첫 로그인 -> 기본 즐겨찾기 추가
+                    realm.settingInit()
+                    firstLogin = false
                 }
             }
             .onChange(of: viewModel.myRoom) { newValue in
