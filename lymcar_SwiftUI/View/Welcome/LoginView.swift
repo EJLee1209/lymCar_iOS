@@ -88,6 +88,7 @@ struct LoginView: View {
                                     
                                 Button {
                                     // 비밀번호 찾기
+                                    viewStore.send(.forgotPasswordClicked)
                                 } label: {
                                     Text("비밀번호를 잊었어요")
                                         .font(.system(size: 14))
@@ -103,10 +104,6 @@ struct LoginView: View {
                                 .onTapGesture {
                                     viewStore.send(.requestCheckLogged)
                                 }
-                                .alert(
-                                    self.store.scope(state: \.alert),
-                                    dismiss: .dismissAlert
-                                )
                                 .padding(.horizontal, 20)
                                 .padding(.bottom, self.keyboard.isShowing ? keyboard.height : 47)
                         }
@@ -136,6 +133,10 @@ struct LoginView: View {
                 .onChange(of: viewStore.isLoginSuccess) { newValue in
                     didLogin = newValue
                 }
+                .alert(
+                    self.store.scope(state: \.alert),
+                    dismiss: .dismissAlert
+                )
             }
         }
     }

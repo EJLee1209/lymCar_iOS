@@ -37,11 +37,15 @@ struct LoginFeature: ReducerProtocol {
         case emailChanged(String)
         case passwordChanged(String)
         case changedLoginStatus(Bool)
+        case forgotPasswordClicked
         
         case requestCheckLogged // 로그인 여부 확인 요청
         case responseCheckLogged(TaskResult<Void>) // 로그인 여부 확인에 대한 response
         case requestLogin // 로그인 요청
+        case requestPasswordReset // 비밀번호 초기화 요청
+        
         case responseLogin(TaskResult<Void>) // 로그인 요청에 대한 response
+        case responsePasswordReset(TaskResult<Void>) // 비밀번호 초기화 요청에 대한 response
         
         case dismissAlert
         case onAppear(String, String)
@@ -50,7 +54,6 @@ struct LoginFeature: ReducerProtocol {
     var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
-                
             case let .emailChanged(newValue):
                 state.email = newValue
                 return .none
@@ -138,6 +141,68 @@ struct LoginFeature: ReducerProtocol {
                 })
                 return .none
                 
+            case .forgotPasswordClicked:
+                state.alert = AlertState(title: {
+                    TextState("비밀번호 재설정")
+                }, actions: {
+                    ButtonState(action: .requestPasswordReset) {
+                        TextState("확인")
+                    }
+                    ButtonState(role: .cancel) {
+                        TextState("취소")
+                    }
+                }, message: {
+                    TextState("비밀번호를 잊으셨나요? 비밀번호 재설정을 위한 안내를 한림 웹메일로 보내드리겠습니다.")
+                })
+                return .none
+                
+            case .requestPasswordReset:
+                state.isLoading = true
+                return EffectTask.run { [email = state.email] send in
+                    let result = await TaskResult { try await
+                        authClient.passwordReset(email)
+                    }
+                    await send(.responsePasswordReset(result))
+                }
+                
+            case .responsePasswordReset(.success):
+                state.isLoading = false
+                state.alert = AlertState(title: {
+                    TextState("비밀번호 재설정")
+                }, actions: {
+                    ButtonState(role: .cancel) {
+                        TextState("확인")
+                    }
+                }, message: {
+                    TextState("비밀번호 재설정을 위한 안내를 한림 웹메일로 전송했습니다")
+                })
+                return .none
+                
+            case let .responsePasswordReset(.failure(error)):
+                state.isLoading = false
+                var errorMsg : String
+                switch error {
+                case AuthErrorCode.invalidEmail:
+                    errorMsg = "이메일이 틀렸습니다"
+                case AuthErrorCode.networkError:
+                    errorMsg = Constants.NETWORK_ERROR
+                case AuthErrorCode.userNotFound:
+                    errorMsg = "회원정보가 존재하지 않습니다"
+                case AuthErrorCode.missingEmail:
+                    errorMsg = "이메일을 입력해주세요"
+                default:
+                    errorMsg = error.localizedDescription
+                }
+                state.alert = AlertState(title: {
+                    TextState("비밀번호 재설정")
+                }, actions: {
+                    ButtonState(role: .cancel) {
+                        TextState("확인")
+                    }
+                }, message: {
+                    TextState(errorMsg)
+                })
+                return .none
             case .dismissAlert:
                 state.alert = nil
                 return .none
