@@ -35,10 +35,11 @@ struct AccountInfoView: View {
                 Spacer()
                 Text("계정정보")
                     .font(.system(size:20))
+                    .fontWeight(.bold)
                     .foregroundColor(Color("white"))
                     .padding(.trailing, 20)
                     .padding(.bottom, 20)
-                    .bold()
+                    
                 Spacer()
             }
             .frame(maxWidth: .infinity)
