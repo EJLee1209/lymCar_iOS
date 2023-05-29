@@ -43,8 +43,8 @@ struct ChatRoomView: View {
                         Spacer()
                         Text("\(myRoom.startPlace.place_name) - \(myRoom.endPlace.place_name)")
                             .font(.system(size:20))
+                            .fontWeight(.bold)
                             .lineLimit(1)
-                            .bold()
                             .foregroundColor(Color("white"))
                         Spacer()
                         Menu {
